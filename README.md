@@ -80,7 +80,7 @@ Now the code block is saved at the toolbox.
 
 Next time, whenever you need the code block, just drag it from the toolbox into the text editor.
 
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/04.png)
+![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/05.png)
 
 ## Let's Start - Using MySqlExpress
 
