@@ -13,7 +13,7 @@ Download **MySqlExpress Helper**: [https://github.com/adriancs2/MySqlExpress/rel
 
 MySqlExpress consists of 2 parts.
 
-The **first part** is the C# class library of MySqlExpress. It introduces some "shortcuts" as to simplified the execution of tasks related to MySQL.
+The **first part** is the C# class library of MySqlExpress. It introduces some "shortcuts" as to simplify the execution of tasks related to MySQL.
 
 To begin with, download the source code and add the class file "MySqlExpress.cs" into your project,
 
