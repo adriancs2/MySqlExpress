@@ -5,6 +5,8 @@ Nuget: [https://www.nuget.org/packages/MySqlExpress](https://www.nuget.org/packa
 
 PM> NuGet\Install-Package MySqlExpress
 
+Download [MySqlExpress Helper](https://github.com/adriancs2/MySqlExpress/releases)
+
 ![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/screenshot02.png)
 
 ## Introduction
