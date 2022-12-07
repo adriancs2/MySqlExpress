@@ -429,7 +429,7 @@ For updating table that has one primary key. The parameters:
 ```
 m.Update(tablename, dictionary, primary key column name, id);
 ```
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/screenshot02.png)
+![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/d01.png)
     
 Remove the 1st dictionary entry:
     
