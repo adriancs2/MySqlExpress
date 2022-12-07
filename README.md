@@ -15,7 +15,9 @@ or add the referrence of the project of MySqlExpress into your project,
 
 or install the Nuget package of MySqlExpress into your project.
 
-The **second part** is a software called **"MySqlExpress Helper.exe"**. The main function of this software is to generate C# class objects, which will be explained in details below. This small program can be downloaded either in this article or at Github Release section. I'll refer this small program as the **"Helper App"** for the rest of this article.
+The **second part** is a software called **"MySqlExpress Helper.exe"**. The main function of this software is to generate C# class objects, which will be explained in details below. I'll refer this small program as the **"Helper App"** for the rest of this article.
+
+Download **MySqlExpress Helper**: [https://github.com/adriancs2/MySqlExpress/releases](https://github.com/adriancs2/MySqlExpress/releases)
 
 MySqlExpress is built on top of MySqlConnector (MIT) library. If you wish to use another connector or provider, you can download the source code and compile it with your favorite connector.
 
