@@ -5,7 +5,28 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <RootNamespace>System</RootNamespace>
+    <PackageId>MySqlExpress</PackageId>
+    <Title>MySqlExpress - Simiplified the Usage of MySQL in C#/.NET</Title>
+    <Authors>adriancs</Authors>
+    <Company>adriancs</Company>
+    <Product>MySqlExpress</Product>
+    <Copyright>adriancs</Copyright>
+    <Description>MySqlExpress aims to encourage rapid application development and simplified the implementation of MySQL in C#.</Description>
+    <PackageProjectUrl>https://github.com/adriancs2/MySqlExpress</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/adriancs2/MySqlExpress.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>mysql;c#</PackageTags>
+    <PackageReleaseNotes>MySqlExpress aims to encourage rapid application development and simplified the implementation of MySQL in C#.</PackageReleaseNotes>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MySqlConnector" Version="2.2.1" />
