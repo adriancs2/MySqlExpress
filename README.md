@@ -1,6 +1,10 @@
 # MySqlExpress
 MySqlExpress simplifies the implementation of MySQL in C#
 
+Nuget: [https://www.nuget.org/packages/MySqlExpress](https://www.nuget.org/packages/MySqlExpress)
+
+PM> NuGet\Install-Package MySqlExpress
+
 ![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/screenshot02.png)
 
 ## Introduction
