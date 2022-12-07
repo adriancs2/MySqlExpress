@@ -55,8 +55,6 @@ namespace System.pages
 
             sb.Append("select a.*");
 
-
-
             if (year > 0)
             {
                 sb.Append(",b.year `year`,c.name 'teamname',c.code 'teamcode'");

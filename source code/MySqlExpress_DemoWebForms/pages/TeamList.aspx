@@ -17,7 +17,7 @@
                     <td>Search Team
                     </td>
                     <td>
-                        <asp:TextBox ID="txtSearch" runat="server" placeholder="Name, Code"></asp:TextBox>
+                        <asp:TextBox ID="txtSearch" runat="server" placeholder="Team Name, Team Code"></asp:TextBox>
                     </td>
                 </tr>
                 <tr>

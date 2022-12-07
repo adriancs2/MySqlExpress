@@ -42,7 +42,7 @@
 
                 <div class="tableform">
                     <asp:Button ID="btSearch" runat="server" Text="Search" CssClass="btn cur-p btn-primary" OnClick="btSearch_Click" ClientIDMode="Static" />
-                    <asp:TextBox ID="txtSearch" runat="server" onkeydown="return submitForm(event)" placeholder="Name, Code, Email, Tel"></asp:TextBox>
+                    <asp:TextBox ID="txtSearch" runat="server" onkeydown="return submitForm(event)" placeholder="Player's Name, Code, Email, Tel"></asp:TextBox>
                     <asp:Button ID="btAddPlayer" runat="server" Text="Add Selected Player" CssClass="btn cur-p btn-primary" OnClick="btAddPlayer_Click" />
                 </div>
 

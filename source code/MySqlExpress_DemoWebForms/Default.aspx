@@ -31,7 +31,66 @@
     <br />
     <br />
 
-    Below is the list of demos that implemented in every page.<br />
+    <b>MySqlExpress</b> is a C# class library that work together with an software called <b>"MySqlExpress Helper"</b>. Download <b>"MySqlExpress Helper.exe"</b> at:<br />
     <br />
+
+    <a href="https://github.com/adriancs2/MySqlExpress/releases">https://github.com/adriancs2/MySqlExpress/releases</a>
+
+    <br />
+    <br />
+
+    <b>"MySqlExpress Helper.exe"</b> used to generate C# object class and dictionaries.
+
+    <br />
+    <br />
+
+    Below is the list of demos of MySqlExpress methods that implemented in every page.<br />
+
+    <br />
+
+    <b><a href="/">/Home Page</a></b>
+
+    <div class="divcode">
+        m.Execute(sql);<br />
+        m.StartTransaction();<br />
+        m.Commit();<br />
+        m.GetObjectList&lt;class&gt;(sql)<br />
+        m.Insert(tablename, dic);<br />
+        m.InsertUpdate(tablename, dic, lstUpdateCol);<br />
+    </div>
+
+    <br />
+
+    <b><a href="/PlayerList">/PlayerList</a></b><br />
+    <b><a href="/TeamList">/TeamList</a></b>
+
+    <div class="divcode">
+        MySQL - Custom Class Object (inner join SQL statement)<br />
+        m.GetObjectList&lt;class&gt;(sql)<br />
+    </div>
+
+    <br />
+
+    <b><a href="/PlayerEdit">/PlayerEdit</a></b><br />
+    <b><a href="/TeamEdit">/TeamEdit</a></b>
+
+    <div class="divcode">
+        m.GetObject&lt;class&gt;(sql)<br />
+        m.Insert(tablename, dic);<br />
+        m.Update(tablename, dic, "id", id);<br />
+        m.Execute(sql);<br />
+    </div>
+
+    <br />
+
+    <b><a href="/PlayerTeam">/PlayerTeam</a></b>
+
+    <div class="divcode">
+        MySQL - Custom Class Object (inner join SQL statement)
+        m.GetObject&lt;class&gt;(sql)<br />
+        m.GetObjectList&lt;class&gt;(sql)<br />
+        m.InsertUpdate(tablename, dic, lstUpdateCol);<br />
+        m.Execute(sql);<br />
+    </div>
 
 </asp:Content>
