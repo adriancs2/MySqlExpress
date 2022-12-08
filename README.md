@@ -383,6 +383,9 @@ string name = m.ExecuteScalar<string>("select name from player where id=@vid;", 
   
 ### 5. Insert Row (Save Data)
 
+> **Note:**
+> **The dictionary values will be inserted as parameterized values**
+    
 ![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/d01.png)
   
   Paste the text at Visual Studio:
@@ -476,9 +479,6 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 }
 ```
 
-> **Note:**
-> **The dictionary values will be inserted as parameterized values**
-    
 ### 6. Update Row (Update Data)
   
 > **Note:**
