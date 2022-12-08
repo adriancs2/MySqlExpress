@@ -198,7 +198,7 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
         Dictionary<string, object> dicParam = new Dictionary<string, object>();
         dicParam["@vid"] = id;
 
-        p = m.GetObject<obPlayer>($"select * from player where id=@vid limit 0,1;", dicParam);
+        p = m.GetObject<obPlayer>($"select * from player where id=@vid;", dicParam);
 
         conn.Close();
     }
@@ -318,6 +318,10 @@ Create the class object:
 // declare the object
 List<obPlayerTeam> lst = null;
 
+// parameterized the value
+Dictionary<string, object> dicParam = new Dictionary<string, object>();
+dicParam["@vname"] = "%adam%";
+
 using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 {
     using (MySqlCommand cmd = new MySqlCommand())
@@ -330,7 +334,8 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
         lst = m.GetObjectList<obPlayerTeam>(@"select a.*, c.name 'team_name',
             c.code 'team_code' from player a
             inner join player_team b on a.id=b.player_id 
-            inner join team c on b.team_id=c.id;");
+            inner join team c on b.team_id=c.id
+            where name like @vname;", dicParam);
 
         conn.Close();
     }
