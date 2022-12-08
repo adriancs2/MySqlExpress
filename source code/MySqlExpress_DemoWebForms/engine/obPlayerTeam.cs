@@ -17,6 +17,7 @@ namespace System
         int year = 0;
         string teamname = "";
         string teamcode = "";
+        int team_id = 0;
 
         public int Id { get { return id; } set { id = value; } }
         public string Code { get { return code; } set { code = value; } }
@@ -28,6 +29,7 @@ namespace System
         public int Year { get { return year; } set { year = value; } }
         public string Teamname { get { return teamname; } set { teamname = value; } }
         public string Teamcode { get { return teamcode; } set { teamcode = value; } }
+        public int TeamId { get { return team_id; } set { team_id = value; } }
 
 
 

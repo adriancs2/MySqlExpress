@@ -33,7 +33,7 @@ namespace System
         {
             get
             {
-                if(status==1)
+                if (status == 1)
                 {
                     return "<span style='color: darkgreen;'>Active</span>";
                 }

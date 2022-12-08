@@ -156,7 +156,7 @@ namespace System.pages
 
             StringBuilder sb = new StringBuilder();
 
-            sb.Append($"select a.*,c.name 'teamname' from player a left join player_team b on a.id=b.player_id and b.`year`={year} and b.team_id!={teamid} left join team c on b.team_id=c.id where 1=1");
+            sb.Append($"select a.*, c.id 'team_id', c.name 'teamname' from player a left join player_team b on a.id=b.player_id and b.`year`={year} left join team c on b.team_id=c.id where 1=1");
 
             if (txtSearch.Text.Trim().Length > 0)
             {
@@ -182,6 +182,14 @@ namespace System.pages
                     lstPlayer = m.GetObjectList<obPlayerTeam>(sb.ToString());
 
                     conn.Close();
+                }
+            }
+
+            for (int i = lstPlayer.Count - 1; i >= 0; i--)
+            {
+                if (lstPlayer[i].TeamId == teamid)
+                {
+                    lstPlayer.RemoveAt(i);
                 }
             }
 

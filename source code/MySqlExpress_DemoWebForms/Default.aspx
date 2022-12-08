@@ -14,7 +14,7 @@
         <br />
         <br />
         <asp:Button ID="btSaveConnStr" runat="server" Text="Save Connection String" CssClass="btn cur-p btn-primary" OnClick="btSaveConnStr_Click" />
-        <asp:Button ID="btGenerateSampleData" runat="server" Text="Regenerate Sample Data" CssClass="btn cur-p btn-primary" OnClick="btGenerateSampleData_Click" />
+        <asp:Button ID="btGenerateSampleData" runat="server" Text="Create/Regenerate Tables & Sample Data" CssClass="btn cur-p btn-primary" OnClick="btGenerateSampleData_Click" />
     </div>
 
     <br />
