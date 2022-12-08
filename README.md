@@ -475,9 +475,15 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
     }
 }
 ```
-  
+
+> **Note:**
+> **The dictionary values will be inserted as parameterized values**
+    
 ### 6. Update Row (Update Data)
   
+> **Note:**
+> **The dictionary values will be inserted as parameterized values**
+
 For updating table that has one primary key. The parameters:
 ```
 m.Update(tablename, dictionary, primary key column name, id);
@@ -555,6 +561,9 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 ```
   
 ### 7. Insert Update
+  
+> **Note:**
+> **The dictionary values will be inserted as parameterized values**
 
 This is especially useful when the table has multiple primary keys and no auto-increment field.
 
