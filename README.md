@@ -589,7 +589,7 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 ### 8. Escape String Sequence
 To filter a value to avoid SQL injection, or SQL error syntax.
 
-Read more about SQL injection at here (w3schools.com) or here (portswigger.net).
+Read more about SQL injection at [here (w3schools.com)](https://www.w3schools.com/sql/sql_injection.asp) or [here (portswigger.net)](https://portswigger.net/web-security/sql-injection).
 ```
 MySqlExpress m = new MySqlExpress();
 
