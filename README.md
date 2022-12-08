@@ -1,6 +1,8 @@
 # MySqlExpress
 MySqlExpress simplifies the implementation of MySQL in C#
 
+Github: [https://github.com/adriancs2/MySqlExpress](https://github.com/adriancs2/MySqlExpress)
+
 Nuget: [https://www.nuget.org/packages/MySqlExpress](https://www.nuget.org/packages/MySqlExpress)
 
 PM> NuGet\Install-Package MySqlExpress
@@ -97,9 +99,8 @@ Next time, whenever you need the code block, just drag it from the toolbox into 
 5. Insert Row (Save Data)
 6. Update Row (Update Data)
 7. Insert Update
-8. Escape String Sequence
-9. Generate Like String
-10. Execute a SQL statement
+8. Generate Like String
+9. Execute a SQL statement
   
 ###  1. Start Transaction, Commit and Rollback
 ```
@@ -195,7 +196,11 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 
         MySqlExpress m = new MySqlExpress(cmd);
 
-        p = m.GetObject<obPlayer>($"select * from player where id={id} limit 0,1;");
+        // parameterize the values
+        Dictionary<string, object> dicParam = new Dictionary<string, object>();
+        dicParam["@vid"] = id;
+
+        p = m.GetObject<obPlayer>($"select * from player where id=@vid;", dicParam);
 
         conn.Close();
     }
@@ -215,7 +220,11 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 
         MySqlExpress m = new MySqlExpress(cmd);
 
-        lst = m.GetObjectList<obPlayer>("select * from player;");
+        // parameterize the values
+        Dictionary<string, object> dicParam = new Dictionary<string, object>();
+        dicParam["@vname"] = "%adam%";
+
+        lst = m.GetObjectList<obPlayer>($"select * from player where name like @vname;", dicParam);
 
         conn.Close();
     }
@@ -254,7 +263,11 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 
         MySqlExpress m = new MySqlExpress(cmd);
 
-        t = m.GetObject<obTeam>($"select * from team where id={id} limit 0,1;");
+        // parameterize the values
+        Dictionary<string, object> dicParam = new Dictionary<string, object>();
+        dicParam["@vid"] = id;
+
+        t = m.GetObject<obTeam>($"select * from team where id=@vid;", dicParam);
 
         conn.Close();
     }
@@ -262,7 +275,7 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 ```
 To get list of "Team" object:
 ```
-// declare the object
+// declare the object list
 List<obTeam> lst = null;
 
 using (MySqlConnection conn = new MySqlConnection(config.ConnString))
@@ -274,7 +287,11 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 
         MySqlExpress m = new MySqlExpress(cmd);
 
-        lst = m.GetObjectList<obTeam>("select * from team;");
+        // parameterize the values
+        Dictionary<string, object> dicParam = new Dictionary<string, object>();
+        dicParam["@vname"] = "%adam%";
+
+        lst = m.GetObjectList<obTeam>($"select * from team where name like @vname;", dicParam);
 
         conn.Close();
     }
@@ -303,6 +320,10 @@ Create the class object:
 // declare the object
 List<obPlayerTeam> lst = null;
 
+// parameterized the value
+Dictionary<string, object> dicParam = new Dictionary<string, object>();
+dicParam["@vname"] = "%adam%";
+
 using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 {
     using (MySqlCommand cmd = new MySqlCommand())
@@ -315,7 +336,8 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
         lst = m.GetObjectList<obPlayerTeam>(@"select a.*, c.name 'team_name',
             c.code 'team_code' from player a
             inner join player_team b on a.id=b.player_id 
-            inner join team c on b.team_id=c.id;");
+            inner join team c on b.team_id=c.id
+            where name like @vname;", dicParam);
 
         conn.Close();
     }
@@ -334,6 +356,29 @@ DateTime d = m.ExecuteScalar<DateTime>("select date_register from player where i
 
 // string
 string name = m.ExecuteScalar<string>("select name from player where id=1;");
+```
+
+Getting single value with parameters
+  
+```
+MySqlExpress m = new MySqlExpress(cmd);
+
+// parameters
+Dictionary<string, object> dicParam1 = new Dictionary<string, object>();
+dicParam1["@vname"] = "%adam%";
+
+Dictionary<string, object> dicParam2 = new Dictionary<string, object>();
+dicParam2["@vid"] = 1;
+
+// int
+int count = m.ExecuteScalar<int>("select count(*) from player where name like @vname;", dicParam1);
+
+// datetime
+DateTime d = m.ExecuteScalar<DateTime>("select date_register from player where id=@vid;", dicParam2);
+
+// string
+string name = m.ExecuteScalar<string>("select name from player where id=@vid;", dicParam2);
+
 ```
   
 ### 5. Insert Row (Save Data)
@@ -586,20 +631,18 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 }
 ```
   
-### 8. Escape String Sequence
-To filter a value to avoid SQL injection, or SQL error syntax.
+### 8. Generate Like String
 
-Read more about SQL injection at [here (w3schools.com)](https://www.w3schools.com/sql/sql_injection.asp) or [here (portswigger.net)](https://portswigger.net/web-security/sql-injection).
 ```
 MySqlExpress m = new MySqlExpress();
 
 string name = "James O'Brien";
 
-string sqlName = m.Escape(name);
+// parameters
+Dictionary<string, object> dicParam = new Dictionary<string, object>();
+dicParam["@vname"] = m.GetLikeString(name);
 
-string sql = $"select * from player where name='{sqlName}';";
-
-obPlayer p = null;
+List<obPlayer> lst = null;
 
 using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 {
@@ -610,77 +653,15 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 
         m.cmd = cmd;
 
-        p = m.GetObject<obPlayer>(sql);
+        lst = m.GetObjectList<obPlayer>("select * from player where name like @vname;", dicParam);
 
         conn.Close();
     }
 }
 ```
   
-### 9. Generate Like String
-
-```
-MySqlExpress m = new MySqlExpress();
-
-string name = "James O'Brien";
-
-string sqlLike = m.GetLikeString(name);
-
-string sql = $"select * from player where name like {sqlLike};";
-```
-Output:
-```
-select * from player where name like '%James%O''Brien%';
-```
-Full code:
-```
-MySqlExpress m = new MySqlExpress();
-
-string name = "James O'Brien";
-
-string sqlLike = m.GetLikeString(name);
-
-string sql = $"select * from player where name like {sqlLike};";
-
-obPlayer p = null;
-
-using (MySqlConnection conn = new MySqlConnection(config.ConnString))
-{
-    using (MySqlCommand cmd = new MySqlCommand())
-    {
-        cmd.Connection = conn;
-        conn.Open();
-
-        m.cmd = cmd;
-
-        p = m.GetObject<obPlayer>(sql);
-
-        conn.Close();
-    }
-}
-```
-  
-### 10. Execute a Single SQL statement
-Example:
-```
-using (MySqlConnection conn = new MySqlConnection(config.ConnString))
-{
-    using (MySqlCommand cmd = new MySqlCommand())
-    {
-        cmd.Connection = conn;
-        conn.Open();
-
-        MySqlExpress m = new MySqlExpress(cmd);
-
-        m.Execute("delete from player;");
-
-        conn.Close();
-    }
-}
-```
-  
-Execute an single SQL with parameters:
-  
+### 9. Execute a Single SQL statement
+ 
 ```
 Dictionary<string, object> dicParam = new Dictionary<string, object>();
 dicParam["@vName"] = "James O'Brien";
