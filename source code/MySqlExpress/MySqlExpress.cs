@@ -11,6 +11,8 @@ namespace System
 {
     public class MySqlExpress
     {
+        public const string Version = "1.1";
+
         public MySqlCommand cmd;
 
         public MySqlExpress()
@@ -567,9 +569,35 @@ namespace System
             return Bind<T>(dt);
         }
 
+        public T GetObject<T>(string sql, IDictionary<string,object> dicParameters)
+        {
+            DataTable dt = Select(sql, dicParameters);
+
+            return Bind<T>(dt);
+        }
+
+        public T GetObject<T>(string sql, IEnumerable<MySqlParameter> parameters)
+        {
+            DataTable dt = Select(sql, parameters);
+
+            return Bind<T>(dt);
+        }
+
         public List<T> GetObjectList<T>(string sql)
         {
             DataTable dt = Select(sql);
+            return BindList<T>(dt);
+        }
+
+        public List<T> GetObjectList<T>(string sql, IDictionary<string, object> dicParameters)
+        {
+            DataTable dt = Select(sql, dicParameters);
+            return BindList<T>(dt);
+        }
+
+        public List<T> GetObjectList<T>(string sql, IEnumerable<MySqlParameter> parameters)
+        {
+            DataTable dt = Select(sql, parameters);
             return BindList<T>(dt);
         }
 
