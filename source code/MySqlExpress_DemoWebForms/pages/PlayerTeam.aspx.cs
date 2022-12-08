@@ -22,6 +22,9 @@ namespace System.pages
                 year = Convert.ToInt32(Request.QueryString["year"]);
                 teamid = Convert.ToInt32(Request.QueryString["teamid"]);
 
+                Dictionary<string, object> dicParam = new Dictionary<string, object>();
+                dicParam["@teamid"] = teamid;
+
                 obTeam team = null;
 
                 using (MySqlConnection conn = new MySqlConnection(config.ConnString))
@@ -33,7 +36,7 @@ namespace System.pages
 
                         MySqlExpress m = new MySqlExpress(cmd);
 
-                        team = m.GetObject<obTeam>($"select * from team where id={teamid} limit 1;");
+                        team = m.GetObject<obTeam>($"select * from team where id=@teamid limit 1;", dicParam);
 
                         conn.Close();
                     }
@@ -52,6 +55,10 @@ namespace System.pages
 
         void LoadTeamPlayers()
         {
+            Dictionary<string, object> dicParam = new Dictionary<string, object>();
+            dicParam["@year"] = year;
+            dicParam["@teamid"] = teamid;
+
             List<obPlayer> lstPlayer = null;
 
             using (MySqlConnection conn = new MySqlConnection(config.ConnString))
@@ -63,7 +70,7 @@ namespace System.pages
 
                     MySqlExpress m = new MySqlExpress(cmd);
 
-                    lstPlayer = m.GetObjectList<obPlayer>($"select a.* from player a, player_team b where a.id=b.player_id and b.team_id={teamid} and b.year={year} order by a.name;");
+                    lstPlayer = m.GetObjectList<obPlayer>($"select a.* from player a, player_team b where a.id=b.player_id and b.team_id=@teamid and b.year=@year order by a.name;", dicParam);
 
                     conn.Close();
                 }
@@ -121,6 +128,9 @@ namespace System.pages
                 return;
             }
 
+            Dictionary<string, object> dicParam = new Dictionary<string, object>();
+            dicParam["@year"] = year;
+
             using (MySqlConnection conn = new MySqlConnection(config.ConnString))
             {
                 using (MySqlCommand cmd = new MySqlCommand())
@@ -134,7 +144,8 @@ namespace System.pages
 
                     foreach(var id in lstId)
                     {
-                        m.Execute($"delete from player_team where `year`={year} and player_id={id} limit 1;");
+                        dicParam["@playerid"] = id;
+                        m.Execute($"delete from player_team where `year`=@year and player_id=@playerid limit 1;", dicParam);
                     }
 
                     m.Commit();
@@ -152,18 +163,21 @@ namespace System.pages
         {
             LoadTeamPlayers();
 
+            Dictionary<string, object> dicParam = new Dictionary<string, object>();
+            dicParam["@year"] = year;
+
             MySqlExpress m = new MySqlExpress();
 
             StringBuilder sb = new StringBuilder();
 
-            sb.Append($"select a.*, c.id 'team_id', c.name 'teamname' from player a left join player_team b on a.id=b.player_id and b.`year`={year} left join team c on b.team_id=c.id where 1=1");
+            sb.Append($"select a.*, c.id 'team_id', c.name 'teamname' from player a left join player_team b on a.id=b.player_id and b.`year`=@year left join team c on b.team_id=c.id where 1=1");
 
             if (txtSearch.Text.Trim().Length > 0)
             {
-                string likestr = m.GetLikeString(txtSearch.Text);
-                string codestr = m.Escape(txtSearch.Text);
+                dicParam["@namelike"] = m.GetLikeString(txtSearch.Text);
+                dicParam["@playercode"] = txtSearch.Text;
 
-                sb.Append($" and (a.name like {likestr} or a.code='{codestr}' or a.tel='{codestr}' or a.email='{codestr}')");
+                sb.Append($" and (a.name like @namelike or a.code=@playercode or a.tel=@playercode or a.email=@playercode)");
             }
 
             sb.Append($" order by a.name;");
@@ -179,7 +193,7 @@ namespace System.pages
 
                     m.cmd = cmd;
 
-                    lstPlayer = m.GetObjectList<obPlayerTeam>(sb.ToString());
+                    lstPlayer = m.GetObjectList<obPlayerTeam>(sb.ToString(), dicParam);
 
                     conn.Close();
                 }

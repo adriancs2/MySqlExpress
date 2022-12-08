@@ -13,7 +13,7 @@ namespace System.pages
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if(!IsPostBack)
+            if (!IsPostBack)
             {
                 txtYear.Text = DateTime.Now.Year.ToString();
             }
@@ -21,6 +21,8 @@ namespace System.pages
 
         protected void btSearch_Click(object sender, EventArgs e)
         {
+            Dictionary<string, object> dicParam = new Dictionary<string, object>();
+
             MySqlExpress m = new MySqlExpress();
 
             StringBuilder sb = new StringBuilder();
@@ -29,17 +31,17 @@ namespace System.pages
 
             if (txtSearch.Text.Trim().Length > 0)
             {
-                string likestr = m.GetLikeString(txtSearch.Text);
-                string codestr = m.Escape(txtSearch.Text);
+                dicParam["@namelike"] = m.GetLikeString(txtSearch.Text);
+                dicParam["@code"] = txtSearch.Text;
 
-                sb.Append($" and (name like {likestr} or code='{codestr}')");
+                sb.Append($" and (name like @namelike or code=@code)");
             }
 
             if (dropStatus.SelectedIndex > 0)
             {
-                int stat = Convert.ToInt32(dropStatus.SelectedValue);
+                dicParam["@stat"] = Convert.ToInt32(dropStatus.SelectedValue);
 
-                sb.Append($" and status={stat};");
+                sb.Append($" and status=@stat");
             }
 
             sb.Append(" order by name;");
@@ -59,13 +61,18 @@ namespace System.pages
 
                     m.cmd = cmd;
 
-                    lst = m.GetObjectList<obTeam>(sb.ToString());
+                    lst = m.GetObjectList<obTeam>(sb.ToString(), dicParam);
 
                     if (year > 0)
                     {
+                        dicParam.Clear();
+                        dicParam["@year"] = year;
+
                         foreach (var t in lst)
                         {
-                            t.lstPlayer = m.GetObjectList<obPlayer>($"select a.* from player a,player_team b where a.id=b.player_id and b.year={year} and b.team_id={t.Id} order by a.name;");
+                            dicParam["@teamid"] = t.Id;
+
+                            t.lstPlayer = m.GetObjectList<obPlayer>($"select a.* from player a,player_team b where a.id=b.player_id and b.year=@year and b.team_id=@teamid order by a.name;", dicParam);
                         }
                     }
 

@@ -49,6 +49,9 @@ namespace System.pages
 
             int.TryParse(txtYear.Text, out year);
 
+            Dictionary<string, object> dicParam = new Dictionary<string, object>();
+            dicParam["@year"] = year;
+
             MySqlExpress m = new MySqlExpress();
 
             StringBuilder sb = new StringBuilder();
@@ -64,23 +67,23 @@ namespace System.pages
 
             if (year > 0)
             {
-                sb.Append($" left join player_team b on a.id=b.player_id and b.year={year} left join team c on b.team_id=c.id");
+                sb.Append($" left join player_team b on a.id=b.player_id and b.year=@year left join team c on b.team_id=c.id");
             }
 
             sb.Append(" where 1=1");
 
             if (txtSearch.Text.Trim().Length > 0)
             {
-                string likestr = m.GetLikeString(txtSearch.Text);
-                string codestr = m.Escape(txtSearch.Text);
+                dicParam["@nameLike"] = m.GetLikeString(txtSearch.Text);
+                dicParam["@code"] = txtSearch.Text;
 
-                sb.Append($" and (a.name like {likestr} or a.code='{codestr}' or a.email='{codestr}' or a.tel='{codestr}')");
+                sb.Append($" and (a.name like @nameLike or a.code=@code or a.email=@code or a.tel=@code)");
             }
 
             if (year > 0 && dropTeam.SelectedIndex > 0)
             {
-                int teamid = Convert.ToInt32(dropTeam.SelectedValue);
-                sb.Append($" and b.team_id={teamid}");
+                dicParam["@teamid"] = Convert.ToInt32(dropTeam.SelectedValue);
+                sb.Append($" and b.team_id=@teamid");
             }
 
             DateTime datefrom = config.GetDateInput(txtDateRegisterFrom.Text);
@@ -88,19 +91,20 @@ namespace System.pages
 
             if (datefrom != DateTime.MinValue)
             {
-                sb.Append($" and a.date_register>='{datefrom.ToString("yyyy-MM-dd")} 00:00:00'");
+                dicParam["@datefrom"] = datefrom;
+                sb.Append($" and a.date_register>=@datefrom");
             }
 
             if (dateto != DateTime.MinValue)
             {
-                sb.Append($" and a.date_register<='{dateto.ToString("yyyy-MM-dd")} 23:59:59'");
+                dicParam["@dateto"] = dateto;
+                sb.Append($" and a.date_register<=@dateto");
             }
 
             if (dropStatus.SelectedIndex > 0)
             {
-                int stat = Convert.ToInt32(dropStatus.SelectedValue);
-
-                sb.Append($" and a.status={stat};");
+                dicParam["@stat"] = Convert.ToInt32(dropStatus.SelectedValue);
+                sb.Append($" and a.status=@stat");
             }
 
             sb.Append(" order by a.name;");
@@ -116,7 +120,7 @@ namespace System.pages
 
                     m.cmd = cmd;
 
-                    lst = m.GetObjectList<obPlayerTeam>(sb.ToString());
+                    lst = m.GetObjectList<obPlayerTeam>(sb.ToString(), dicParam);
 
                     conn.Close();
                 }

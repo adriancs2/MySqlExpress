@@ -612,12 +612,11 @@ namespace System
         {
             string[] sa = input.Split(' ');
             StringBuilder sb = new StringBuilder();
-            sb.Append("'");
             foreach (string s in sa)
             {
                 sb.Append("%" + Escape(s));
             }
-            sb.Append("%'");
+            sb.Append("%");
             return sb.ToString();
         }
 

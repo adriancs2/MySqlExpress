@@ -40,6 +40,9 @@ namespace System.pages
             {
                 obPlayer p = null;
 
+                Dictionary<string, object> dicParam = new Dictionary<string, object>();
+                dicParam["@id"] = id;
+
                 using (MySqlConnection conn = new MySqlConnection(config.ConnString))
                 {
                     using (MySqlCommand cmd = new MySqlCommand())
@@ -49,7 +52,7 @@ namespace System.pages
 
                         MySqlExpress m = new MySqlExpress(cmd);
 
-                        p = m.GetObject<obPlayer>($"select * from player where id={id} limit 0,1;");
+                        p = m.GetObject<obPlayer>($"select * from player where id=@id limit 0,1;", dicParam);
 
                         conn.Close();
                     }
@@ -131,6 +134,9 @@ namespace System.pages
 
         protected void btDelete_Click(object sender, EventArgs e)
         {
+            Dictionary<string, object> dicParam = new Dictionary<string, object>();
+            dicParam["@id"] = id;
+
             using (MySqlConnection conn = new MySqlConnection(config.ConnString))
             {
                 using (MySqlCommand cmd = new MySqlCommand())
@@ -140,7 +146,7 @@ namespace System.pages
 
                     MySqlExpress m = new MySqlExpress(cmd);
 
-                    m.Execute($"update player set status=0 where id={id} limit 1;");
+                    m.Execute($"update player set status=0 where id=@id limit 1;", dicParam);
 
                     conn.Close();
                 }
@@ -153,6 +159,9 @@ namespace System.pages
 
         protected void btRecover_Click(object sender, EventArgs e)
         {
+            Dictionary<string, object> dicParam = new Dictionary<string, object>();
+            dicParam["@id"] = id;
+
             using (MySqlConnection conn = new MySqlConnection(config.ConnString))
             {
                 using (MySqlCommand cmd = new MySqlCommand())
@@ -162,7 +171,7 @@ namespace System.pages
 
                     MySqlExpress m = new MySqlExpress(cmd);
 
-                    m.Execute($"update player set status=1 where id={id} limit 1;");
+                    m.Execute($"update player set status=1 where id=@id limit 1;", dicParam);
 
                     conn.Close();
                 }
