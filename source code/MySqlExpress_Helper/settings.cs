@@ -12,8 +12,7 @@ namespace MySqlExpress_Helper
     {
         public string ConnStr = "";
         public string CustomSql = "";
-        public bool CreateDateString = true;
-        public string DateStringFormat = "dd-MM-yyyy";
+        public int FieldType = 0;
         public Point Location= new Point();
         public Size FormSize = new Size();
     }

@@ -70,7 +70,7 @@ namespace System.pages
 
                         foreach (var t in lst)
                         {
-                            dicParam["@teamid"] = t.Id;
+                            dicParam["@teamid"] = t.id;
 
                             t.lstPlayer = m.GetObjectList<obPlayer>($"select a.* from player a,player_team b where a.id=b.player_id and b.year=@year and b.team_id=@teamid order by a.name;", dicParam);
                         }
@@ -103,24 +103,24 @@ namespace System.pages
 ");
             foreach (var t in lst)
             {
-                string teamcode = Server.HtmlEncode(t.Code);
-                string teamname = Server.HtmlEncode(t.Name);
+                string teamcode = Server.HtmlEncode(t.code);
+                string teamname = Server.HtmlEncode(t.name);
 
                 sb.Append($@"
 <tr>
-<td>{t.Id}</td>
+<td>{t.id}</td>
 <td>{t.StatusStr}</td>
 <td>{teamcode}</td>
-<td><a href='/TeamEdit?id={t.Id}'>{teamname}</a></td>
+<td><a href='/TeamEdit?id={t.id}'>{teamname}</a></td>
 <td>{t.lstPlayer.Count}</td>
-<td>[<a href='/PlayerTeam?year={year}&teamid={t.Id}'>Edit Team Player</a>]</td>
+<td>[<a href='/PlayerTeam?year={year}&teamid={t.id}'>Edit Team Player</a>]</td>
 <td>");
                 foreach (var p in t.lstPlayer)
                 {
-                    if (p.Status == 1)
-                        sb.Append($"<a href='/PlayerEdit?id={p.Id}'>{p.Name}</a><br />");
+                    if (p.status == 1)
+                        sb.Append($"<a href='/PlayerEdit?id={p.id}'>{p.name}</a><br />");
                     else
-                        sb.Append($"<span style='text-decoration: line-through; color: red;'>{p.Name}</span><br />");
+                        sb.Append($"<span style='text-decoration: line-through; color: red;'>{p.name}</span><br />");
                 }
 
                 sb.Append("</td></tr>");

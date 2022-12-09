@@ -10,6 +10,24 @@ namespace System
 {
     public partial class master1 : System.Web.UI.MasterPage
     {
+        protected override void OnInit(EventArgs e)
+        {
+            if (config.ConnString == "")
+            {
+                string url = Request.Url.ToString();
+                if (url.EndsWith("/default.aspx") || url.EndsWith("ConnectionStringNotInitialized"))
+                {
+                    
+                }
+                else
+                {
+                    Response.Redirect("~/ConnectionStringNotInitialized", true);
+                }
+            }
+
+            base.OnInit(e);
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["good_message"] != null)

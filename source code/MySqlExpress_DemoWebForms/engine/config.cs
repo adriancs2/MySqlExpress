@@ -19,6 +19,11 @@ namespace System
                     ReadConnectionString();
                 }
 
+                if (_constr == null)
+                {
+                    return "";
+                }
+
                 return _constr;
             }
             set
@@ -30,11 +35,18 @@ namespace System
 
         public static void ReadConnectionString()
         {
-            string file = HttpContext.Current.Server.MapPath($"~/App_Data/constr.txt");
-
-            if (File.Exists(file))
+            try
             {
-                _constr = File.ReadAllText(file);
+                string file = HttpContext.Current.Server.MapPath($"~/App_Data/constr.txt");
+
+                if (File.Exists(file))
+                {
+                    _constr = File.ReadAllText(file);
+                }
+            }
+            catch
+            {
+                _constr = null;
             }
         }
 

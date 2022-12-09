@@ -32,16 +32,12 @@
             this.label1 = new System.Windows.Forms.Label();
             this.txtConnStr = new System.Windows.Forms.TextBox();
             this.txtSQL = new System.Windows.Forms.TextBox();
-            this.rbGenClassObject = new System.Windows.Forms.RadioButton();
-            this.rbGenDictionary = new System.Windows.Forms.RadioButton();
-            this.rbCreateTableSql = new System.Windows.Forms.RadioButton();
-            this.rbCreateUpdateColList = new System.Windows.Forms.RadioButton();
-            this.cbCreateDateStr = new System.Windows.Forms.CheckBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.txtDateFormat = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.cbFieldType = new System.Windows.Forms.ComboBox();
+            this.cbOutputType = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.btGenerateCustomSqlObject = new System.Windows.Forms.Button();
@@ -52,7 +48,6 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.panel1.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -87,114 +82,76 @@
             this.txtSQL.TabIndex = 3;
             this.txtSQL.TextChanged += new System.EventHandler(this.txtSQL_TextChanged);
             // 
-            // rbGenClassObject
-            // 
-            this.rbGenClassObject.AutoSize = true;
-            this.rbGenClassObject.Checked = true;
-            this.rbGenClassObject.Location = new System.Drawing.Point(12, 74);
-            this.rbGenClassObject.Name = "rbGenClassObject";
-            this.rbGenClassObject.Size = new System.Drawing.Size(194, 21);
-            this.rbGenClassObject.TabIndex = 4;
-            this.rbGenClassObject.TabStop = true;
-            this.rbGenClassObject.Text = "Generate Class Object";
-            this.rbGenClassObject.UseVisualStyleBackColor = true;
-            // 
-            // rbGenDictionary
-            // 
-            this.rbGenDictionary.AutoSize = true;
-            this.rbGenDictionary.Location = new System.Drawing.Point(212, 74);
-            this.rbGenDictionary.Name = "rbGenDictionary";
-            this.rbGenDictionary.Size = new System.Drawing.Size(242, 21);
-            this.rbGenDictionary.TabIndex = 5;
-            this.rbGenDictionary.Text = "Generate Dictionary Entries";
-            this.rbGenDictionary.UseVisualStyleBackColor = true;
-            // 
-            // rbCreateTableSql
-            // 
-            this.rbCreateTableSql.AutoSize = true;
-            this.rbCreateTableSql.Location = new System.Drawing.Point(460, 74);
-            this.rbCreateTableSql.Name = "rbCreateTableSql";
-            this.rbCreateTableSql.Size = new System.Drawing.Size(226, 21);
-            this.rbCreateTableSql.TabIndex = 7;
-            this.rbCreateTableSql.Text = "Generate Create Table SQL";
-            this.rbCreateTableSql.UseVisualStyleBackColor = true;
-            // 
-            // rbCreateUpdateColList
-            // 
-            this.rbCreateUpdateColList.AutoSize = true;
-            this.rbCreateUpdateColList.Location = new System.Drawing.Point(692, 74);
-            this.rbCreateUpdateColList.Name = "rbCreateUpdateColList";
-            this.rbCreateUpdateColList.Size = new System.Drawing.Size(226, 21);
-            this.rbCreateUpdateColList.TabIndex = 8;
-            this.rbCreateUpdateColList.Text = "Create Update Column List";
-            this.rbCreateUpdateColList.UseVisualStyleBackColor = true;
-            // 
-            // cbCreateDateStr
-            // 
-            this.cbCreateDateStr.AutoSize = true;
-            this.cbCreateDateStr.Location = new System.Drawing.Point(12, 104);
-            this.cbCreateDateStr.Name = "cbCreateDateStr";
-            this.cbCreateDateStr.Size = new System.Drawing.Size(171, 21);
-            this.cbCreateDateStr.TabIndex = 9;
-            this.cbCreateDateStr.Text = "Create Date String";
-            this.cbCreateDateStr.UseVisualStyleBackColor = true;
-            this.cbCreateDateStr.CheckedChanged += new System.EventHandler(this.cbCreateDateStr_CheckedChanged);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(209, 105);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(160, 17);
-            this.label3.TabIndex = 10;
-            this.label3.Text = "Date String Format:";
-            // 
-            // txtDateFormat
-            // 
-            this.txtDateFormat.Location = new System.Drawing.Point(375, 102);
-            this.txtDateFormat.Name = "txtDateFormat";
-            this.txtDateFormat.Size = new System.Drawing.Size(128, 22);
-            this.txtDateFormat.TabIndex = 11;
-            this.txtDateFormat.TextChanged += new System.EventHandler(this.txtDateFormat_TextChanged);
-            // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.groupBox1);
+            this.panel1.Controls.Add(this.label6);
+            this.panel1.Controls.Add(this.label4);
+            this.panel1.Controls.Add(this.cbFieldType);
+            this.panel1.Controls.Add(this.cbOutputType);
+            this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.panel3);
             this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.btLoadTableList);
-            this.panel1.Controls.Add(this.txtDateFormat);
-            this.panel1.Controls.Add(this.label3);
-            this.panel1.Controls.Add(this.cbCreateDateStr);
-            this.panel1.Controls.Add(this.rbCreateUpdateColList);
-            this.panel1.Controls.Add(this.rbGenClassObject);
-            this.panel1.Controls.Add(this.rbCreateTableSql);
-            this.panel1.Controls.Add(this.rbGenDictionary);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(5, 5);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1254, 225);
+            this.panel1.Size = new System.Drawing.Size(1254, 176);
             this.panel1.TabIndex = 12;
             // 
-            // groupBox1
+            // label6
             // 
-            this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Location = new System.Drawing.Point(10, 125);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(655, 63);
-            this.groupBox1.TabIndex = 15;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Note:";
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(363, 77);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(96, 17);
+            this.label6.TabIndex = 19;
+            this.label6.Text = "Field Type:";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 21);
+            this.label4.Location = new System.Drawing.Point(3, 110);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(632, 34);
+            this.label4.Size = new System.Drawing.Size(456, 17);
             this.label4.TabIndex = 15;
-            this.label4.Text = "1: Double click table\'s name to generate table class object\r\n2: All MySQL column\'" +
-    "s name must be lowercase for MySqlExpress to work properly";
+            this.label4.Text = "Double click table\'s name to generate table class object";
+            // 
+            // cbFieldType
+            // 
+            this.cbFieldType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbFieldType.FormattingEnabled = true;
+            this.cbFieldType.Items.AddRange(new object[] {
+            "public properties",
+            "public fields",
+            "private fields + public properties"});
+            this.cbFieldType.Location = new System.Drawing.Point(465, 74);
+            this.cbFieldType.Name = "cbFieldType";
+            this.cbFieldType.Size = new System.Drawing.Size(322, 25);
+            this.cbFieldType.TabIndex = 20;
+            this.cbFieldType.SelectedIndexChanged += new System.EventHandler(this.cbFieldType_SelectedIndexChanged);
+            // 
+            // cbOutputType
+            // 
+            this.cbOutputType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbOutputType.FormattingEnabled = true;
+            this.cbOutputType.Items.AddRange(new object[] {
+            "Generate Class Object",
+            "Generate Dictionary Entries",
+            "Generate Create Table SQL",
+            "Create Update Column List"});
+            this.cbOutputType.Location = new System.Drawing.Point(113, 74);
+            this.cbOutputType.Name = "cbOutputType";
+            this.cbOutputType.Size = new System.Drawing.Size(240, 25);
+            this.cbOutputType.TabIndex = 18;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 77);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(104, 17);
+            this.label2.TabIndex = 17;
+            this.label2.Text = "Output Type:";
             // 
             // panel3
             // 
@@ -230,7 +187,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(305, 200);
+            this.label5.Location = new System.Drawing.Point(305, 145);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(64, 17);
             this.label5.TabIndex = 16;
@@ -238,7 +195,7 @@
             // 
             // btLoadTableList
             // 
-            this.btLoadTableList.Location = new System.Drawing.Point(5, 194);
+            this.btLoadTableList.Location = new System.Drawing.Point(3, 139);
             this.btLoadTableList.Name = "btLoadTableList";
             this.btLoadTableList.Size = new System.Drawing.Size(178, 28);
             this.btLoadTableList.TabIndex = 14;
@@ -252,10 +209,10 @@
             this.listBox1.Dock = System.Windows.Forms.DockStyle.Left;
             this.listBox1.FormattingEnabled = true;
             this.listBox1.ItemHeight = 17;
-            this.listBox1.Location = new System.Drawing.Point(5, 230);
+            this.listBox1.Location = new System.Drawing.Point(5, 181);
             this.listBox1.Margin = new System.Windows.Forms.Padding(0);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(308, 404);
+            this.listBox1.Size = new System.Drawing.Size(308, 453);
             this.listBox1.TabIndex = 13;
             this.listBox1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listBox1_MouseDoubleClick);
             // 
@@ -264,9 +221,9 @@
             this.richTextBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(227)))));
             this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox1.Location = new System.Drawing.Point(313, 230);
+            this.richTextBox1.Location = new System.Drawing.Point(313, 181);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(946, 404);
+            this.richTextBox1.Size = new System.Drawing.Size(946, 453);
             this.richTextBox1.TabIndex = 14;
             this.richTextBox1.Text = "";
             this.richTextBox1.WordWrap = false;
@@ -307,13 +264,12 @@
             this.Name = "Form1";
             this.Padding = new System.Windows.Forms.Padding(5);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "MySqlExpress Helper v1.1";
+            this.Text = "MySqlExpress Helper v1.2";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResizeEnd += new System.EventHandler(this.Form1_ResizeEnd);
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.panel2.ResumeLayout(false);
@@ -330,13 +286,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtConnStr;
         private System.Windows.Forms.TextBox txtSQL;
-        private System.Windows.Forms.RadioButton rbGenClassObject;
-        private System.Windows.Forms.RadioButton rbGenDictionary;
-        private System.Windows.Forms.RadioButton rbCreateTableSql;
-        private System.Windows.Forms.RadioButton rbCreateUpdateColList;
-        private System.Windows.Forms.CheckBox cbCreateDateStr;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox txtDateFormat;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.Label label5;
@@ -346,9 +295,12 @@
         private System.Windows.Forms.Button btGenerateCustomSqlObject;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ComboBox cbOutputType;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ComboBox cbFieldType;
+        private System.Windows.Forms.Label label6;
     }
 }
 

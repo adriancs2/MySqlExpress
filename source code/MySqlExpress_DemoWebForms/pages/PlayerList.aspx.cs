@@ -36,7 +36,7 @@ namespace System.pages
 
                 foreach (var t in lstTeam)
                 {
-                    dropTeam.Items.Add(new ListItem(t.Name, t.Id.ToString()));
+                    dropTeam.Items.Add(new ListItem(t.name, t.id.ToString()));
                 }
 
                 txtYear.Text = DateTime.Now.Year.ToString();
@@ -161,18 +161,18 @@ namespace System.pages
 
                 if (year > 0)
                 {
-                    team_year = Server.HtmlEncode($"({year}) {p.Teamname}");
+                    team_year = Server.HtmlEncode($"({year}) {p.teamname}");
                 }
 
                 sb.Append($@"
 <tr>
-<td>{p.Id}</td>
+<td>{p.id}</td>
 <td>{p.StatusStr}</td>
-<td>{Server.HtmlEncode(p.Code)}</td>
-<td><a href='/PlayerEdit?id={p.Id}' target='_blank'>{Server.HtmlEncode(p.Name)}</a></td>
+<td>{Server.HtmlEncode(p.code)}</td>
+<td><a href='/PlayerEdit?id={p.id}' target='_blank'>{Server.HtmlEncode(p.name)}</a></td>
 <td>{p.DateRegisterStr}</td>
-<td>{Server.HtmlEncode(p.Email)}</td>
-<td>{Server.HtmlEncode(p.Tel)}</td>
+<td>{Server.HtmlEncode(p.email)}</td>
+<td>{Server.HtmlEncode(p.tel)}</td>
 <td>{team_year}</td>
 </tr>
 ");

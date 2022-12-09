@@ -7,30 +7,17 @@ namespace System
 {
     public class obPlayerTeam
     {
-        int id = 0;
-        string code = "";
-        string name = "";
-        DateTime date_register = DateTime.MinValue;
-        string tel = "";
-        string email = "";
-        int status = 0;
-        int year = 0;
-        string teamname = "";
-        string teamcode = "";
-        int team_id = 0;
-
-        public int Id { get { return id; } set { id = value; } }
-        public string Code { get { return code; } set { code = value; } }
-        public string Name { get { return name; } set { name = value; } }
-        public DateTime DateRegister { get { return date_register; } set { date_register = value; } }
-        public string Tel { get { return tel; } set { tel = value; } }
-        public string Email { get { return email; } set { email = value; } }
-        public int Status { get { return status; } set { status = value; } }
-        public int Year { get { return year; } set { year = value; } }
-        public string Teamname { get { return teamname; } set { teamname = value; } }
-        public string Teamcode { get { return teamcode; } set { teamcode = value; } }
-        public int TeamId { get { return team_id; } set { team_id = value; } }
-
+        public int id = 0;
+        public string code = "";
+        public string name = "";
+        public DateTime date_register = DateTime.MinValue;
+        public string tel = "";
+        public string email = "";
+        public int status = 0;
+        public int year = 0;
+        public string teamname = "";
+        public string teamcode = "";
+        public int team_id = 0;
 
 
         public string DateRegisterStr { get { if (date_register != DateTime.MinValue) return date_register.ToString("dd-MM-yyyy"); return ""; } }

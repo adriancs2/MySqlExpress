@@ -11,7 +11,7 @@ namespace System
 {
     public class MySqlExpress
     {
-        public const string Version = "1.1";
+        public const string Version = "1.2";
 
         public MySqlCommand cmd;
 
@@ -632,7 +632,8 @@ namespace System
 
         static List<T> BindList<T>(DataTable dt)
         {
-            var fields = typeof(T).GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
+            var fields = typeof(T).GetFields();
+            var properties = typeof(T).GetProperties();
 
             List<T> lst = new List<T>();
 
@@ -647,6 +648,21 @@ namespace System
                         if (fieldInfo.Name == dc.ColumnName)
                         {
                             fieldInfo.SetValue(ob, GetValue(dr[dc.ColumnName], fieldInfo.FieldType));
+                            break;
+                        }
+                    }
+                }
+
+                foreach (var propertyInfo in properties)
+                {
+                    if (!propertyInfo.CanWrite)
+                        continue;
+
+                    foreach (DataColumn dc in dt.Columns)
+                    {
+                        if (propertyInfo.Name == dc.ColumnName)
+                        {
+                            propertyInfo.SetValue(ob, GetValue(dr[dc.ColumnName], propertyInfo.PropertyType));
                             break;
                         }
                     }

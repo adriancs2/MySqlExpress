@@ -42,12 +42,12 @@ namespace System.pages
                     }
                 }
 
-                if (team.Id == 0)
+                if (team.id == 0)
                 {
                     Response.Redirect("~/TeamList", true);
                 }
 
-                lbTeamName.Text = $"{year} - Team: {team.Name} ({team.Code})";
+                lbTeamName.Text = $"{year} - Team: {team.name} ({team.code})";
 
                 LoadTeamPlayers();
             }
@@ -96,8 +96,8 @@ namespace System.pages
             {
                 sb.Append($@"
 <tr>
-<td><input type='checkbox' name='cbRemove_{p.Id}' /></td>
-<td><a href='/PlayerEdit?id={p.Id}' target='_blank'>{p.Name}</a></td>
+<td><input type='checkbox' name='cbRemove_{p.id}' /></td>
+<td><a href='/PlayerEdit?id={p.id}' target='_blank'>{p.name}</a></td>
 </tr>
 ");
             }
@@ -142,7 +142,7 @@ namespace System.pages
 
                     m.StartTransaction();
 
-                    foreach(var id in lstId)
+                    foreach (var id in lstId)
                     {
                         dicParam["@playerid"] = id;
                         m.Execute($"delete from player_team where `year`=@year and player_id=@playerid limit 1;", dicParam);
@@ -201,7 +201,7 @@ namespace System.pages
 
             for (int i = lstPlayer.Count - 1; i >= 0; i--)
             {
-                if (lstPlayer[i].TeamId == teamid)
+                if (lstPlayer[i].team_id == teamid)
                 {
                     lstPlayer.RemoveAt(i);
                 }
@@ -227,9 +227,9 @@ namespace System.pages
             {
                 sb.Append($@"
 <tr>
-<td><input type='checkbox' name='cbAdd_{p.Id}' /></td>
-<td><a href='/PlayerEdit?id={p.Id}' target='_blank'>{p.Name}</a></td>
-<td>{p.Teamname}</td>
+<td><input type='checkbox' name='cbAdd_{p.id}' /></td>
+<td><a href='/PlayerEdit?id={p.id}' target='_blank'>{p.name}</a></td>
+<td>{p.teamname}</td>
 </tr>
 ");
             }

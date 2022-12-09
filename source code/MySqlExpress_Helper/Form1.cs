@@ -23,13 +23,29 @@ namespace MySqlExpress_Helper
 
         string fileSettings;
 
+        enum outputType
+        {
+            Generate_Class_Object,
+            Generate_Dictionary_Entries,
+            Generate_Create_Table_SQL,
+            Create_Update_Column_List
+        }
+
+        outputType EnumOutputType
+        {
+            get
+            {
+                return (outputType)cbOutputType.SelectedIndex;
+            }
+        }
+
         public Form1()
         {
             timer1 = new Timer();
             timer1.Interval = 2000;
 
             timer2 = new Timer();
-            timer2.Interval = 1200;
+            timer2.Interval = 800;
 
             InitializeComponent();
 
@@ -61,9 +77,8 @@ namespace MySqlExpress_Helper
                 appSettings = new settings()
                 {
                     ConnStr = "server=127.0.0.1;user=root;pwd=1234;database=test;convertzerodatetime=true;treattinyasboolean=true;",
-                    CreateDateString = true,
-                    CustomSql = "select a.name,b.team_name from people a, team b where a.team_id=b.id;",
-                    DateStringFormat = "dd-MM-yyyy"
+                    CustomSql = "select a.id 'player_id', a.name 'player_name', c.id 'team_id', c.name 'team_name' from player a, player_team b, team c where a.id=b.player_id and b.team_id=c.id;",
+                    FieldType = 0
                 };
             }
             else
@@ -76,10 +91,9 @@ namespace MySqlExpress_Helper
                 }
             }
 
+            cbFieldType.SelectedIndex = appSettings.FieldType;
             txtConnStr.Text = appSettings.ConnStr;
             txtSQL.Text = appSettings.CustomSql;
-            cbCreateDateStr.Checked = appSettings.CreateDateString;
-            txtDateFormat.Text = appSettings.DateStringFormat;
 
             try
             {
@@ -106,10 +120,9 @@ namespace MySqlExpress_Helper
 
             appSettings.ConnStr = txtConnStr.Text;
             appSettings.CustomSql = txtSQL.Text;
-            appSettings.CreateDateString = cbCreateDateStr.Checked;
-            appSettings.DateStringFormat = txtDateFormat.Text;
             appSettings.Location = this.Location;
             appSettings.FormSize = this.Size;
+            appSettings.FieldType = cbFieldType.SelectedIndex;
 
             byte[] ba = null;
 
@@ -145,6 +158,12 @@ namespace MySqlExpress_Helper
         }
 
         private void txtDateFormat_TextChanged(object sender, EventArgs e)
+        {
+            timer1.Stop();
+            timer1.Start();
+        }
+
+        private void cbFieldType_SelectedIndexChanged(object sender, EventArgs e)
         {
             timer1.Stop();
             timer1.Start();
@@ -205,38 +224,34 @@ namespace MySqlExpress_Helper
         {
             string table = listBox1.SelectedItem.ToString();
 
-            if (rbCreateUpdateColList.Checked)
+            switch (EnumOutputType)
             {
-                CreateUpdateColList(table);
-                return;
-            }
+                case outputType.Generate_Class_Object:
+                case outputType.Generate_Dictionary_Entries:
+                    DataTable dt = new DataTable();
+                    using (MySqlConnection conn = new MySqlConnection(txtConnStr.Text))
+                    {
+                        MySqlCommand cmd = new MySqlCommand();
+                        cmd.Connection = conn;
+                        conn.Open();
 
-            DataTable dt = new DataTable();
+                        cmd.CommandText = $"show columns from `{table}`;";
+                        MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                        da.Fill(dt);
 
-            using (MySqlConnection conn = new MySqlConnection(txtConnStr.Text))
-            {
-                MySqlCommand cmd = new MySqlCommand();
-                cmd.Connection = conn;
-                conn.Open();
-
-                cmd.CommandText = $"show columns from `{table}`;";
-                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                da.Fill(dt);
-
-                conn.Close();
-            }
-
-            if (rbGenClassObject.Checked)
-            {
-                GenerateClassObject(dt);
-            }
-            else if (rbGenDictionary.Checked)
-            {
-                GenerateDictionary(dt);
-            }
-            else if (rbCreateTableSql.Checked)
-            {
-                GenerateCreateTableSQL(table);
+                        conn.Close();
+                    }
+                    if (EnumOutputType == outputType.Generate_Class_Object)
+                        GenerateClassObject(dt);
+                    else if (EnumOutputType == outputType.Generate_Dictionary_Entries)
+                        GenerateDictionary(dt);
+                    break;
+                case outputType.Create_Update_Column_List:
+                    CreateUpdateColList(table);
+                    break;
+                case outputType.Generate_Create_Table_SQL:
+                    GenerateCreateTableSQL(table);
+                    break;
             }
         }
 
@@ -294,14 +309,25 @@ namespace MySqlExpress_Helper
                     return;
                 }
 
-                lst.Add(string.Format("{0} {1} = {2};", datatype, field, datavalue));
+                if (cbFieldType.SelectedIndex == 2)
+                {
+                    lst.Add(string.Format("{0} {1} = {2};", datatype, field, datavalue));
 
-                string field2 = GetUpperCaseColName(field);
+                    string field2 = GetUpperCaseColName(field);
 
-                if (isDate)
-                    dicDate[field2] = field;
+                    if (isDate)
+                        dicDate[field2] = field;
 
-                lst2.Add($"public {datatype} {field2} {{ get {{ return {field}; }} set {{ {field} = value; }} }}");
+                    lst2.Add($"public {datatype} {field2} {{ get {{ return {field}; }} set {{ {field} = value; }} }}");
+                }
+                else if (cbFieldType.SelectedIndex == 1)
+                {
+                    lst.Add($"public {datatype} {field} = {datavalue};");
+                }
+                else
+                {
+                    lst.Add($"public {datatype} {field} {{ get; set; }}");
+                }
             }
 
             lst.Add("");
@@ -309,17 +335,6 @@ namespace MySqlExpress_Helper
             foreach (string s in lst2)
             {
                 lst.Add(s);
-            }
-
-            if (cbCreateDateStr.Checked && dicDate.Count > 0)
-            {
-                lst.Add("");
-                lst.Add("");
-
-                foreach (var kv in dicDate)
-                {
-                    lst.Add($"public string {kv.Key}Str {{ get {{ if({kv.Value} != DateTime.MinValue) return {kv.Value}.ToString(\"{txtDateFormat.Text}\"); return \"\"; }} }}");
-                }
             }
 
             richTextBox1.Lines = lst.ToArray();
@@ -473,105 +488,181 @@ namespace MySqlExpress_Helper
 
             List<string> lst = new List<string>();
 
-            bool hasdatetime = false;
-
-            foreach (DataColumn dc in dt.Columns)
+            if (cbFieldType.SelectedIndex == 1)
             {
-                var targetType = dc.DataType;
+                foreach (DataColumn dc in dt.Columns)
+                {
+                    var targetType = dc.DataType;
 
-                if (targetType == typeof(String))
-                {
-                    lst.Add($@"string {dc.ColumnName} = """";");
-                }
-                else if (targetType == typeof(DateTime))
-                {
-                    hasdatetime = true;
-                    lst.Add($@"DateTime {dc.ColumnName} = DateTime.MinValue;");
-                }
-                else if (targetType == typeof(bool))
-                {
-                    lst.Add($@"bool {dc.ColumnName} = false;");
-                }
-                else if (targetType == typeof(short)||
-                    targetType == typeof(ushort))
-                {
-                    lst.Add($"short {dc.ColumnName} = 0;");
-                }
-                else if (targetType == typeof(int) ||
-                    targetType == typeof(uint))
+                    if (targetType == typeof(String))
+                    {
+                        lst.Add($@"public string {dc.ColumnName} = """";");
+                    }
+                    else if (targetType == typeof(DateTime))
+                    {
+                        lst.Add($@"public DateTime {dc.ColumnName} = DateTime.MinValue;");
+                    }
+                    else if (targetType == typeof(bool))
+                    {
+                        lst.Add($@"public bool {dc.ColumnName} = false;");
+                    }
+                    else if (targetType == typeof(short) ||
+                        targetType == typeof(ushort))
+                    {
+                        lst.Add($"public short {dc.ColumnName} = 0;");
+                    }
+                    else if (targetType == typeof(int) ||
+                        targetType == typeof(uint))
 
-                {
-                    lst.Add($"int {dc.ColumnName} = 0;");
-                }
-                else if (targetType == typeof(long) ||
-                    targetType == typeof(ulong))
-                {
-                    lst.Add($"long {dc.ColumnName} = 0L;");
-                }
-                else if (targetType == typeof(decimal))
-                {
-                    lst.Add($"decimal {dc.ColumnName} = 0m;");
-                }
-                else
-                {
-                    richTextBox1.Text = $"Unhandled data type: {targetType}, column name: {dc.ColumnName}";
-                    return;
+                    {
+                        lst.Add($"public int {dc.ColumnName} = 0;");
+                    }
+                    else if (targetType == typeof(long) ||
+                        targetType == typeof(ulong))
+                    {
+                        lst.Add($"public long {dc.ColumnName} = 0L;");
+                    }
+                    else if (targetType == typeof(decimal))
+                    {
+                        lst.Add($"public decimal {dc.ColumnName} = 0m;");
+                    }
+                    else
+                    {
+                        richTextBox1.Text = $"Unhandled data type: {targetType}, column name: {dc.ColumnName}";
+                        return;
+                    }
                 }
             }
-
-            lst.Add("");
-
-            foreach (DataColumn dc in dt.Columns)
+            else if (cbFieldType.SelectedIndex == 2)
             {
-                string field2 = GetUpperCaseColName(dc.ColumnName);
+                foreach (DataColumn dc in dt.Columns)
+                {
+                    var targetType = dc.DataType;
 
-                var targetType = dc.DataType;
+                    if (targetType == typeof(String))
+                    {
+                        lst.Add($@"string {dc.ColumnName} = """";");
+                    }
+                    else if (targetType == typeof(DateTime))
+                    {
+                        lst.Add($@"DateTime {dc.ColumnName} = DateTime.MinValue;");
+                    }
+                    else if (targetType == typeof(bool))
+                    {
+                        lst.Add($@"bool {dc.ColumnName} = false;");
+                    }
+                    else if (targetType == typeof(short) ||
+                        targetType == typeof(ushort))
+                    {
+                        lst.Add($"short {dc.ColumnName} = 0;");
+                    }
+                    else if (targetType == typeof(int) ||
+                        targetType == typeof(uint))
 
-                if (targetType == typeof(String))
-                {
-                    lst.Add($@"public string {field2} {{ get {{ return {dc.ColumnName}; }} set {{ {dc.ColumnName} = value; }} }}");
+                    {
+                        lst.Add($"int {dc.ColumnName} = 0;");
+                    }
+                    else if (targetType == typeof(long) ||
+                        targetType == typeof(ulong))
+                    {
+                        lst.Add($"long {dc.ColumnName} = 0L;");
+                    }
+                    else if (targetType == typeof(decimal))
+                    {
+                        lst.Add($"decimal {dc.ColumnName} = 0m;");
+                    }
+                    else
+                    {
+                        richTextBox1.Text = $"Unhandled data type: {targetType}, column name: {dc.ColumnName}";
+                        return;
+                    }
                 }
-                else if (targetType == typeof(DateTime))
-                {
-                    lst.Add($@"public DateTime {field2} {{ get {{ return {dc.ColumnName}; }} set {{ {dc.ColumnName} = value; }} }}");
-                }
-                else if (targetType == typeof(bool))
-                {
-                    lst.Add($@"public bool {field2} {{ get {{ return {dc.ColumnName}; }} set {{ {dc.ColumnName} = value; }} }}");
-                }
-                else if (targetType == typeof(short) || targetType == typeof(ushort))
-                {
-                    lst.Add($"public short {field2} {{ get {{ return {dc.ColumnName}; }} set {{ {dc.ColumnName} = value; }} }}");
-                }
-                else if (targetType == typeof(int) || targetType==typeof(uint))
-                {
-                    lst.Add($"public int {field2} {{ get {{ return {dc.ColumnName}; }} set {{ {dc.ColumnName} = value; }} }}");
-                }
-                else if (targetType == typeof(long) || targetType == typeof(ulong))
-                {
-                    lst.Add($"public long {field2} {{ get {{ return {dc.ColumnName}; }} set {{ {dc.ColumnName} = value; }} }}");
-                }
-                else if (targetType == typeof(decimal))
-                {
-                    lst.Add($"public decimal {field2} {{ get {{ return {dc.ColumnName}; }} set {{ {dc.ColumnName} = value; }} }}");
-                }
-            }
 
-            if (hasdatetime && cbCreateDateStr.Checked)
-            {
-                lst.Add("");
                 lst.Add("");
 
                 foreach (DataColumn dc in dt.Columns)
                 {
-                    if (dc.DataType == typeof(DateTime))
-                    {
-                        string field2 = GetUpperCaseColName(dc.ColumnName);
+                    string field2 = GetUpperCaseColName(dc.ColumnName);
 
-                        lst.Add($"public string {field2}Str {{ get {{ if({dc.ColumnName} != DateTime.MinValue) return {dc.ColumnName}.ToString(\"dd-MM-yyyy\"); return \"\"; }} }}");
+                    var targetType = dc.DataType;
+
+                    if (targetType == typeof(String))
+                    {
+                        lst.Add($@"public string {field2} {{ get {{ return {dc.ColumnName}; }} set {{ {dc.ColumnName} = value; }} }}");
+                    }
+                    else if (targetType == typeof(DateTime))
+                    {
+                        lst.Add($@"public DateTime {field2} {{ get {{ return {dc.ColumnName}; }} set {{ {dc.ColumnName} = value; }} }}");
+                    }
+                    else if (targetType == typeof(bool))
+                    {
+                        lst.Add($@"public bool {field2} {{ get {{ return {dc.ColumnName}; }} set {{ {dc.ColumnName} = value; }} }}");
+                    }
+                    else if (targetType == typeof(short) || targetType == typeof(ushort))
+                    {
+                        lst.Add($"public short {field2} {{ get {{ return {dc.ColumnName}; }} set {{ {dc.ColumnName} = value; }} }}");
+                    }
+                    else if (targetType == typeof(int) || targetType == typeof(uint))
+                    {
+                        lst.Add($"public int {field2} {{ get {{ return {dc.ColumnName}; }} set {{ {dc.ColumnName} = value; }} }}");
+                    }
+                    else if (targetType == typeof(long) || targetType == typeof(ulong))
+                    {
+                        lst.Add($"public long {field2} {{ get {{ return {dc.ColumnName}; }} set {{ {dc.ColumnName} = value; }} }}");
+                    }
+                    else if (targetType == typeof(decimal))
+                    {
+                        lst.Add($"public decimal {field2} {{ get {{ return {dc.ColumnName}; }} set {{ {dc.ColumnName} = value; }} }}");
                     }
                 }
             }
+            else
+            {
+                foreach (DataColumn dc in dt.Columns)
+                {
+                    var targetType = dc.DataType;
+
+                    if (targetType == typeof(String))
+                    {
+                        lst.Add($@"public string {dc.ColumnName} {{ get; set; }}");
+                    }
+                    else if (targetType == typeof(DateTime))
+                    {
+                        lst.Add($@"public DateTime {dc.ColumnName} {{ get; set; }}");
+                    }
+                    else if (targetType == typeof(bool))
+                    {
+                        lst.Add($@"public bool {dc.ColumnName}  {{ get; set; }}");
+                    }
+                    else if (targetType == typeof(short) ||
+                        targetType == typeof(ushort))
+                    {
+                        lst.Add($"public short {dc.ColumnName} {{ get; set; }}");
+                    }
+                    else if (targetType == typeof(int) ||
+                        targetType == typeof(uint))
+
+                    {
+                        lst.Add($"public int {dc.ColumnName}  {{ get; set; }}");
+                    }
+                    else if (targetType == typeof(long) ||
+                        targetType == typeof(ulong))
+                    {
+                        lst.Add($"public long {dc.ColumnName}  {{ get; set; }}"); ;
+                    }
+                    else if (targetType == typeof(decimal))
+                    {
+                        lst.Add($"public decimal {dc.ColumnName}  {{ get; set; }}");
+                    }
+                    else
+                    {
+                        richTextBox1.Text = $"Unhandled data type: {targetType}, column name: {dc.ColumnName}";
+                        return;
+                    }
+                }
+            }
+
+            
 
             richTextBox1.Lines = lst.ToArray();
 
@@ -579,10 +670,16 @@ namespace MySqlExpress_Helper
             richTextBox1.SelectAll();
         }
 
-        private void toolStripStatusLabel1_Click(object sender, EventArgs e)
-        {
-            ProcessStartInfo sInfo = new ProcessStartInfo("https://github.com/adriancs2/MySqlExpress");
-            Process.Start(sInfo);
-        }
+    private void toolStripStatusLabel1_Click(object sender, EventArgs e)
+    {
+        ProcessStartInfo sInfo = new ProcessStartInfo("https://github.com/adriancs2/MySqlExpress");
+        Process.Start(sInfo);
     }
+
+    private void Form1_Load(object sender, EventArgs e)
+    {
+        cbOutputType.SelectedIndex = 0;
+    }
+
+}
 }

@@ -176,6 +176,7 @@
     <Content Include="js\semantic.min.js" />
     <Content Include="js\settings.html" />
     <Content Include="js\utils.js" />
+    <Content Include="pages\ConnectionStringNotInitialized.aspx" />
     <Content Include="pages\Error.aspx" />
     <Content Include="pages\PlayerEdit.aspx" />
     <Content Include="pages\PlayerList.aspx" />
@@ -206,6 +207,13 @@
     </Compile>
     <Compile Include="master1.Master.designer.cs">
       <DependentUpon>master1.Master</DependentUpon>
+    </Compile>
+    <Compile Include="pages\ConnectionStringNotInitialized.aspx.cs">
+      <DependentUpon>ConnectionStringNotInitialized.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pages\ConnectionStringNotInitialized.aspx.designer.cs">
+      <DependentUpon>ConnectionStringNotInitialized.aspx</DependentUpon>
     </Compile>
     <Compile Include="pages\Error.aspx.cs">
       <DependentUpon>Error.aspx</DependentUpon>

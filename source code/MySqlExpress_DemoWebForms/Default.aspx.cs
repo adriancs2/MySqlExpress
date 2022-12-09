@@ -30,6 +30,11 @@ namespace MySqlExpress_TestWebForms
 
         protected void btGenerateSampleData_Click(object sender, EventArgs e)
         {
+            if (config.ConnString == "")
+            {
+                Response.Redirect("~/ConnectionStringNotInitialized", true);
+            }
+
             List<string> lstSql = new List<string>();
 
             lstSql.Add("drop table if exists `player`;");
@@ -189,8 +194,8 @@ namespace MySqlExpress_TestWebForms
                         int level = Convert.ToInt32(score / 1000m);
 
                         dic["year"] = year;
-                        dic["player_id"] = p.Id;
-                        dic["team_id"] = lstTeam[rd.Next(0, lstTeam.Count)].Id;
+                        dic["player_id"] = p.id;
+                        dic["team_id"] = lstTeam[rd.Next(0, lstTeam.Count)].id;
                         dic["score"] = score;
                         dic["level"] = level;
                         dic["status"] = 1;
