@@ -77,7 +77,7 @@ namespace MySqlExpress_Helper
                 appSettings = new settings()
                 {
                     ConnStr = "server=127.0.0.1;user=root;pwd=1234;database=test;convertzerodatetime=true;treattinyasboolean=true;",
-                    CustomSql = "select a.id 'player_id', a.name 'player_name', c.id 'team_id', c.name 'team_name' from player a, player_team b, team c where a.id=b.player_id and b.team_id=c.id;",
+                    CustomSql = "select a.*, b.`year`, c.name 'teamname', c.code 'teamcode', c.id 'teamid' from player a inner join player_team b on a.id=b.player_id inner join team c on b.team_id=c.id;",
                     FieldType = 0
                 };
             }
