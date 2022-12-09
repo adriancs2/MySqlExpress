@@ -674,48 +674,6 @@ namespace System
             return lst;
         }
 
-        static List<T> BindPublicFields<T>(DataTable dt)
-        {
-            var fields = typeof(T).GetFields();
-            var properties = typeof(T).GetProperties();
-
-            List<T> lst = new List<T>();
-
-            foreach (DataRow dr in dt.Rows)
-            {
-                var ob = Activator.CreateInstance<T>();
-
-                foreach (var fieldInfo in fields)
-                {
-                    foreach (DataColumn dc in dt.Columns)
-                    {
-                        if (fieldInfo.Name == dc.ColumnName)
-                        {
-                            fieldInfo.SetValue(ob, GetValue(dr[dc.ColumnName], fieldInfo.FieldType));
-                            break;
-                        }
-                    }
-                }
-
-                foreach (var property in properties)
-                {
-                    foreach (DataColumn dc in dt.Columns)
-                    {
-                        if (property.Name == dc.ColumnName)
-                        {
-                            if (property.CanWrite)
-                                property.SetValue(ob, GetValue(dr[dc.ColumnName], property.PropertyType));
-                            break;
-                        }
-                    }
-                }
-
-                lst.Add(ob);
-            }
-
-            return lst;
-        }
-
         static object GetValue(object ob, Type targetType)
         {
             if (targetType == null)
