@@ -149,7 +149,7 @@ Read more about transaction at [here](https://www.mysqltutorial.org/mysql-transa
   
 First, run the Helper app.
 
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/b01.png)
+![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/g01.png)
   
 Here's the MySQL table structure for "player" table:
 ```
@@ -247,7 +247,7 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 ```
 Another example: 
 
-  ![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/b03.png)
+  ![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/g02.png)
   
   Here's the MySQL table structure for "team" table:
 ```
@@ -332,7 +332,8 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 ### 3. Getting a Customized Object Structure
 One of the typical example is multiple SQL JOIN statement. For example:
 ```
-select a.*, c.`year`, c.name 'teamname', c.code 'teamcode', c.id 'teamid' from player a
+select a.*, b.`year`, c.name 'teamname', c.code 'teamcode', c.id 'teamid'
+from player a
 inner join player_team b on a.id=b.player_id
 inner join team c on b.team_id=c.id;
 ```
@@ -341,7 +342,7 @@ The output table structure is customized.
 
 To create a non-standardized table's object structure, open the Helper program. Key in the customized SQL JOIN statement.
 
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/c01.png)
+![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/g03.png)
 
 Create the custom class object:
 
@@ -356,17 +357,17 @@ Then, paste the copied text into the new custom object:
 ```
 public class obPlayerTeam
 {
-    public int id = 0;
-    public string code = "";
-    public string name = "";
-    public DateTime date_register = DateTime.MinValue;
-    public string tel = "";
-    public string email = "";
-    public int status = 0;
-    public int year = 0;
-    public string teamname = "";
-    public string teamcode = "";
-    public int teamid = 0;
+    public int id  { get; set; }
+    public string code { get; set; }
+    public string name { get; set; }
+    public DateTime date_register { get; set; }
+    public string tel { get; set; }
+    public string email { get; set; }
+    public int status  { get; set; }
+    public int year  { get; set; }
+    public string teamname { get; set; }
+    public string teamcode { get; set; }
+    public int teamid  { get; set; }
 }
 ```
 
@@ -389,11 +390,10 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
         MySqlExpress m = new MySqlExpress(cmd);
 
         lst = m.GetObjectList<obPlayerTeam>(@"
-            select a.*, c.`year`, c.name 'teamname', c.code 'teamcode', c.id 'teamid'
-            from player a            
-            inner join player_team b on a.id=b.player_id 
+            select a.*, b.`year`, c.name 'teamname', c.code 'teamcode', c.id 'teamid'
+            from player a inner join player_team b on a.id=b.player_id
             inner join team c on b.team_id=c.id
-            where name like @vname;", dicParam);
+            where a.name like @vname;", dicParam);
 
         conn.Close();
     }
@@ -442,13 +442,12 @@ string name = m.ExecuteScalar<string>("select name from player where id=@vid;", 
 > **Note:**
 > **The dictionary values will be inserted as parameterized values**
     
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/d01.png)
+![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/g04.png)
   
-  Paste the text at Visual Studio:
-  
-  ![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/d02.png)
-  
-The field "id" is a primary key, auto-increment field. Therefore, we don't need to insert data for this field. Delete the following line from the block:
+The field "id" is a primary key, auto-increment field. Therefore, we don't need to insert data for this field.
+
+Delete the following line from the block:
+    
 ```
 dic["id"] =
 ```
@@ -505,6 +504,12 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 }
 ```
   
+Run the following code to obtain new inserted ID:
+    
+```
+m.LastInsertId
+```
+    
 Obtain the LAST INSERT ID:
   
 ```
@@ -544,9 +549,9 @@ For updating table that has one primary key. The parameters:
 ```
 m.Update(tablename, dictionary, primary key column name, id);
 ```
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/d01.png)
+Generate the dictionary entries from the Helper App.
     
-Remove the 1st dictionary entry:
+Remove the "id" dictionary entry:
     
 ```
 dic["id"] =
@@ -629,7 +634,7 @@ Update it > if the primary keys existed.
 
 First, generate the dictionary entries:
 
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/e02.png)
+![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/g05.png)
 
 Paste the dictionary into the code block:
 ```
@@ -659,7 +664,7 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
   
 Next, back to the helper app, generate the update column list:
 
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/e01.png)
+![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/g06.png)
   
   Paste it at the code block and runs the Insert Update method:
 ```
