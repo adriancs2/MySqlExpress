@@ -164,15 +164,30 @@ Here's the MySQL table structure for "player" table:
   PRIMARY KEY (`id`));
 ```
   
-> Important note:
-> 
-> In order for this to work properly, all columns' name must be lower case and separate keywords with underscore.
+  Create a new class:
+  
+```
+public class obPlayer
+{
+   
+}
+```
 
-  Create a new class, then paste all the text in the class:
-  
-  ![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/b02.png)
-  
-  The name of class. If the MySQL table's name is "player", you can name the class as "obPlayer".
+Then, paste all the copied text into the class:
+```
+public class obPlayer
+{
+    public int id { get; set; }
+    public string code { get; set; }
+    public string name { get; set; }
+    public DateTime date_register { get; set; }
+    public string tel { get; set; }
+    public string email { get; set; }
+    public int status { get; set; }
+}
+```
+
+The name of class. If the MySQL table's name is "player", you can name the class as "obPlayer".
 
 "ob" means "object".
 
@@ -245,8 +260,25 @@ CREATE TABLE `team` (
 ```
 Create the C# class object for "team":
 
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/b04.png)
+```
+public class obTeam
+{
   
+}
+```
+
+Then, paste the copied text into the class:
+
+```
+public class obTeam
+{
+    public int id { get; set; }
+    public string code { get; set; }
+    public string name { get; set; }
+    public int status { get; set; }
+}
+```
+
 To get single "Team" object:
 ```
 int id = 1;
@@ -300,7 +332,7 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 ### 3. Getting a Customized Object Structure
 One of the typical example is multiple SQL JOIN statement. For example:
 ```
-select a.*, c.name 'team_name', c.code 'team_code' from player a
+select a.*, c.`year`, c.name 'teamname', c.code 'teamcode', c.id 'teamid' from player a
 inner join player_team b on a.id=b.player_id
 inner join team c on b.team_id=c.id;
 ```
@@ -311,10 +343,33 @@ To create a non-standardized table's object structure, open the Helper program. 
 
 ![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/c01.png)
 
-Create the class object:
+Create the custom class object:
 
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/c02.png)
-  
+```
+public class obPlayerTeam
+{
+   
+}
+```
+Then, paste the copied text into the new custom object:
+
+```
+public class obPlayerTeam
+{
+    public int id = 0;
+    public string code = "";
+    public string name = "";
+    public DateTime date_register = DateTime.MinValue;
+    public string tel = "";
+    public string email = "";
+    public int status = 0;
+    public int year = 0;
+    public string teamname = "";
+    public string teamcode = "";
+    public int teamid = 0;
+}
+```
+
   Getting the customized table object:
 ```
 // declare the object
@@ -333,8 +388,9 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 
         MySqlExpress m = new MySqlExpress(cmd);
 
-        lst = m.GetObjectList<obPlayerTeam>(@"select a.*, c.name 'team_name',
-            c.code 'team_code' from player a
+        lst = m.GetObjectList<obPlayerTeam>(@"
+            select a.*, c.`year`, c.name 'teamname', c.code 'teamcode', c.id 'teamid'
+            from player a            
             inner join player_team b on a.id=b.player_id 
             inner join team c on b.team_id=c.id
             where name like @vname;", dicParam);
