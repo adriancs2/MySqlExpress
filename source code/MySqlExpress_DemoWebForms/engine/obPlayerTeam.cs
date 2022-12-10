@@ -20,7 +20,7 @@ namespace System
         public int team_id = 0;
 
 
-        public string DateRegisterStr { get { if (date_register != DateTime.MinValue) return date_register.ToString("dd-MM-yyyy"); return ""; } }
+        public string DateRegisterStr { get { if (date_register != DateTime.MinValue) return date_register.ToString("dd MMM yyyy"); return ""; } }
 
         public string StatusStr
         {

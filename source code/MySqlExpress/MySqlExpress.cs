@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using MySqlConnector;
@@ -11,13 +13,13 @@ namespace System
 {
     public class MySqlExpress
     {
-        public const string Version = "1.2";
+        public const string Version = "1.3";
 
         public MySqlCommand cmd;
 
         public MySqlExpress()
         {
-            
+
         }
 
         public MySqlExpress(MySqlCommand cmd)
@@ -45,31 +47,23 @@ namespace System
 
         public DataTable Select(string sql)
         {
-            return Select(sql, new List<MySqlParameter>());
+            return SelectParam(sql, null);
         }
 
         public DataTable Select(string sql, IDictionary<string, object> dicParameters)
         {
+            if (dicParameters == null)
+            {
+                return SelectParam(sql, null);
+            }
+
             List<MySqlParameter> lst = GetParametersList(dicParameters);
-            return Select(sql, lst);
+            return SelectParam(sql, lst);
         }
 
         public DataTable Select(string sql, IEnumerable<MySqlParameter> parameters)
         {
-            cmd.CommandText = sql;
-            cmd.Parameters.Clear();
-            if (parameters != null)
-            {
-                foreach (var param in parameters)
-                {
-                    cmd.Parameters.Add(param);
-                }
-            }
-            MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-            DataTable dt = new DataTable();
-
-            da.Fill(dt);
-            return dt;
+            return SelectParam(sql, parameters);
         }
 
         public DataTable SelectWhere(string sql, Dictionary<string, object> dicCond)
@@ -105,6 +99,24 @@ namespace System
             return dt;
         }
 
+        DataTable SelectParam(string sql, IEnumerable<MySqlParameter> parameters)
+        {
+            cmd.CommandText = sql;
+            cmd.Parameters.Clear();
+            if (parameters != null)
+            {
+                foreach (var param in parameters)
+                {
+                    cmd.Parameters.Add(param);
+                }
+            }
+            MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+
+            da.Fill(dt);
+            return dt;
+        }
+
         public void Execute(string sql)
         {
             Execute(sql, new List<MySqlParameter>());
@@ -118,6 +130,7 @@ namespace System
 
         public void Execute(string sql, IEnumerable<MySqlParameter> parameters)
         {
+            cmd.Parameters.Clear();
             cmd.CommandText = sql;
             if (parameters != null)
             {
@@ -143,6 +156,7 @@ namespace System
 
         public object ExecuteScalar(string sql, IEnumerable<MySqlParameter> parameters)
         {
+            cmd.Parameters.Clear();
             cmd.CommandText = sql;
             if (parameters != null)
             {
@@ -285,7 +299,7 @@ namespace System
             return lst;
         }
 
-        public void InsertUpdate(string table, Dictionary<string, object> dic, List<string> lstUpdateCols, bool include)
+        public void InsertUpdate(string table, Dictionary<string, object> dic, IEnumerable<string> lstUpdateCols, bool include)
         {
             if (include)
             {
@@ -307,7 +321,7 @@ namespace System
             }
         }
 
-        public void InsertUpdate(string table, Dictionary<string, object> dic, List<string> lstUpdateCols)
+        public void InsertUpdate(string table, Dictionary<string, object> dic, IEnumerable<string> lstUpdateCols)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -569,7 +583,7 @@ namespace System
             return Bind<T>(dt);
         }
 
-        public T GetObject<T>(string sql, IDictionary<string,object> dicParameters)
+        public T GetObject<T>(string sql, IDictionary<string, object> dicParameters)
         {
             DataTable dt = Select(sql, dicParameters);
 
@@ -610,14 +624,51 @@ namespace System
 
         public string GetLikeString(string input)
         {
+            return GetLikeString(input, false);
+        }
+
+        public string GetLikeString(string input, bool escapeSqlStringSequence)
+        {
             string[] sa = input.Split(' ');
             StringBuilder sb = new StringBuilder();
             foreach (string s in sa)
             {
-                sb.Append("%" + Escape(s));
+                sb.Append("%");
+                if (escapeSqlStringSequence)
+                    sb.Append(Escape(s));
+                else
+                    sb.Append(s);
             }
             sb.Append("%");
             return sb.ToString();
+        }
+
+        public void GenerateContainsString(string columnName, string value, StringBuilder sb, Dictionary<string, object> dicParameters)
+        {
+            string[] sa = value.Trim().Split(' ');
+
+            for (int i = 0; i < sa.Length; i++)
+            {
+                string paramName = $"@cs{columnName}{i}";
+
+                string paramValue = sa[i].Trim();
+
+                if (!paramValue.StartsWith("%"))
+                    paramValue = "%" + paramValue;
+
+                if (!paramValue.EndsWith("%"))
+                    paramValue += "%";
+
+                dicParameters[paramName] = paramValue;
+
+                if (i == 0)
+                    sb.Append(" and (");
+                else
+                    sb.Append(" and ");
+
+                sb.Append($"`{columnName}` like {paramName}");
+            }
+            sb.Append(")");
         }
 
         static T Bind<T>(DataTable dt)

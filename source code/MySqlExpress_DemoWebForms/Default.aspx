@@ -24,14 +24,16 @@
         <hr />
     </div>
 
+    This small web project serves as a demo of using <b>MySqlExpress</b> and show case the implementation of MySQL database in C#, ASP.NET WebForms.<br />
+    <br />
+
+    MySqlExpress aims to encourage rapid application development, save time and save efforts.<br />
+    <br />
+
     This website applies "<b>Auto-Route</b>", read more: <a href="https://github.com/adriancs2/Auto-Route">https://github.com/adriancs2/Auto-Route</a><br />
     <br />
-    This small web project serves as a demo of using <b>MySqlExpress</b>. It also serves as an example of using MySQL in C# (ASP.NET WebForms).
 
-    <br />
-    <br />
-
-    <b>MySqlExpress</b> is a C# class library that work together with an software called <b>"MySqlExpress Helper"</b>. Download <b>"MySqlExpress Helper.exe"</b> at:<br />
+    During development, <b>MySqlExpress</b> works together with an software called <b>"MySqlExpress Helper"</b> which can be downloaded at:<br />
     <br />
 
     <a href="https://github.com/adriancs2/MySqlExpress/releases">https://github.com/adriancs2/MySqlExpress/releases</a>
@@ -39,7 +41,7 @@
     <br />
     <br />
 
-    <b>"MySqlExpress Helper.exe"</b> used to generate C# object class and dictionaries.
+    <b>"MySqlExpress Helper"</b> used to generate C# object class and dictionaries.
 
     <br />
     <br />
