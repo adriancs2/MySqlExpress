@@ -10,7 +10,7 @@ namespace System
 {
     public class MySqlExpress
     {
-        public const string Version = "1.4";
+        public const string Version = "1.4.1";
 
         public enum FieldsOutputType
         {
@@ -659,58 +659,86 @@ namespace System
             }
             else if (t == typeof(bool))
             {
+                if (ob.GetType() == typeof(DBNull))
+                    return false;
                 return Convert.ToBoolean(ob);
             }
             else if (t == typeof(byte))
             {
+                if (ob.GetType() == typeof(DBNull))
+                    return 0;
                 return Convert.ToByte(ob);
             }
             else if (t == typeof(sbyte))
             {
+                if (ob.GetType() == typeof(DBNull))
+                    return 0;
                 return Convert.ToSByte(ob);
             }
             else if (t == typeof(short))
             {
+                if (ob.GetType() == typeof(DBNull))
+                    return 0;
                 return Convert.ToInt16(ob);
             }
             else if (t == typeof(ushort))
             {
+                if (ob.GetType() == typeof(DBNull))
+                    return 0;
                 return Convert.ToUInt16(ob);
             }
             else if (t == typeof(int))
             {
+                if (ob.GetType() == typeof(DBNull))
+                    return 0;
                 return Convert.ToInt32(ob);
             }
             else if (t == typeof(uint))
             {
+                if (ob.GetType() == typeof(DBNull))
+                    return 0;
                 return Convert.ToUInt32(ob);
             }
             else if (t == typeof(long))
             {
+                if (ob.GetType() == typeof(DBNull))
+                    return 0L;
                 return Convert.ToInt64(ob);
             }
             else if (t == typeof(ulong))
             {
+                if (ob.GetType() == typeof(DBNull))
+                    return 0L;
                 return Convert.ToUInt64(ob);
             }
             else if (t == typeof(float))
             {
+                if (ob.GetType() == typeof(DBNull))
+                    return 0F;
                 return Convert.ToSingle(ob);
             }
             else if (t == typeof(double))
             {
+                if (ob.GetType() == typeof(DBNull))
+                    return 0D;
                 return Convert.ToDouble(ob, CultureInfo.InvariantCulture);
             }
             else if (t == typeof(decimal))
             {
+                if (ob.GetType() == typeof(DBNull))
+                    return 0m;
                 return Convert.ToDecimal(ob, CultureInfo.InvariantCulture);
             }
             else if (t == typeof(char))
             {
+                if (ob.GetType() == typeof(DBNull))
+                    return Convert.ToChar("");
                 return Convert.ToChar(ob);
             }
             else if (t == typeof(DateTime))
             {
+                if (ob.GetType() == typeof(DBNull))
+                    return DateTime.MinValue;
                 return Convert.ToDateTime(ob, CultureInfo.InvariantCulture);
             }
             else if (t == typeof(byte[]))
@@ -769,7 +797,7 @@ namespace System
             StringBuilder sb = new StringBuilder();
 
             sb.AppendLine("Dictionary<string, object> dic = new Dictionary<string, object>();");
-            
+
 
             foreach (DataRow dr in dt.Rows)
             {
