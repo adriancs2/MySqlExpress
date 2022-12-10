@@ -47,7 +47,10 @@ public class config
 ```
 Hence, we can obtain the connection string anywhere in the project as below:
 
+```
 config.ConnString
+```
+
 Here is the standard MySQL connection code block:
 ```
 using (MySqlConnection conn = new MySqlConnection(config.ConnString))
