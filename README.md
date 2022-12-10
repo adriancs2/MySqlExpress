@@ -1,5 +1,7 @@
 # MySqlExpress
-MySqlExpress simplifies the implementation of MySQL in C#
+MySqlExpress simplifies the implementation of MySQL in C#.
+
+This class library aims to encourage rapid application development with MySQL.
 
 Github: [https://github.com/adriancs2/MySqlExpress](https://github.com/adriancs2/MySqlExpress)
 
