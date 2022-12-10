@@ -5,9 +5,9 @@ VisualStudioVersion = 17.4.33103.184
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySqlExpress_Helper", "MySqlExpress_Helper\MySqlExpress_Helper.csproj", "{D646AF32-6071-4E48-9FD7-EF15A94682CF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MySqlExpress", "MySqlExpress\MySqlExpress.csproj", "{07717CA7-21B0-4161-9671-DB5F00CE0F21}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySqlExpress_DemoWebForms", "MySqlExpress_DemoWebForms\MySqlExpress_DemoWebForms.csproj", "{FB708306-2F4E-49C2-82B5-4C1005B9DDBC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MySqlExpress", "MySqlExpress\MySqlExpress.csproj", "{28C7152A-5AC1-4204-8B1E-C0EB562FF92B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,24 +40,6 @@ Global
 		{D646AF32-6071-4E48-9FD7-EF15A94682CF}.totalRelease|x64.Build.0 = Release|Any CPU
 		{D646AF32-6071-4E48-9FD7-EF15A94682CF}.totalRelease|x86.ActiveCfg = Release|Any CPU
 		{D646AF32-6071-4E48-9FD7-EF15A94682CF}.totalRelease|x86.Build.0 = Release|Any CPU
-		{07717CA7-21B0-4161-9671-DB5F00CE0F21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{07717CA7-21B0-4161-9671-DB5F00CE0F21}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{07717CA7-21B0-4161-9671-DB5F00CE0F21}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{07717CA7-21B0-4161-9671-DB5F00CE0F21}.Debug|x64.Build.0 = Debug|Any CPU
-		{07717CA7-21B0-4161-9671-DB5F00CE0F21}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{07717CA7-21B0-4161-9671-DB5F00CE0F21}.Debug|x86.Build.0 = Debug|Any CPU
-		{07717CA7-21B0-4161-9671-DB5F00CE0F21}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{07717CA7-21B0-4161-9671-DB5F00CE0F21}.Release|Any CPU.Build.0 = Release|Any CPU
-		{07717CA7-21B0-4161-9671-DB5F00CE0F21}.Release|x64.ActiveCfg = Release|Any CPU
-		{07717CA7-21B0-4161-9671-DB5F00CE0F21}.Release|x64.Build.0 = Release|Any CPU
-		{07717CA7-21B0-4161-9671-DB5F00CE0F21}.Release|x86.ActiveCfg = Release|Any CPU
-		{07717CA7-21B0-4161-9671-DB5F00CE0F21}.Release|x86.Build.0 = Release|Any CPU
-		{07717CA7-21B0-4161-9671-DB5F00CE0F21}.totalRelease|Any CPU.ActiveCfg = Release|Any CPU
-		{07717CA7-21B0-4161-9671-DB5F00CE0F21}.totalRelease|Any CPU.Build.0 = Release|Any CPU
-		{07717CA7-21B0-4161-9671-DB5F00CE0F21}.totalRelease|x64.ActiveCfg = Release|Any CPU
-		{07717CA7-21B0-4161-9671-DB5F00CE0F21}.totalRelease|x64.Build.0 = Release|Any CPU
-		{07717CA7-21B0-4161-9671-DB5F00CE0F21}.totalRelease|x86.ActiveCfg = Release|Any CPU
-		{07717CA7-21B0-4161-9671-DB5F00CE0F21}.totalRelease|x86.Build.0 = Release|Any CPU
 		{FB708306-2F4E-49C2-82B5-4C1005B9DDBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FB708306-2F4E-49C2-82B5-4C1005B9DDBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB708306-2F4E-49C2-82B5-4C1005B9DDBC}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -76,6 +58,24 @@ Global
 		{FB708306-2F4E-49C2-82B5-4C1005B9DDBC}.totalRelease|x64.Build.0 = Release|Any CPU
 		{FB708306-2F4E-49C2-82B5-4C1005B9DDBC}.totalRelease|x86.ActiveCfg = Release|Any CPU
 		{FB708306-2F4E-49C2-82B5-4C1005B9DDBC}.totalRelease|x86.Build.0 = Release|Any CPU
+		{28C7152A-5AC1-4204-8B1E-C0EB562FF92B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28C7152A-5AC1-4204-8B1E-C0EB562FF92B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28C7152A-5AC1-4204-8B1E-C0EB562FF92B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{28C7152A-5AC1-4204-8B1E-C0EB562FF92B}.Debug|x64.Build.0 = Debug|Any CPU
+		{28C7152A-5AC1-4204-8B1E-C0EB562FF92B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{28C7152A-5AC1-4204-8B1E-C0EB562FF92B}.Debug|x86.Build.0 = Debug|Any CPU
+		{28C7152A-5AC1-4204-8B1E-C0EB562FF92B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28C7152A-5AC1-4204-8B1E-C0EB562FF92B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28C7152A-5AC1-4204-8B1E-C0EB562FF92B}.Release|x64.ActiveCfg = Release|Any CPU
+		{28C7152A-5AC1-4204-8B1E-C0EB562FF92B}.Release|x64.Build.0 = Release|Any CPU
+		{28C7152A-5AC1-4204-8B1E-C0EB562FF92B}.Release|x86.ActiveCfg = Release|Any CPU
+		{28C7152A-5AC1-4204-8B1E-C0EB562FF92B}.Release|x86.Build.0 = Release|Any CPU
+		{28C7152A-5AC1-4204-8B1E-C0EB562FF92B}.totalRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{28C7152A-5AC1-4204-8B1E-C0EB562FF92B}.totalRelease|Any CPU.Build.0 = Release|Any CPU
+		{28C7152A-5AC1-4204-8B1E-C0EB562FF92B}.totalRelease|x64.ActiveCfg = Release|Any CPU
+		{28C7152A-5AC1-4204-8B1E-C0EB562FF92B}.totalRelease|x64.Build.0 = Release|Any CPU
+		{28C7152A-5AC1-4204-8B1E-C0EB562FF92B}.totalRelease|x86.ActiveCfg = Release|Any CPU
+		{28C7152A-5AC1-4204-8B1E-C0EB562FF92B}.totalRelease|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

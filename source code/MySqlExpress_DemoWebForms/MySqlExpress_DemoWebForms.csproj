@@ -296,7 +296,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MySqlExpress\MySqlExpress.csproj">
-      <Project>{07717ca7-21b0-4161-9671-db5f00ce0f21}</Project>
+      <Project>{28c7152a-5ac1-4204-8b1e-c0eb562ff92b}</Project>
       <Name>MySqlExpress</Name>
     </ProjectReference>
   </ItemGroup>
