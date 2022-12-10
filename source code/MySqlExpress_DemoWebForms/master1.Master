@@ -54,6 +54,7 @@
                         <li><a href="/PlayerEdit"><i class="fa fa-male orange_color"></i><span>Add Player</span></a></li>
                         <li><a href="/TeamList"><i class="fa fa-soccer-ball-o blue1_color"></i><span>Team List</span></a></li>
                         <li><a href="/TeamEdit"><i class="fa fa-plus-circle purple_color2"></i><span>Add Team</span></a></li>
+                        <li><a href="/Helper"><i class="fa fa-tasks red_color"></i><span>MySqlExpress Helper</span></a></li>
 
                     </ul>
                 </div>

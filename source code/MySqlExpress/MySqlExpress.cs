@@ -1,19 +1,23 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using MySqlConnector;
+using System.Globalization;
 
 namespace System
 {
     public class MySqlExpress
     {
-        public const string Version = "1.3";
+        public const string Version = "1.4";
+
+        public enum FieldsOutputType
+        {
+            PublicProperties,
+            PublicFields,
+            PrivateFielsPublicProperties
+        }
 
         public MySqlCommand cmd;
 
@@ -41,7 +45,7 @@ namespace System
 
         public void Rollback()
         {
-            cmd.CommandText = "rollback";
+            cmd.CommandText = "rollback;";
             cmd.ExecuteNonQuery();
         }
 
@@ -66,43 +70,11 @@ namespace System
             return SelectParam(sql, parameters);
         }
 
-        public DataTable SelectWhere(string sql, Dictionary<string, object> dicCond)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(sql);
-            sb.Append(" where 1 = 1 ");
-
-            //bool first = true;
-
-            foreach (KeyValuePair<string, object> kv in dicCond)
-            {
-                sb.Append("and `");
-                sb.Append(kv.Key);
-                sb.Append("` = @");
-                sb.Append(kv.Key);
-            }
-
-            sb.Append(";");
-
-            cmd.CommandText = sb.ToString();
-
-            cmd.Parameters.Clear();
-
-            foreach (KeyValuePair<string, object> kv in dicCond)
-            {
-                cmd.Parameters.AddWithValue("@" + kv.Key, kv.Value);
-            }
-
-            MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-            DataTable dt = new DataTable();
-            da.Fill(dt);
-            return dt;
-        }
-
         DataTable SelectParam(string sql, IEnumerable<MySqlParameter> parameters)
         {
             cmd.CommandText = sql;
             cmd.Parameters.Clear();
+
             if (parameters != null)
             {
                 foreach (var param in parameters)
@@ -110,6 +82,7 @@ namespace System
                     cmd.Parameters.Add(param);
                 }
             }
+
             MySqlDataAdapter da = new MySqlDataAdapter(cmd);
             DataTable dt = new DataTable();
 
@@ -119,19 +92,32 @@ namespace System
 
         public void Execute(string sql)
         {
-            Execute(sql, new List<MySqlParameter>());
+            ExecuteParam(sql, null);
         }
 
         public void Execute(string sql, IDictionary<string, object> dicParameters)
         {
-            List<MySqlParameter> lst = GetParametersList(dicParameters);
-            Execute(sql, lst);
+            if (dicParameters == null)
+            {
+                ExecuteParam(sql, null);
+            }
+            else
+            {
+                List<MySqlParameter> lst = GetParametersList(dicParameters);
+                ExecuteParam(sql, lst);
+            }
         }
 
         public void Execute(string sql, IEnumerable<MySqlParameter> parameters)
         {
+            ExecuteParam(sql, parameters);
+        }
+
+        void ExecuteParam(string sql, IEnumerable<MySqlParameter> parameters)
+        {
             cmd.Parameters.Clear();
             cmd.CommandText = sql;
+
             if (parameters != null)
             {
                 foreach (var param in parameters)
@@ -139,6 +125,7 @@ namespace System
                     cmd.Parameters.Add(param);
                 }
             }
+
             cmd.ExecuteNonQuery();
         }
 
@@ -150,14 +137,14 @@ namespace System
 
         public object ExecuteScalar(string sql, Dictionary<string, object> dicParameters)
         {
-            List<MySqlParameter> lst = GetParametersList(dicParameters);
-            return ExecuteScalar(sql, lst);
+            List<MySqlParameter> parameters = GetParametersList(dicParameters);
+            return ExecuteScalar(sql, parameters);
         }
 
         public object ExecuteScalar(string sql, IEnumerable<MySqlParameter> parameters)
         {
             cmd.Parameters.Clear();
-            cmd.CommandText = sql;
+
             if (parameters != null)
             {
                 foreach (var parameter in parameters)
@@ -165,27 +152,37 @@ namespace System
                     cmd.Parameters.Add(parameter);
                 }
             }
+
             return cmd.ExecuteScalar();
         }
 
-        public T ExecuteScalar<T>(string sql, Dictionary<string, object> dicParameters)
+        public T ExecuteScalar<T>(string sql, IDictionary<string, object> dicParameters)
         {
-            List<MySqlParameter> lst = null;
-            if (dicParameters != null)
+            if (dicParameters == null)
             {
-                lst = new List<MySqlParameter>();
-                foreach (KeyValuePair<string, object> kv in dicParameters)
-                {
-                    lst.Add(new MySqlParameter(kv.Key, kv.Value));
-                }
+                return ExecuteScalarParam<T>(sql, null);
             }
-            return ExecuteScalar<T>(sql, lst);
+
+            List<MySqlParameter> parameters = GetParametersList(dicParameters);
+
+            return ExecuteScalarParam<T>(sql, parameters);
         }
 
         public T ExecuteScalar<T>(string sql, IEnumerable<MySqlParameter> parameters)
         {
+            return ExecuteScalarParam<T>(sql, parameters);
+        }
+
+        public T ExecuteScalar<T>(string sql)
+        {
+            return ExecuteScalarParam<T>(sql, null);
+        }
+
+        T ExecuteScalarParam<T>(string sql, IEnumerable<MySqlParameter> parameters)
+        {
             cmd.Parameters.Clear();
             cmd.CommandText = sql;
+
             if (parameters != null)
             {
                 foreach (var parameter in parameters)
@@ -193,95 +190,16 @@ namespace System
                     cmd.Parameters.Add(parameter);
                 }
             }
-            return (T)Convert.ChangeType(cmd.ExecuteScalar(), typeof(T));
-        }
 
-        public T ExecuteScalar<T>(string sql)
-        {
-            cmd.CommandText = sql;
-            MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-            DataTable dt = new DataTable();
-            da.Fill(dt);
+            DataTable dt = SelectParam(sql, parameters);
 
-            object ob = null;
-            if (dt.Rows.Count > 0 && dt.Columns.Count > 0)
+            object ob = dt.Rows[0][0];
+
+            try
             {
-                ob = dt.Rows[0][0];
+                return (T)GetValue(ob, typeof(T));
             }
-
-            if (ob == null || ob is DBNull)
-            {
-                if (typeof(T) == typeof(string))
-                    ob = "";
-                else if (typeof(T) == typeof(int) ||
-                        typeof(T) == typeof(long) ||
-                        typeof(T) == typeof(short) ||
-                        typeof(T) == typeof(uint) ||
-                        typeof(T) == typeof(ulong) ||
-                        typeof(T) == typeof(ushort))
-                    ob = 0;
-                else if (typeof(T) == typeof(decimal))
-                    ob = 0m;
-                else if (typeof(T) == typeof(double))
-                    ob = 0d;
-                else if (typeof(T) == typeof(DateTime))
-                    ob = DateTime.MinValue;
-                else if (typeof(T) == typeof(bool))
-                    ob = false;
-                else if (typeof(T) == typeof(byte[]))
-                    ob = new byte[0];
-                else if (typeof(T) == typeof(TimeSpan))
-                    ob = new TimeSpan(0);
-                else if (typeof(T) == typeof(Guid))
-                    ob = new Guid();
-                else
-                    throw new Exception("Error MySqlHelper.ExecuteScalar<T> - T = " + typeof(T).ToString());
-            }
-            //else
-            //{
-            //    if (typeof(T) == typeof(string))
-            //        ob = "";
-            //    else if (typeof(T) == typeof(int) ||
-            //            typeof(T) == typeof(long) ||
-            //            typeof(T) == typeof(short) ||
-            //            typeof(T) == typeof(uint) ||
-            //            typeof(T) == typeof(ulong) ||
-            //            typeof(T) == typeof(ushort))
-            //        ob = 0;
-            //    else if (typeof(T) == typeof(decimal))
-            //        ob = 0m;
-            //    else if (typeof(T) == typeof(double))
-            //        ob = 0d;
-            //    else if (typeof(T) == typeof(DateTime))
-            //        ob = DateTime.MinValue;
-            //    else if (typeof(T) == typeof(bool))
-            //        ob = false;
-            //    else if (typeof(T) == typeof(byte[]))
-            //        ob = new byte[0];
-            //    else if (typeof(T) == typeof(TimeSpan))
-            //        ob = new TimeSpan(0);
-            //    else if (typeof(T) == typeof(Guid))
-            //        ob = new Guid();
-            //    else
-            //        throw new Exception("Error MySqlHelper.ExecuteScalar<T> - T = " + typeof(T).ToString());
-            //}
-            //if (typeof(T) == typeof(int))
-            //{
-            //    int i = 0;
-            //    int.TryParse(ob + "", out i);
-            //    ob = i;
-            //}
-            //else if (typeof(T) == typeof(decimal))
-            //{
-            //    decimal d = 0m;
-            //    decimal.TryParse(ob + "", out d);
-            //    ob = d;
-            //}
-            //else if (typeof(T) == typeof(DateTime))
-            //{
-            //    DateTime dtime = DateTime.MinValue;
-            //    ob = Convert.ToDateTime(ob);
-            //}
+            catch { }
 
             return (T)Convert.ChangeType(ob, typeof(T));
         }
@@ -576,6 +494,14 @@ namespace System
             }
         }
 
+        public long LastInsertIdLong
+        {
+            get
+            {
+                return cmd.LastInsertedId;
+            }
+        }
+
         public T GetObject<T>(string sql)
         {
             DataTable dt = Select(sql);
@@ -725,120 +651,388 @@ namespace System
             return lst;
         }
 
-        static object GetValue(object ob, Type targetType)
+        static object GetValue(object ob, Type t)
         {
-            if (targetType == null)
-            {
-                return null;
-            }
-            else if (targetType == typeof(String))
+            if (t == typeof(string))
             {
                 return ob + "";
             }
-            else if (targetType == typeof(DateTime))
+            else if (t == typeof(bool))
             {
-                try
-                {
-                    return Convert.ToDateTime(ob);
-                }
-                catch { }
-                return DateTime.MinValue;
+                return Convert.ToBoolean(ob);
             }
-            else if (targetType == typeof(bool))
+            else if (t == typeof(byte))
             {
-                try
-                {
-                    return Convert.ToBoolean(ob);
-                }
-                catch { }
-                return false;
+                return Convert.ToByte(ob);
             }
-            else if (targetType == typeof(short))
+            else if (t == typeof(sbyte))
             {
-                try
-                {
-                    return Convert.ToInt16(ob);
-                }
-                catch { }
-                return 0;
+                return Convert.ToSByte(ob);
             }
-            else if (targetType == typeof(int))
+            else if (t == typeof(short))
             {
-                try
-                {
-                    return Convert.ToInt32(ob);
-                }
-                catch { }
-                return 0;
+                return Convert.ToInt16(ob);
             }
-            else if (targetType == typeof(long))
+            else if (t == typeof(ushort))
             {
-                long i = 0;
-                long.TryParse(ob + "", out i);
-                return i;
+                return Convert.ToUInt16(ob);
             }
-            else if (targetType == typeof(ushort))
+            else if (t == typeof(int))
             {
-                ushort i = 0;
-                ushort.TryParse(ob + "", out i);
-                return i;
+                return Convert.ToInt32(ob);
             }
-            else if (targetType == typeof(uint))
+            else if (t == typeof(uint))
             {
-                uint i = 0;
-                uint.TryParse(ob + "", out i);
-                return i;
+                return Convert.ToUInt32(ob);
             }
-            else if (targetType == typeof(ulong))
+            else if (t == typeof(long))
             {
-                ulong i = 0;
-                ulong.TryParse(ob + "", out i);
-                return i;
+                return Convert.ToInt64(ob);
             }
-            else if (targetType == typeof(double))
+            else if (t == typeof(ulong))
             {
-                double i = 0;
-                double.TryParse(ob + "", out i);
-                return i;
+                return Convert.ToUInt64(ob);
             }
-            else if (targetType == typeof(decimal))
+            else if (t == typeof(float))
             {
-                try
-                {
-                    return Convert.ToDecimal(ob);
-                }
-                catch { }
-                return 0m;
+                return Convert.ToSingle(ob);
             }
-            else if (targetType == typeof(float))
+            else if (t == typeof(double))
             {
-                float i = 0;
-                float.TryParse(ob + "", out i);
-                return i;
+                return Convert.ToDouble(ob, CultureInfo.InvariantCulture);
             }
-            else if (targetType == typeof(byte))
+            else if (t == typeof(decimal))
             {
-                byte i = 0;
-                byte.TryParse(ob + "", out i);
-                return i;
+                return Convert.ToDecimal(ob, CultureInfo.InvariantCulture);
             }
-            else if (targetType == typeof(sbyte))
+            else if (t == typeof(char))
             {
-                sbyte i = 0;
-                sbyte.TryParse(ob + "", out i);
-                return i;
+                return Convert.ToChar(ob);
             }
-            else if (targetType == typeof(TimeSpan))
+            else if (t == typeof(DateTime))
             {
+                return Convert.ToDateTime(ob, CultureInfo.InvariantCulture);
+            }
+            else if (t == typeof(byte[]))
+            {
+                if (ob == null || ob.GetType() == typeof(DBNull))
+                    return null;
+
+                return (byte[])ob;
+            }
+            else if (t == typeof(Guid))
+            {
+                if (ob == null || ob.GetType() == typeof(DBNull))
+                    return null;
+
+                return (Guid)ob;
+            }
+            else if (t == typeof(TimeSpan))
+            {
+                if (ob == null || ob.GetType() == typeof(DBNull))
+                    return null;
+
                 return (TimeSpan)ob;
             }
-            else if (targetType == typeof(System.Guid))
-            {
-                return (System.Guid)ob;
-            }
 
-            return Convert.ChangeType(ob, targetType);
+            return Convert.ChangeType(ob, t);
         }
 
+        public List<string> GetTableList()
+        {
+            DataTable dt = Select("show tables;");
+
+            List<string> lst = new List<string>();
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                lst.Add(dr[0] + "");
+            }
+
+            return lst;
+        }
+
+        public string GenerateCustomClassField(string sql, FieldsOutputType _fieldOutputType)
+        {
+            return GenerateClassField(sql, _fieldOutputType);
+        }
+
+        public string GenerateTableClassFields(string tablename, FieldsOutputType _fieldOutputType)
+        {
+            return GenerateClassField($"select * from `{tablename}` where 1=0;", _fieldOutputType);
+        }
+
+        public string GenerateTableDictionaryEntries(string tablename)
+        {
+            DataTable dt = Select($"show columns from `{tablename}`;");
+
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine("Dictionary<string, object> dic = new Dictionary<string, object>();");
+            
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                sb.AppendLine();
+                sb.Append($"            dic[\"{dr[0]}\"] = ");
+            }
+
+            return sb.ToString();
+        }
+
+        string GenerateClassField(string sql, FieldsOutputType _fieldOutputType)
+        {
+            var dicColType = GetColumnsDataType(sql);
+
+            StringBuilder sb = new StringBuilder();
+
+            if (_fieldOutputType == FieldsOutputType.PublicProperties || _fieldOutputType == FieldsOutputType.PublicFields)
+            {
+                foreach (var kv in dicColType)
+                {
+                    if (sb.Length > 0)
+                    {
+                        sb.AppendLine();
+                    }
+
+                    string datatypestr = GetFieldTypeString(kv.Value);
+
+                    switch (_fieldOutputType)
+                    {
+                        case FieldsOutputType.PublicProperties:
+                            sb.Append($"public {datatypestr} {kv.Key} {{ get; set; }}");
+                            break;
+                        case FieldsOutputType.PublicFields:
+                            sb.Append($"public {datatypestr} {kv.Key} = {GetDefaultValueString(kv.Value)};");
+                            break;
+                    }
+                }
+            }
+            else if (_fieldOutputType == FieldsOutputType.PrivateFielsPublicProperties)
+            {
+                bool isfirst = true;
+
+                foreach (var kv in dicColType)
+                {
+                    string datatypestr = GetFieldTypeString(kv.Value);
+
+                    if (isfirst)
+                        isfirst = false;
+                    else
+                        sb.AppendLine();
+
+                    sb.Append($"{datatypestr} {kv.Key} = {GetDefaultValueString(kv.Value)};");
+                }
+
+                sb.AppendLine();
+
+                foreach (var kv in dicColType)
+                {
+                    string datatypestr = GetFieldTypeString(kv.Value);
+
+                    sb.AppendLine();
+                    sb.Append($"public {datatypestr} {GetUpperCaseColName(kv.Key)} {{ get {{ return {kv.Key}; }} set {{ {kv.Key} = value; }}");
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        Dictionary<string, Type> GetColumnsDataType(string sql)
+        {
+            DataTable dt = Select(sql);
+
+            Dictionary<string, Type> dic = new Dictionary<string, Type>();
+
+            foreach (DataColumn dc in dt.Columns)
+            {
+                dic[dc.ColumnName] = dc.DataType;
+            }
+
+            return dic;
+        }
+
+        string GetUpperCaseColName(string colname)
+        {
+            bool toUpperCase = true;
+
+            StringBuilder sb = new StringBuilder();
+            foreach (char c in colname)
+            {
+                if (c == '_')
+                {
+                    toUpperCase = true;
+                    continue;
+                }
+                if (toUpperCase)
+                {
+                    sb.Append(Char.ToUpper(c));
+                    toUpperCase = false;
+                    continue;
+                }
+                else
+                {
+                    sb.Append(c);
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        string GetDefaultValueString(Type t)
+        {
+            if (t == typeof(string))
+            {
+                return "\"\"";
+            }
+            else if (t == typeof(bool))
+            {
+                return "false";
+            }
+            else if (t == typeof(byte) ||
+                t == typeof(sbyte) ||
+                t == typeof(short) ||
+                t == typeof(ushort) ||
+                t == typeof(int) ||
+                t == typeof(uint))
+            {
+                return "0";
+            }
+            else if (t == typeof(long) ||
+                t == typeof(ulong))
+            {
+                return "0l";
+            }
+            else if (t == typeof(float))
+            {
+                return "0f";
+            }
+            else if (t == typeof(double))
+            {
+                return "0d";
+            }
+            else if (t == typeof(decimal))
+            {
+                return "0m";
+            }
+            else if (t == typeof(char))
+            {
+                return "''";
+            }
+            else if (t == typeof(DateTime))
+            {
+                return "DateTime.MinValue";
+            }
+            else if (t == typeof(byte[]))
+            {
+                return "null";
+            }
+            else if (t == typeof(Guid))
+            {
+                return "null";
+            }
+            else if (t == typeof(TimeSpan))
+            {
+                return "null";
+            }
+
+            throw new Exception($"Unhandled Data Type: {t.ToString()}. Please report this to the development team.");
+        }
+
+        string GetFieldTypeString(Type t)
+        {
+            if (t == typeof(string))
+            {
+                return "string";
+            }
+            else if (t == typeof(bool))
+            {
+                return "bool";
+            }
+            else if (t == typeof(byte) || t == typeof(sbyte))
+            {
+                return "byte";
+            }
+            else if (t == typeof(short) || t == typeof(ushort))
+            {
+                return "short";
+            }
+            else if (t == typeof(int) || t == typeof(uint))
+            {
+                return "int";
+            }
+            else if (t == typeof(long) || t == typeof(ulong))
+            {
+                return "long";
+            }
+            else if (t == typeof(float))
+            {
+                return "float";
+            }
+            else if (t == typeof(double))
+            {
+                return "double";
+            }
+            else if (t == typeof(decimal))
+            {
+                return "decimal";
+            }
+            else if (t == typeof(char))
+            {
+                return "char";
+            }
+            else if (t == typeof(DateTime))
+            {
+                return "DateTime";
+            }
+            else if (t == typeof(byte[]))
+            {
+                return "byte[]";
+            }
+            else if (t == typeof(Guid))
+            {
+                return "Guid";
+            }
+            else if (t == typeof(TimeSpan))
+            {
+                return "TimeSpan";
+            }
+
+            throw new Exception($"Unhandled Data Type: {t.ToString()}. Please report this to the development team.");
+        }
+
+        public string GetCreateTableSql(string tablename)
+        {
+            DataTable dt = Select($"show create table `{tablename}`;");
+
+            return dt.Rows[0][1] + "";
+        }
+
+        public string GenerateUpdateColumnList(string tablename)
+        {
+            DataTable dt = Select($"show columns from `{tablename}`;");
+
+            List<string> lst = new List<string>();
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                if (dr["Key"] + "" == "")
+                {
+                    lst.Add(dr[0] + "");
+                }
+            }
+
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine("List<string> lstUpdateCol = new List<string>();");
+
+            foreach (var l in lst)
+            {
+                sb.AppendLine();
+                sb.Append($"lstUpdateCol.Add(\"{l}\");");
+            }
+
+            return sb.ToString();
+        }
     }
 }

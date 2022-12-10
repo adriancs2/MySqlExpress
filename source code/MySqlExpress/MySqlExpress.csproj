@@ -18,7 +18,7 @@
     <PackageTags>mysql;c#</PackageTags>
     <PackageReleaseNotes>MySqlExpress aims to encourage rapid application development and simplified the implementation of MySQL in C#.</PackageReleaseNotes>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>1.3</Version>
+    <Version>1.4</Version>
   </PropertyGroup>
 
   <ItemGroup>

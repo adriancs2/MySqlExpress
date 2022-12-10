@@ -214,7 +214,7 @@
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(308, 453);
             this.listBox1.TabIndex = 13;
-            this.listBox1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listBox1_MouseDoubleClick);
+            this.listBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.listBox1_MouseClick);
             // 
             // richTextBox1
             // 
@@ -264,8 +264,7 @@
             this.Name = "Form1";
             this.Padding = new System.Windows.Forms.Padding(5);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "MySqlExpress Helper v1.3";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Text = "MySqlExpress Helper v1.4";
             this.ResizeEnd += new System.EventHandler(this.Form1_ResizeEnd);
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
             this.panel1.ResumeLayout(false);

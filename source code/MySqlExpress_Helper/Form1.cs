@@ -5,20 +5,16 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySqlConnector;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace MySqlExpress_Helper
 {
     public partial class Form1 : Form
     {
         Timer timer1;
-        Timer timer2;
         settings appSettings;
 
         string fileSettings;
@@ -39,13 +35,26 @@ namespace MySqlExpress_Helper
             }
         }
 
+        MySqlExpress.FieldsOutputType EnumFieldsOutputType
+        {
+            get
+            {
+                switch (cbFieldType.SelectedIndex)
+                {
+                    case 1:
+                        return MySqlExpress.FieldsOutputType.PublicFields;
+                    case 2:
+                        return MySqlExpress.FieldsOutputType.PrivateFielsPublicProperties;
+                    default:
+                        return MySqlExpress.FieldsOutputType.PublicProperties;
+                }
+            }
+        }
+
         public Form1()
         {
             timer1 = new Timer();
             timer1.Interval = 2000;
-
-            timer2 = new Timer();
-            timer2.Interval = 800;
 
             InitializeComponent();
 
@@ -91,13 +100,14 @@ namespace MySqlExpress_Helper
                 }
             }
 
+            cbOutputType.SelectedIndex = 0;
             cbFieldType.SelectedIndex = appSettings.FieldType;
             txtConnStr.Text = appSettings.ConnStr;
             txtSQL.Text = appSettings.CustomSql;
 
             try
             {
-                btLoadTableList_Click(null, null);
+                LoadTableList();
             }
             catch
             {
@@ -105,13 +115,6 @@ namespace MySqlExpress_Helper
             }
 
             timer1.Tick += Timer1_Tick;
-            timer2.Tick += Timer2_Tick;
-        }
-
-        private void Timer2_Tick(object sender, EventArgs e)
-        {
-            timer2.Stop();
-            btLoadTableList_Click(null, null);
         }
 
         private void Timer1_Tick(object sender, EventArgs e)
@@ -140,9 +143,6 @@ namespace MySqlExpress_Helper
         {
             timer1.Stop();
             timer1.Start();
-
-            timer2.Stop();
-            timer2.Start();
         }
 
         private void txtSQL_TextChanged(object sender, EventArgs e)
@@ -181,9 +181,9 @@ namespace MySqlExpress_Helper
             timer1.Start();
         }
 
-        private void btLoadTableList_Click(object sender, EventArgs e)
+        void LoadTableList()
         {
-            DataTable dt = new DataTable();
+            List<string> lst = null;
 
             try
             {
@@ -194,266 +194,135 @@ namespace MySqlExpress_Helper
                         cmd.Connection = conn;
                         conn.Open();
 
-                        cmd.CommandText = "show tables;";
-                        MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                        da.Fill(dt);
+                        MySqlExpress m = new MySqlExpress(cmd);
+
+                        lst = m.GetTableList();
 
                         conn.Close();
                     }
                 }
-
-                richTextBox1.Clear();
             }
             catch (Exception ex)
             {
-                richTextBox1.Text = "Possible Connection String Error.\r\n\r\nError message:\r\n\r\n" + ex.Message;
+                WriteError(ex);
                 return;
             }
-            finally
+
+            richTextBox1.Clear();
+            listBox1.Items.Clear();
+
+            foreach (var tablename in lst)
             {
-                listBox1.Items.Clear();
-            }
-
-            foreach (DataRow dr in dt.Rows)
-            {
-                listBox1.Items.Add(dr[0] + "");
-            }
-        }
-
-        private void listBox1_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            string table = listBox1.SelectedItem.ToString();
-
-            switch (EnumOutputType)
-            {
-                case outputType.Generate_Class_Object:
-                case outputType.Generate_Dictionary_Entries:
-                    DataTable dt = new DataTable();
-                    using (MySqlConnection conn = new MySqlConnection(txtConnStr.Text))
-                    {
-                        MySqlCommand cmd = new MySqlCommand();
-                        cmd.Connection = conn;
-                        conn.Open();
-
-                        cmd.CommandText = $"show columns from `{table}`;";
-                        MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                        da.Fill(dt);
-
-                        conn.Close();
-                    }
-                    if (EnumOutputType == outputType.Generate_Class_Object)
-                        GenerateClassObject(dt);
-                    else if (EnumOutputType == outputType.Generate_Dictionary_Entries)
-                        GenerateDictionary(dt);
-                    break;
-                case outputType.Create_Update_Column_List:
-                    CreateUpdateColList(table);
-                    break;
-                case outputType.Generate_Create_Table_SQL:
-                    GenerateCreateTableSQL(table);
-                    break;
+                listBox1.Items.Add(tablename);
             }
         }
 
-        void GenerateClassObject(DataTable dt)
+        private void btLoadTableList_Click(object sender, EventArgs e)
         {
-            Dictionary<string, string> dicDate = new Dictionary<string, string>();
-
-            List<string> lst = new List<string>();
-            List<string> lst2 = new List<string>();
-
-            foreach (DataRow dr in dt.Rows)
-            {
-                bool isDate = false;
-                string key = dr["Key"] + "";
-                string extra = dr["Extra"] + "";
-                string field = dr[0] + "";
-                string data = dr[1] + "";
-                string datatype = "";
-                string datavalue = "";
-
-                if (data.Contains("datetime"))
-                {
-                    isDate = true;
-                    datatype = "DateTime";
-                    datavalue = "DateTime.MinValue";
-                }
-                else if (data.Contains("varchar") || data.Contains("text"))
-                {
-                    datatype = "string";
-                    datavalue = "\"\"";
-                }
-                else if (data.Contains("tinyint"))
-                {
-                    datatype = "bool";
-                    datavalue = "false";
-                }
-                else if (data.Contains("bigint"))
-                {
-                    datatype = "long";
-                    datavalue = "0L";
-                }
-                else if (data.Contains("int"))
-                {
-                    datatype = "int";
-                    datavalue = "0";
-                }
-                else if (data.Contains("decimal"))
-                {
-                    datatype = "decimal";
-                    datavalue = "0m";
-                }
-                else
-                {
-                    MessageBox.Show($"DataType unhandled. Column: {data}, DataType: {data}");
-                    return;
-                }
-
-                if (cbFieldType.SelectedIndex == 2)
-                {
-                    lst.Add(string.Format("{0} {1} = {2};", datatype, field, datavalue));
-
-                    string field2 = GetUpperCaseColName(field);
-
-                    if (isDate)
-                        dicDate[field2] = field;
-
-                    lst2.Add($"public {datatype} {field2} {{ get {{ return {field}; }} set {{ {field} = value; }} }}");
-                }
-                else if (cbFieldType.SelectedIndex == 1)
-                {
-                    lst.Add($"public {datatype} {field} = {datavalue};");
-                }
-                else
-                {
-                    lst.Add($"public {datatype} {field} {{ get; set; }}");
-                }
-            }
-
-            lst.Add("");
-
-            foreach (string s in lst2)
-            {
-                lst.Add(s);
-            }
-
-            richTextBox1.Lines = lst.ToArray();
-
-            richTextBox1.Focus();
-            richTextBox1.SelectAll();
+            LoadTableList();
         }
 
-        void GenerateDictionary(DataTable dt)
+        private void listBox1_MouseClick(object sender, MouseEventArgs e)
+
         {
-            List<string> lst = new List<string>();
-            lst.Add("Dictionary<string, object> dic = new Dictionary<string, object>();");
-            lst.Add("");
-
-            foreach (DataRow dr in dt.Rows)
+            try
             {
-                string field = dr[0] + "";
-                lst.Add(string.Format("            dic[\"{0}\"] = ", field));
-            }
+                string table = listBox1.SelectedItem.ToString();
 
-            richTextBox1.Lines = lst.ToArray();
-
-            richTextBox1.Focus();
-            richTextBox1.SelectAll();
-        }
-
-        void GenerateCreateTableSQL(string tablename)
-        {
-            DataTable dt = new DataTable();
-
-            using (MySqlConnection conn = new MySqlConnection(txtConnStr.Text))
-            {
-                using (MySqlCommand cmd = new MySqlCommand())
+                switch (EnumOutputType)
                 {
-                    conn.Open();
-                    cmd.Connection = conn;
+                    case outputType.Generate_Class_Object:
 
-                    cmd.CommandText = $"show create table `{tablename}`;";
-                    MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                    da.Fill(dt);
+                        string data = "";
 
-                    conn.Close();
+                        using (MySqlConnection conn = new MySqlConnection(txtConnStr.Text))
+                        {
+                            using (MySqlCommand cmd = new MySqlCommand())
+                            {
+                                cmd.Connection = conn;
+                                conn.Open();
+
+                                MySqlExpress m = new MySqlExpress(cmd);
+
+                                data = m.GenerateTableClassFields(table, EnumFieldsOutputType);
+
+                                conn.Close();
+                            }
+                        }
+
+                        richTextBox1.Text = data;
+                        break;
+
+                    case outputType.Generate_Dictionary_Entries:
+
+                        string data2 = "";
+                        using (MySqlConnection conn = new MySqlConnection(txtConnStr.Text))
+                        {
+                            using (MySqlCommand cmd = new MySqlCommand())
+                            {
+                                cmd.Connection = conn;
+                                conn.Open();
+
+                                MySqlExpress m = new MySqlExpress(cmd);
+
+                                data2 = m.GenerateTableDictionaryEntries(table);
+
+                                conn.Close();
+                            }
+                        }
+
+                        richTextBox1.Text = data2;
+                        break;
+
+                    case outputType.Create_Update_Column_List:
+
+                        string data3 = null;
+
+                        using (MySqlConnection conn = new MySqlConnection(txtConnStr.Text))
+                        {
+                            using (MySqlCommand cmd = new MySqlCommand())
+                            {
+                                cmd.Connection = conn;
+                                conn.Open();
+
+                                MySqlExpress m = new MySqlExpress(cmd);
+
+                                data3 = m.GenerateUpdateColumnList(table);
+
+                                conn.Close();
+                            }
+                        }
+
+                        richTextBox1.Text = data3;
+
+                        break;
+                    case outputType.Generate_Create_Table_SQL:
+
+                        string data4 = "";
+
+                        using (MySqlConnection conn = new MySqlConnection(txtConnStr.Text))
+                        {
+                            using (MySqlCommand cmd = new MySqlCommand())
+                            {
+                                cmd.Connection = conn;
+                                conn.Open();
+
+                                MySqlExpress m = new MySqlExpress(cmd);
+
+                                data4 = m.GetCreateTableSql(table);
+
+                                conn.Close();
+                            }
+                        }
+
+                        richTextBox1.Text = data4;
+                        break;
                 }
             }
-
-            richTextBox1.Text = dt.Rows[0][1] + "";
-        }
-
-        void CreateUpdateColList(string table)
-        {
-            List<string> lst = new List<string>();
-            DataTable dt = new DataTable();
-
-            using (MySqlConnection conn = new MySqlConnection(txtConnStr.Text))
+            catch (Exception ex)
             {
-                using (MySqlCommand cmd = new MySqlCommand())
-                {
-                    conn.Open();
-                    cmd.Connection = conn;
-
-                    cmd.CommandText = $"show columns from `{table}`;";
-                    MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                    da.Fill(dt);
-
-                    conn.Close();
-                }
+                WriteError(ex);
             }
-
-            foreach (DataRow dr in dt.Rows)
-            {
-                if (dr["Key"] + "" == "")
-                {
-                    lst.Add(dr[0] + "");
-                }
-            }
-
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append("List<string> lstUpdateCol = new List<string>();");
-            sb.AppendLine();
-            sb.AppendLine();
-
-            foreach (var l in lst)
-            {
-                sb.AppendLine($"lstUpdateCol.Add(\"{l}\");");
-            }
-
-            string s = sb.ToString().Substring(0, sb.Length - 2);
-
-            richTextBox1.Text = s;
-            richTextBox1.Focus();
-            richTextBox1.SelectAll();
-        }
-
-        string GetUpperCaseColName(string colname)
-        {
-            bool toUpperCase = true;
-
-            StringBuilder sb = new StringBuilder();
-            foreach (char c in colname)
-            {
-                if (c == '_')
-                {
-                    toUpperCase = true;
-                    continue;
-                }
-                if (toUpperCase)
-                {
-                    sb.Append(Char.ToUpper(c));
-                    toUpperCase = false;
-                    continue;
-                }
-                else
-                {
-                    sb.Append(c);
-                }
-            }
-
-            return sb.ToString();
         }
 
         private void richTextBox1_TextChanged(object sender, EventArgs e)
@@ -463,223 +332,49 @@ namespace MySqlExpress_Helper
 
         private void btGenerateCustomSqlObject_Click(object sender, EventArgs e)
         {
-            DataTable dt = new DataTable();
+            string output = "";
 
             try
             {
                 using (MySqlConnection conn = new MySqlConnection(txtConnStr.Text))
                 {
-                    MySqlCommand cmd = new MySqlCommand();
-                    cmd.Connection = conn;
-                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = conn;
+                        conn.Open();
 
-                    cmd.CommandText = txtSQL.Text;
-                    MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                    da.Fill(dt);
+                        MySqlExpress m = new MySqlExpress(cmd);
 
-                    conn.Close();
+                        output = m.GenerateCustomClassField(txtSQL.Text, EnumFieldsOutputType);
+
+                        conn.Close();
+                    }
                 }
+
+                richTextBox1.Text = output;
             }
             catch (Exception ex)
             {
-                richTextBox1.Text = "Error:\r\n\r\n" + ex.Message;
+                WriteError(ex);
                 return;
             }
-
-            List<string> lst = new List<string>();
-
-            if (cbFieldType.SelectedIndex == 1)
-            {
-                foreach (DataColumn dc in dt.Columns)
-                {
-                    var targetType = dc.DataType;
-
-                    if (targetType == typeof(String))
-                    {
-                        lst.Add($@"public string {dc.ColumnName} = """";");
-                    }
-                    else if (targetType == typeof(DateTime))
-                    {
-                        lst.Add($@"public DateTime {dc.ColumnName} = DateTime.MinValue;");
-                    }
-                    else if (targetType == typeof(bool))
-                    {
-                        lst.Add($@"public bool {dc.ColumnName} = false;");
-                    }
-                    else if (targetType == typeof(short) ||
-                        targetType == typeof(ushort))
-                    {
-                        lst.Add($"public short {dc.ColumnName} = 0;");
-                    }
-                    else if (targetType == typeof(int) ||
-                        targetType == typeof(uint))
-
-                    {
-                        lst.Add($"public int {dc.ColumnName} = 0;");
-                    }
-                    else if (targetType == typeof(long) ||
-                        targetType == typeof(ulong))
-                    {
-                        lst.Add($"public long {dc.ColumnName} = 0L;");
-                    }
-                    else if (targetType == typeof(decimal))
-                    {
-                        lst.Add($"public decimal {dc.ColumnName} = 0m;");
-                    }
-                    else
-                    {
-                        richTextBox1.Text = $"Unhandled data type: {targetType}, column name: {dc.ColumnName}";
-                        return;
-                    }
-                }
-            }
-            else if (cbFieldType.SelectedIndex == 2)
-            {
-                foreach (DataColumn dc in dt.Columns)
-                {
-                    var targetType = dc.DataType;
-
-                    if (targetType == typeof(String))
-                    {
-                        lst.Add($@"string {dc.ColumnName} = """";");
-                    }
-                    else if (targetType == typeof(DateTime))
-                    {
-                        lst.Add($@"DateTime {dc.ColumnName} = DateTime.MinValue;");
-                    }
-                    else if (targetType == typeof(bool))
-                    {
-                        lst.Add($@"bool {dc.ColumnName} = false;");
-                    }
-                    else if (targetType == typeof(short) ||
-                        targetType == typeof(ushort))
-                    {
-                        lst.Add($"short {dc.ColumnName} = 0;");
-                    }
-                    else if (targetType == typeof(int) ||
-                        targetType == typeof(uint))
-
-                    {
-                        lst.Add($"int {dc.ColumnName} = 0;");
-                    }
-                    else if (targetType == typeof(long) ||
-                        targetType == typeof(ulong))
-                    {
-                        lst.Add($"long {dc.ColumnName} = 0L;");
-                    }
-                    else if (targetType == typeof(decimal))
-                    {
-                        lst.Add($"decimal {dc.ColumnName} = 0m;");
-                    }
-                    else
-                    {
-                        richTextBox1.Text = $"Unhandled data type: {targetType}, column name: {dc.ColumnName}";
-                        return;
-                    }
-                }
-
-                lst.Add("");
-
-                foreach (DataColumn dc in dt.Columns)
-                {
-                    string field2 = GetUpperCaseColName(dc.ColumnName);
-
-                    var targetType = dc.DataType;
-
-                    if (targetType == typeof(String))
-                    {
-                        lst.Add($@"public string {field2} {{ get {{ return {dc.ColumnName}; }} set {{ {dc.ColumnName} = value; }} }}");
-                    }
-                    else if (targetType == typeof(DateTime))
-                    {
-                        lst.Add($@"public DateTime {field2} {{ get {{ return {dc.ColumnName}; }} set {{ {dc.ColumnName} = value; }} }}");
-                    }
-                    else if (targetType == typeof(bool))
-                    {
-                        lst.Add($@"public bool {field2} {{ get {{ return {dc.ColumnName}; }} set {{ {dc.ColumnName} = value; }} }}");
-                    }
-                    else if (targetType == typeof(short) || targetType == typeof(ushort))
-                    {
-                        lst.Add($"public short {field2} {{ get {{ return {dc.ColumnName}; }} set {{ {dc.ColumnName} = value; }} }}");
-                    }
-                    else if (targetType == typeof(int) || targetType == typeof(uint))
-                    {
-                        lst.Add($"public int {field2} {{ get {{ return {dc.ColumnName}; }} set {{ {dc.ColumnName} = value; }} }}");
-                    }
-                    else if (targetType == typeof(long) || targetType == typeof(ulong))
-                    {
-                        lst.Add($"public long {field2} {{ get {{ return {dc.ColumnName}; }} set {{ {dc.ColumnName} = value; }} }}");
-                    }
-                    else if (targetType == typeof(decimal))
-                    {
-                        lst.Add($"public decimal {field2} {{ get {{ return {dc.ColumnName}; }} set {{ {dc.ColumnName} = value; }} }}");
-                    }
-                }
-            }
-            else
-            {
-                foreach (DataColumn dc in dt.Columns)
-                {
-                    var targetType = dc.DataType;
-
-                    if (targetType == typeof(String))
-                    {
-                        lst.Add($@"public string {dc.ColumnName} {{ get; set; }}");
-                    }
-                    else if (targetType == typeof(DateTime))
-                    {
-                        lst.Add($@"public DateTime {dc.ColumnName} {{ get; set; }}");
-                    }
-                    else if (targetType == typeof(bool))
-                    {
-                        lst.Add($@"public bool {dc.ColumnName}  {{ get; set; }}");
-                    }
-                    else if (targetType == typeof(short) ||
-                        targetType == typeof(ushort))
-                    {
-                        lst.Add($"public short {dc.ColumnName} {{ get; set; }}");
-                    }
-                    else if (targetType == typeof(int) ||
-                        targetType == typeof(uint))
-
-                    {
-                        lst.Add($"public int {dc.ColumnName}  {{ get; set; }}");
-                    }
-                    else if (targetType == typeof(long) ||
-                        targetType == typeof(ulong))
-                    {
-                        lst.Add($"public long {dc.ColumnName}  {{ get; set; }}"); ;
-                    }
-                    else if (targetType == typeof(decimal))
-                    {
-                        lst.Add($"public decimal {dc.ColumnName}  {{ get; set; }}");
-                    }
-                    else
-                    {
-                        richTextBox1.Text = $"Unhandled data type: {targetType}, column name: {dc.ColumnName}";
-                        return;
-                    }
-                }
-            }
-
-            
-
-            richTextBox1.Lines = lst.ToArray();
-
-            richTextBox1.Focus();
-            richTextBox1.SelectAll();
         }
 
-    private void toolStripStatusLabel1_Click(object sender, EventArgs e)
-    {
-        ProcessStartInfo sInfo = new ProcessStartInfo("https://github.com/adriancs2/MySqlExpress");
-        Process.Start(sInfo);
-    }
+        private void toolStripStatusLabel1_Click(object sender, EventArgs e)
+        {
+            ProcessStartInfo sInfo = new ProcessStartInfo("https://github.com/adriancs2/MySqlExpress");
+            Process.Start(sInfo);
+        }
 
-    private void Form1_Load(object sender, EventArgs e)
-    {
-        cbOutputType.SelectedIndex = 0;
-    }
+        void WriteError(Exception ex)
+        {
+            while (ex.InnerException != null)
+            {
+                ex = ex.InnerException;
+            }
 
-}
+            richTextBox1.Text = "Error:\r\n\r\n" + ex.ToString();
+        }
+
+    }
 }
