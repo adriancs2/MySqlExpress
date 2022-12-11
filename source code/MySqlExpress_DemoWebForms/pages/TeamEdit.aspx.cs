@@ -2,6 +2,7 @@
 using MySqlExpress_TestWebForms;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -61,6 +62,7 @@ namespace System.pages
                 lbStatus.Text = p.StatusStr;
                 txtCode.Text = p.code;
                 txtName.Text = p.name;
+                imgLogo.ImageUrl = p.GetLogoSrc();
 
                 if (p.status == 1)
                 {
@@ -102,6 +104,29 @@ namespace System.pages
                     else
                     {
                         m.Update("team", dic, "id", id);
+                    }
+
+                    if (fileLogo.HasFile)
+                    {
+                        Dictionary<string, object> dicParam = new Dictionary<string, object>();
+                        dicParam["id"] = id;
+
+                        int logoid = m.ExecuteScalar<int>("select logo_id from team where id=@id;", dicParam);
+
+                        logoid++;
+
+                        MemoryStream ms = new MemoryStream(fileLogo.FileBytes);
+                        System.Drawing.Image img = System.Drawing.Image.FromStream(ms);
+                        img = ImageFunc.ResizeCropFitToSize(img, 100, 100);
+
+                        string filePath = Server.MapPath($"~/teamlogo/{id}-{logoid}.png");
+                        img.Save(filePath);
+
+                        dicParam.Clear();
+                        dicParam["@logoid"] = logoid;
+                        dicParam["@id"] = id;
+
+                        m.Execute("update team set logo_id=@logoid where id=@id;", dicParam);
                     }
 
                     conn.Close();

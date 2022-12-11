@@ -106,14 +106,19 @@ namespace System.pages
                 string teamcode = Server.HtmlEncode(t.code);
                 string teamname = Server.HtmlEncode(t.name);
 
+                string logo = t.ImgLogo;
+
+                if (logo.Length > 0)
+                    logo += "<br />";
+
                 sb.Append($@"
 <tr>
 <td>{t.id}</td>
 <td>{t.StatusStr}</td>
 <td>{teamcode}</td>
-<td><a href='/TeamEdit?id={t.id}'>{teamname}</a></td>
+<td><div style='width: 120px; text-align: center;'><a href='/TeamEdit?id={t.id}'>{logo}{teamname}</a></div></td>
 <td>{t.lstPlayer.Count}</td>
-<td>[<a href='/PlayerTeam?year={year}&teamid={t.id}'>Edit Team Player</a>]</td>
+<td><a href='/PlayerTeam?year={year}&teamid={t.id}' class='btn cur-p btn-primary'>Edit Team Player</a></td>
 <td>");
                 foreach (var p in t.lstPlayer)
                 {

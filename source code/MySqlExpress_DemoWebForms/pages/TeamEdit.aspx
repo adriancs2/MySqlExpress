@@ -38,7 +38,40 @@
                     <asp:TextBox ID="txtName" runat="server" required></asp:TextBox>
                 </td>
             </tr>
+            <tr>
+                <td>Team Logo</td>
+                <td>
+                    <asp:Image ID="imgLogo" runat="server" /><br />
+                    Upload New Logo:<br />
+                    <asp:FileUpload ID="fileLogo" runat="server" accept="image/png, image/jpeg, image/jpg" onchange="return checkFileExtension(this);" />
+                </td>
+            </tr>
         </table>
     </div>
+
+    <script type="text/javascript">
+        var validFilesTypes = ["png", "jpg", "jpeg"];
+
+        function checkFileExtension(file) {
+            /*global document: false */
+            var filePath = file.value;
+            var ext = filePath.substring(filePath.lastIndexOf('.') + 1).toLowerCase();
+            var isValidFile = false;
+
+            for (var i = 0; i < validFilesTypes.length; i++) {
+                if (ext == validFilesTypes[i]) {
+                    isValidFile = true;
+                    break;
+                }
+            }
+
+            if (!isValidFile) {
+                file.value = null;
+                alert("Invalid File. Valid extensions are:\n\n" + validFilesTypes.join(", "));
+            }
+
+            return isValidFile;
+        }
+    </script>
 
 </asp:Content>

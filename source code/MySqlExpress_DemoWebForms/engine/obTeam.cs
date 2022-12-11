@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.IO;
+using System.Web.UI.WebControls;
 
 namespace System
 {
@@ -10,6 +12,7 @@ namespace System
         public int id { get; set; }
         public string code { get; set; }
         public string name { get; set; }
+        public int logo_id { get; set; }
         public int status { get; set; }
 
 
@@ -28,7 +31,38 @@ namespace System
             }
         }
 
+        public string ImgLogo
+        {
+            get
+            {
+                return GetLogoImg("", "");
+            }
+        }
 
         public List<obPlayer> lstPlayer = null;
+
+        public string GetLogoImg(string classname, string style)
+        {
+            string fileWebPath = GetLogoSrc();
+
+            if (fileWebPath != "")
+            {
+                return $"<img src='/teamlogo/{id}-{logo_id}.png' class='{classname}' style='{style}' />";
+            }
+
+            return "";
+        }
+
+        public string GetLogoSrc()
+        {
+            string filepath = HttpContext.Current.Server.MapPath($"~/teamlogo/{id}-{logo_id}.png");
+
+            if (File.Exists(filepath))
+            {
+                return $"/teamlogo/{id}-{logo_id}.png";
+            }
+
+            return "";
+        }
     }
 }

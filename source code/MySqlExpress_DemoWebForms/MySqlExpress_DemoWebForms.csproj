@@ -188,6 +188,21 @@
     <Content Include="js\semantic.min.js" />
     <Content Include="js\settings.html" />
     <Content Include="js\utils.js" />
+    <Content Include="teamlogo\1-1.png" />
+    <Content Include="teamlogo\10-1.png" />
+    <Content Include="teamlogo\11-1.png" />
+    <Content Include="teamlogo\12-1.png" />
+    <Content Include="teamlogo\13-1.png" />
+    <Content Include="teamlogo\14-1.png" />
+    <Content Include="teamlogo\15-1.png" />
+    <Content Include="teamlogo\2-1.png" />
+    <Content Include="teamlogo\3-1.png" />
+    <Content Include="teamlogo\4-1.png" />
+    <Content Include="teamlogo\5-1.png" />
+    <Content Include="teamlogo\6-1.png" />
+    <Content Include="teamlogo\7-1.png" />
+    <Content Include="teamlogo\8-1.png" />
+    <Content Include="teamlogo\9-1.png" />
     <Content Include="pages\apiHelper.aspx" />
     <Content Include="pages\apiPlayerTeam.aspx" />
     <Content Include="pages\ConnectionStringNotInitialized.aspx" />
@@ -210,6 +225,7 @@
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="engine\config.cs" />
+    <Compile Include="engine\ImageFunc.cs" />
     <Compile Include="engine\obPlayer.cs" />
     <Compile Include="engine\obPlayerTeam.cs" />
     <Compile Include="engine\obTeam.cs" />

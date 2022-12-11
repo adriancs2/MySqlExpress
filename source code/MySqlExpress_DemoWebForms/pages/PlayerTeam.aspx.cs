@@ -47,7 +47,12 @@ namespace System.pages
                     Response.Redirect("~/TeamList", true);
                 }
 
-                lbTeamName.Text = $"{year} - Team: {team.name} ({team.code})";
+                string logo = team.ImgLogo;
+
+                if (logo.Length > 0)
+                    logo += "<br />";
+
+                lbTeamName.Text = $"{logo}{year} - Team: {team.name} ({team.code})";
 
                 string script = $@"
 <script type='text/javascript'>

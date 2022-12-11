@@ -61,6 +61,7 @@ namespace MySqlExpress_TestWebForms
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `code` varchar(45),
   `name` varchar(300),
+  `logo_id` int,
   `status` int unsigned,
   PRIMARY KEY (`id`))");
 
@@ -170,6 +171,7 @@ namespace MySqlExpress_TestWebForms
                         dic["code"] = "T00-101-" + rd.Next(100, 999);
                         dic["name"] = t;
                         dic["status"] = 1;
+                        dic["logo_id"] = 1;
 
                         m.Insert("team", dic);
                     }
