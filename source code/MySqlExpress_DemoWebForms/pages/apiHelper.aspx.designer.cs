@@ -11,7 +11,7 @@ namespace System.pages
 {
 
 
-    public partial class apiGenerateFields
+    public partial class apiHelper
     {
     }
 }

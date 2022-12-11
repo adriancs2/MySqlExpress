@@ -55,7 +55,7 @@
                 txtOutput.value = this.responseText;
                 txtOutput.select();
             }
-            xhttp.open("GET", `/apiGenerateFields?tablename=${tablename}&outputtype=${cbOutputType}&fieldtype=${cbFieldType}`, true);
+            xhttp.open("GET", `/apiHelper?action=1&tablename=${tablename}&outputtype=${cbOutputType}&fieldtype=${cbFieldType}`, true);
             xhttp.send();
         }
 
@@ -72,7 +72,7 @@
                 txtOutput.value = this.responseText;
                 txtOutput.select();
             }
-            xhttp.open("GET", `/apiGenerateCustomSqlFields?fieldtype=${cbFieldType}&sql=${sql}`, true);
+            xhttp.open("GET", `/apiHelper?action=2&fieldtype=${cbFieldType}&sql=${sql}`, true);
             xhttp.send();
         }
 

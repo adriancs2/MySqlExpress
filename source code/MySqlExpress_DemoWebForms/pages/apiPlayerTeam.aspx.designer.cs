@@ -11,7 +11,7 @@ namespace System.pages
 {
 
 
-    public partial class apiGenerateCustomSqlFields
+    public partial class apiPlayerTeam
     {
     }
 }

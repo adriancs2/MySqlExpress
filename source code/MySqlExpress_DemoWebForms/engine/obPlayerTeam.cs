@@ -7,17 +7,17 @@ namespace System
 {
     public class obPlayerTeam
     {
-        public int id = 0;
-        public string code = "";
-        public string name = "";
-        public DateTime date_register = DateTime.MinValue;
-        public string tel = "";
-        public string email = "";
-        public int status = 0;
-        public int year = 0;
-        public string teamname = "";
-        public string teamcode = "";
-        public int team_id = 0;
+        public int id { get; set; }
+        public string code { get; set; }
+        public string name { get; set; }
+        public DateTime date_register { get; set; }
+        public string tel { get; set; }
+    public string email { get; set; }
+        public int status { get; set; }
+        public int year { get; set; }
+        public string teamname { get; set; }
+        public string teamcode { get; set; }
+        public int team_id { get; set; }
 
 
         public string DateRegisterStr { get { if (date_register != DateTime.MinValue) return date_register.ToString("dd MMM yyyy"); return ""; } }
