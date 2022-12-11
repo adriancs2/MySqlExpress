@@ -161,6 +161,10 @@
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder_body" runat="server">
 
+    <b>This page demonstrates the usage of javascript AJAX data loading and build HTML table dynamically.</b>
+
+    <br /><br />
+
     <input type="submit" style="display: none;" aria-hidden="true" />
 
     <div class="heading1 margin_0">
