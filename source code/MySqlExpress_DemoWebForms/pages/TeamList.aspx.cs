@@ -21,9 +21,21 @@ namespace System.pages
 
         protected void btSearch_Click(object sender, EventArgs e)
         {
-            Dictionary<string, object> dicParam = new Dictionary<string, object>();
+            if (dropResultMode.SelectedValue == "1")
+            {
+                SearchTableList();
+            }
+            else if (dropResultMode.SelectedValue == "2")
+            {
+                SearchThumbnail();
+            }
+        }
 
+        void SearchTableList()
+        {
             MySqlExpress m = new MySqlExpress();
+
+            Dictionary<string, object> dicParam = new Dictionary<string, object>();
 
             StringBuilder sb = new StringBuilder();
 
@@ -82,10 +94,13 @@ namespace System.pages
 
             sb.Clear();
 
-            sb.Append(@"
+            sb.Append($@"
 <div class=""heading1 margin_0"">
 <h2>Search Result</h2>
 </div>
+
+Total Found: {lst.Count}<br />
+<br />
 
 <table class=""table table-striped"">
 <thead>
@@ -132,6 +147,102 @@ namespace System.pages
             }
 
             sb.Append("</tbody></table>");
+
+            ph1.Controls.Add(new LiteralControl(sb.ToString()));
+        }
+
+        void SearchThumbnail()
+        {
+            MySqlExpress m = new MySqlExpress();
+
+            Dictionary<string, object> dicParam = new Dictionary<string, object>();
+
+            int year = 0;
+
+            int.TryParse(txtYear.Text, out year);
+
+            StringBuilder sb = new StringBuilder();
+
+            if (year == 0)
+            {
+                sb.Append("select a.* from team a where 1=1");
+            }
+            else
+            {
+                dicParam["@year"] = year;
+                sb.Append($"select count(*) 'total_players', a.* from team a, player_team b where a.id=b.team_id and b.year=@year");
+            }
+
+            if (txtSearch.Text.Trim().Length > 0)
+            {
+                dicParam["@namelike"] = m.GetLikeString(txtSearch.Text);
+                dicParam["@code"] = txtSearch.Text;
+
+                sb.Append($" and (a.name like @namelike or a.code=@code)");
+            }
+
+            if (dropStatus.SelectedIndex > 0)
+            {
+                dicParam["@stat"] = Convert.ToInt32(dropStatus.SelectedValue);
+
+                sb.Append($" and a.status=@stat");
+            }
+
+            if (year > 0)
+            {
+                sb.Append(" group by a.id");
+            }
+
+            sb.Append(" order by a.name;");
+
+            List<obTeam> lstTeam = null;
+
+            using (MySqlConnection conn = new MySqlConnection(config.ConnString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.Connection = conn;
+                    conn.Open();
+
+                    m.cmd = cmd;
+
+                    lstTeam = m.GetObjectList<obTeam>(sb.ToString(), dicParam);
+
+                    conn.Close();
+                }
+            }
+
+            sb.Clear();
+
+            sb.Append($@"
+Total Found: {lstTeam.Count}<br />
+<br />
+
+<div style='clear: both;'></div>
+");
+
+            foreach(var t in lstTeam)
+            {
+                string imglogo = t.ImgLogo;
+
+                
+
+                sb.Append($@"
+<div class='divTeamBlock'>
+<a href='/TeamEdit?id={t.id}' class='divTeamBlock_a'>
+{imglogo}<br />
+{t.name}<br />
+<span class='divTeamBlock_Info'>
+{t.StatusStr}<br />
+Total Players: {t.total_players}
+</span>
+</a>
+<a href='/PlayerTeam?year={year}&teamid={t.id}' class='btn cur-p btn-primary'>Edit Team Player</a>
+</div>
+");
+            }
+
+            sb.Append("<div style='clear: both;'></div>");
 
             ph1.Controls.Add(new LiteralControl(sb.ToString()));
         }

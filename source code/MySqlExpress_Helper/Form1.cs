@@ -58,6 +58,8 @@ namespace MySqlExpress_Helper
 
             InitializeComponent();
 
+            this.Text = $"MySqlExpress Helper v{MySqlExpress.Version}";
+
             fileSettings = Path.Combine(Application.StartupPath, "settings");
 
             if (File.Exists(fileSettings))

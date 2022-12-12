@@ -214,6 +214,7 @@
     <Content Include="pages\TeamEdit.aspx" />
     <Content Include="pages\TeamList.aspx" />
     <Content Include="style.css" />
+    <Content Include="teamlogo\no-logo.png" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

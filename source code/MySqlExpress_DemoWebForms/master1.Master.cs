@@ -41,6 +41,8 @@ namespace System
                 WriteBadMessage(Session["bad_message"] + "");
                 Session.Remove("bad_message");
             }
+
+            version.Controls.Add(new LiteralControl(MySqlExpress.Version));
         }
 
         public void WriteBadMessage(string message)

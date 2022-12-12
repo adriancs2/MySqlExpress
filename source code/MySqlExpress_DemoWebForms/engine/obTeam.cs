@@ -14,6 +14,7 @@ namespace System
         public string name { get; set; }
         public int logo_id { get; set; }
         public int status { get; set; }
+        public int total_players { get; set; }
 
 
         public string StatusStr
@@ -47,7 +48,7 @@ namespace System
 
             if (fileWebPath != "")
             {
-                return $"<img src='/teamlogo/{id}-{logo_id}.png' class='{classname}' style='{style}' />";
+                return $"<img src='{fileWebPath}' class='{classname}' style='{style}' />";
             }
 
             return "";
@@ -60,6 +61,10 @@ namespace System
             if (File.Exists(filepath))
             {
                 return $"/teamlogo/{id}-{logo_id}.png";
+            }
+            else
+            {
+                return $"/teamlogo/no-logo.png";
             }
 
             return "";

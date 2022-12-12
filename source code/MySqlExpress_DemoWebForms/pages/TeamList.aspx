@@ -1,5 +1,40 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/master1.Master" AutoEventWireup="true" CodeBehind="TeamList.aspx.cs" Inherits="System.pages.TeamList" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_head" runat="server">
+    <style type="text/css">
+        .divTeamBlock {
+            float: left;
+            width: 200px;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .divTeamBlock_a {
+            display: block;
+        }
+
+            .divTeamBlock:hover {
+                box-shadow: 1px 1px 12px #a9a9a9;
+                position: relative;
+                top: 2px;
+                bottom: 2px;
+                background: #e0f1ff;
+            }
+
+            .divTeamBlock_Info {
+                color: #5e5e5e !important;
+                text-decoration: none !important;
+                font-style: normal !important;
+                font-weight: normal !important;
+            }
+
+            .divTeamBlock:hover .divTeamBlock_Info {
+                text-decoration: none !important;
+                font-style: normal !important;
+                font-weight: normal !important;
+                color: red !important;
+            }
+    </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder_title" runat="server">
     Team List
@@ -33,6 +68,15 @@
                             <asp:ListItem Value="2" Text="---"></asp:ListItem>
                             <asp:ListItem Value="1" Text="Active"></asp:ListItem>
                             <asp:ListItem Value="0" Text="Deleted"></asp:ListItem>
+                        </asp:DropDownList>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Result Display Mode</td>
+                    <td>
+                        <asp:DropDownList ID="dropResultMode" runat="server">
+                            <asp:ListItem Value="2" Text="Team Gallery"></asp:ListItem>
+                            <asp:ListItem Value="1" Text="Table List With Players' Name"></asp:ListItem>
                         </asp:DropDownList>
                     </td>
                 </tr>
