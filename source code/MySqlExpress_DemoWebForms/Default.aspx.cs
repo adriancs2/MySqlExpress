@@ -24,8 +24,27 @@ namespace MySqlExpress_TestWebForms
 
         protected void btSaveConnStr_Click(object sender, EventArgs e)
         {
-            config.ConnString = txtConnStr.Text;
-            ((master1)this.Master).WriteGoodMessage("Connection String Saved");
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(txtConnStr.Text))
+                {
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = conn;
+                        conn.Open();
+
+                        conn.Close();
+                    }
+                }
+
+                config.ConnString = txtConnStr.Text;
+                ((master1)this.Master).WriteGoodMessage("Connection String Saved");
+            }
+            catch(Exception ex)
+            {
+                config.ConnString = null;
+                throw ex;
+            }
         }
 
         protected void btGenerateSampleData_Click(object sender, EventArgs e)

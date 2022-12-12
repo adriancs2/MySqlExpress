@@ -158,6 +158,7 @@
     <Content Include="images\layout_img\paypal.png" />
     <Content Include="images\layout_img\user_img.jpg" />
     <Content Include="images\layout_img\visa.png" />
+    <Content Include="images\loading.gif" />
     <Content Include="images\logo\logo.png" />
     <Content Include="images\logo\logo_black.png" />
     <Content Include="images\logo\logo_icon.png" />

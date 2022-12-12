@@ -1,20 +1,47 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/master1.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="MySqlExpress_TestWebForms.Default" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_head" runat="server">
+    <script type="text/javascript">
+        function displayLoading(message) {
+            let divConnString = document.getElementById("divConnString");
+            let divLoading = document.getElementById("divLoading");
+            let div_global_message = document.getElementById("div_global_message");
+
+            document.getElementById("h2_loading").innerText = message;
+
+            div_global_message.innerHTML = "";
+            divConnString.style.display = "none";
+            divLoading.style.display = "block";
+            
+        }
+    </script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder_title" runat="server">
     Setup / Dashboard
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder_body" runat="server">
 
-    <div class="divcode">
+    <div id="divConnString" class="divcode">
         MySQL Connection String:<br />
         <br />
         <asp:TextBox ID="txtConnStr" runat="server" Width="98%" spellcheck="false"></asp:TextBox>
         <br />
         <br />
-        <asp:Button ID="btSaveConnStr" runat="server" Text="Save Connection String" CssClass="btn cur-p btn-primary" OnClick="btSaveConnStr_Click" />
-        <asp:Button ID="btGenerateSampleData" runat="server" Text="Create/Regenerate Tables & Sample Data" CssClass="btn cur-p btn-primary" OnClick="btGenerateSampleData_Click" />
+        <asp:Button ID="btSaveConnStr" runat="server" Text="Save Connection String" CssClass="btn cur-p btn-primary" OnClick="btSaveConnStr_Click" OnClientClick="displayLoading('Testing Connection... Hold On....');" />
+        <asp:Button ID="btGenerateSampleData" runat="server" Text="Create/Regenerate Tables & Sample Data" CssClass="btn cur-p btn-primary" OnClick="btGenerateSampleData_Click" OnClientClick="displayLoading('Generating/Rebuilding Database...');" />
+    </div>
+
+    <div id="divLoading" style="display: none;">
+        <table>
+            <tr>
+                <td>
+                    <img src="/images/loading.gif" />
+                </td>
+                <td>
+                    <h2 id="h2_loading"></h2>
+                </td>
+            </tr>
+        </table>
     </div>
 
     <br />
