@@ -66,7 +66,12 @@ namespace System
             {
                 return $"/teamlogo/no-logo.png";
             }
+        }
 
+        public string HtmlSelectStatus(int stat)
+        {
+            if (stat == status)
+                return "selected";
             return "";
         }
     }

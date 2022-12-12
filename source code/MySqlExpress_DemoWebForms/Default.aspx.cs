@@ -22,8 +22,14 @@ namespace MySqlExpress_TestWebForms
             }
         }
 
-        protected void btSaveConnStr_Click(object sender, EventArgs e)
+        bool TestConnection()
         {
+            if (txtConnStr.Text == "")
+            {
+                ((master1)this.Master).WriteBadMessage("Connection string is not setup yet. Please enter the connection string.");
+                return false;
+            }
+
             try
             {
                 using (MySqlConnection conn = new MySqlConnection(txtConnStr.Text))
@@ -38,20 +44,32 @@ namespace MySqlExpress_TestWebForms
                 }
 
                 config.ConnString = txtConnStr.Text;
-                ((master1)this.Master).WriteGoodMessage("Connection String Saved");
+                return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
+                while (ex.InnerException != null)
+                    ex = ex.InnerException;
+
+                ((master1)this.Master).WriteBadMessage("Unable to connect to database.<br />Possible connection error.<br />Exception Message: " + ex.Message);
                 config.ConnString = null;
-                throw ex;
+                return false;
+            }
+        }
+
+        protected void btSaveConnStr_Click(object sender, EventArgs e)
+        {
+            if (TestConnection())
+            {
+                ((master1)this.Master).WriteGoodMessage("Connection String Saved");
             }
         }
 
         protected void btGenerateSampleData_Click(object sender, EventArgs e)
         {
-            if (config.ConnString == "")
+            if (!TestConnection())
             {
-                Response.Redirect("~/ConnectionStringNotInitialized", true);
+                return;
             }
 
             List<string> lstSql = new List<string>();

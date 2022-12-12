@@ -54,6 +54,7 @@
                         <li><a href="/PlayerEdit"><i class="fa fa-male orange_color"></i><span>Add Player</span></a></li>
                         <li><a href="/TeamList"><i class="fa fa-soccer-ball-o blue1_color"></i><span>Team List</span></a></li>
                         <li><a href="/TeamEdit"><i class="fa fa-plus-circle purple_color2"></i><span>Add Team</span></a></li>
+                        <li><a href="/TeamEditBatch"><i class="fa fa-cubes brown_color"></i><span>Batch Edit Teams</span></a></li>
                         <li><a href="/Helper"><i class="fa fa-tasks red_color"></i><span>MySqlExpress Helper</span></a></li>
 
                     </ul>
@@ -105,7 +106,7 @@
                                             <asp:PlaceHolder ID="phMsg" runat="server"></asp:PlaceHolder>
                                         </div>
 
-                                        <form runat="server">
+                                        <form runat="server" enctype="multipart/form-data" autocomplete="off">
                                             <asp:ContentPlaceHolder ID="ContentPlaceHolder_body" runat="server"></asp:ContentPlaceHolder>
                                         </form>
 
@@ -113,8 +114,6 @@
                                 </div>
                             </div>
                         </div>
-
-
 
                     </div>
                     <!-- footer -->
@@ -126,8 +125,7 @@
                             </p>
                             <hr />
                             <p>
-                                Design Copyright © 2018 Designed by html.design. All rights reserved.<br />
-                                Distributed By/Download HTML Template Theme:<br />
+                                Web HTML Admin Template, Copyright © 2018 Designed by html.design. All rights reserved.<br />
                                 <a href="https://themewagon.com/themes/pluto-free-bootstrap-4-html5-admin-dashboard-template/" target="_blank">ThemeWagon - Pluto – Free Bootstrap 4 HTML5 Admin Dashboard Template</a>
                             </p>
                             <hr />

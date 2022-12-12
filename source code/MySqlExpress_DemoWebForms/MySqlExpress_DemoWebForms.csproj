@@ -107,6 +107,7 @@
     <Content Include="css\bootstrap.min.css" />
     <Content Include="css\calendar.css" />
     <Content Include="css\calendar.min.css" />
+    <Content Include="css\colors.css" />
     <Content Include="css\color_2.css" />
     <Content Include="css\custom.css" />
     <Content Include="css\flaticon.css" />
@@ -189,6 +190,7 @@
     <Content Include="js\semantic.min.js" />
     <Content Include="js\settings.html" />
     <Content Include="js\utils.js" />
+    <Content Include="pages\TeamEditBatch.aspx" />
     <Content Include="teamlogo\1-1.png" />
     <Content Include="teamlogo\10-1.png" />
     <Content Include="teamlogo\11-1.png" />
@@ -227,6 +229,7 @@
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="engine\config.cs" />
+    <Compile Include="engine\engineTeam.cs" />
     <Compile Include="engine\ImageFunc.cs" />
     <Compile Include="engine\obPlayer.cs" />
     <Compile Include="engine\obPlayerTeam.cs" />
@@ -303,6 +306,13 @@
     </Compile>
     <Compile Include="pages\TeamEdit.aspx.designer.cs">
       <DependentUpon>TeamEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pages\TeamEditBatch.aspx.cs">
+      <DependentUpon>TeamEditBatch.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pages\TeamEditBatch.aspx.designer.cs">
+      <DependentUpon>TeamEditBatch.aspx</DependentUpon>
     </Compile>
     <Compile Include="pages\TeamList.aspx.cs">
       <DependentUpon>TeamList.aspx</DependentUpon>
