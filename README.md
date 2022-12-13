@@ -194,6 +194,8 @@ Run the **Helper** app.
 
 **First Mode: Private Fields + Public Properties**
 
+Paste the text into the class:
+    
 ![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/f03.png)
 
 ```
