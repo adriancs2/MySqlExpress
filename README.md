@@ -193,11 +193,11 @@ There are 3 modes of creating the fields or properties:
 Run the **Helper** app.
 
 **First Mode: Private Fields + Public Properties**
+   
+![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/f03.png)
 
 Paste the text into the class:
     
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/f03.png)
-
 ```
 public class obPlayer
 {
