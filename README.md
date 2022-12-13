@@ -229,7 +229,7 @@ Read more about [MySQL Naming Conventions](https://medium.com/@centizennationwid
 
 The symbol of "_" (underscore) is considered less typing friendly than using just latin characters.
 
-Therefore, converting the field name to PacalCase will align with the C# naming conventions and also increase the typing speed.
+Therefore, converting the field name to PacalCase will align with the C# naming conventions and also increase the convenient and speed of coding.
     
 **Second Mode: Public Properties**
 
