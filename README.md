@@ -225,7 +225,7 @@ public class obPlayer
 }
 ```
 
-**Third Mode: Private Fields + Public Properties
+**Third Mode: Private Fields + Public Properties**
 
 ![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/f03.png)
 
@@ -318,90 +318,7 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
     }
 }
 ```
-Another example: 
 
-  ![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/g02.png)
-  
-  Here's the MySQL table structure for "team" table:
-```
-CREATE TABLE `team` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `code` varchar(45),
-  `name` varchar(300),
-  `status` int unsigned,
-  PRIMARY KEY (`id`));
-```
-Create the C# class object for "team":
-
-```
-public class obTeam
-{
-  
-}
-```
-
-Then, paste the copied text into the class:
-
-```
-public class obTeam
-{
-    public int id { get; set; }
-    public string code { get; set; }
-    public string name { get; set; }
-    public int status { get; set; }
-}
-```
-
-To get single "Team" object:
-```
-int id = 1;
-
-// declare the object
-obTeam t = null;
-
-using (MySqlConnection conn = new MySqlConnection(config.ConnString))
-{
-    using (MySqlCommand cmd = new MySqlCommand())
-    {
-        cmd.Connection = conn;
-        conn.Open();
-
-        MySqlExpress m = new MySqlExpress(cmd);
-
-        // parameterize the values
-        Dictionary<string, object> dicParam = new Dictionary<string, object>();
-        dicParam["@vid"] = id;
-
-        t = m.GetObject<obTeam>($"select * from team where id=@vid;", dicParam);
-
-        conn.Close();
-    }
-}
-```
-To get list of "Team" object:
-```
-// declare the object list
-List<obTeam> lst = null;
-
-using (MySqlConnection conn = new MySqlConnection(config.ConnString))
-{
-    using (MySqlCommand cmd = new MySqlCommand())
-    {
-        cmd.Connection = conn;
-        conn.Open();
-
-        MySqlExpress m = new MySqlExpress(cmd);
-
-        // parameterize the values
-        Dictionary<string, object> dicParam = new Dictionary<string, object>();
-        dicParam["@vname"] = "%adam%";
-
-        lst = m.GetObjectList<obTeam>($"select * from team where name like @vname;", dicParam);
-
-        conn.Close();
-    }
-}
-```
 ### 3. Getting a Customized Object Structure
 One of the typical example is multiple SQL JOIN statement. For example:
 ```
