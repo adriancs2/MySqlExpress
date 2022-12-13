@@ -151,25 +151,27 @@ ROLLBACK, means cancel. Discard all queries that sent during the TRANSACTION per
 Read more about transaction at [here](https://www.mysqltutorial.org/mysql-transaction.aspx)
 
 ### 2. Getting Rows of Objects from MySQL Table
-  
-First, run the Helper app.
 
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/g01.png)
-  
-Here's the MySQL table structure for "player" table:
+Assume that, we have a MySQL table like this:
+
 ```
-  CREATE TABLE `player` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `code` varchar(10),
-  `name` varchar(300),
-  `date_register` datetime,
-  `tel` varchar(100),
-  `email` varchar(100),
-  `status` int unsigned,
-  PRIMARY KEY (`id`));
+CREATE TABLE `player` (
+`id` int unsigned NOT NULL AUTO_INCREMENT,
+`code` varchar(10),
+`name` varchar(300),
+`date_register` datetime,
+`tel` varchar(100),
+`email` varchar(100),
+`status` int unsigned,
+PRIMARY KEY (`id`));
 ```
-  
-  Create a new class:
+Next, create the class object of "player".
+
+Run the Helper app.
+
+There are 3 modes, of creating the class object.
+
+Create a new class.
   
 ```
 public class obPlayer
@@ -177,6 +179,20 @@ public class obPlayer
    
 }
 ```
+
+The name of class. If the MySQL table's name is "player", you can name the class as "obPlayer".
+
+"ob" means "object".
+
+"obPlayer", an object of "Player".
+
+But, anyway, you can name the class anything according to your personal flavor, of course.
+
+Next, create the class object's fields or properties:
+
+**First Mode: Public Properties**
+
+![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/g01.png)
 
 Then, paste all the copied text into the class:
 ```
@@ -192,13 +208,65 @@ public class obPlayer
 }
 ```
 
-The name of class. If the MySQL table's name is "player", you can name the class as "obPlayer".
+**Second Mode: Public Fields**
 
-"ob" means "object".
+![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/f02.png)
 
-"obPlayer", an object of "Player".
+```
+public class obPlayer
+{
+    public int id = 0;
+    public string code = "";
+    public string name = "";
+    public DateTime date_register = DateTime.MinValue;
+    public string tel = "";
+    public string email = "";
+    public int status = 0;
+}
+```
 
-But, anyway, you can name the class anything according to your personal flavor, of course.
+**Third Mode: Private Fields + Public Properties
+
+![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/f03.png)
+
+```
+public class obPlayer
+{
+    int id = 0;
+    string code = "";
+    string name = "";
+    DateTime date_register = DateTime.MinValue;
+    string tel = "";
+    string email = "";
+    int status = 0;
+
+    public int Id { get { return id; } set { id = value; }
+    public string Code { get { return code; } set { code = value; }
+    public string Name { get { return name; } set { name = value; }
+    public DateTime DateRegister { get { return date_register; } set { date_register = value; }
+    public string Tel { get { return tel; } set { tel = value; }
+    public string Email { get { return email; } set { email = value; }
+    public int Status { get { return status; } set { status = value; }
+}
+```
+
+The purpose using this combination (private fields + public properties):
+
+Private fields are used to match the columns' name of MySQL table and map the data.
+
+Public properties are used to convert the naming of the fields into C# Coding Naming Convertions, which is PascalCase:
+
+Read more about [C# Coding Naming Conventions](https://github.com/ktaranov/naming-convention/blob/master/C%23%20Coding%20Standards%20and%20Naming%20Conventions.md)
+
+The MySQL column's naming conventions uses lower case and underscore to separate words.
+
+Read more about [MySQL Naming Conventions](https://medium.com/@centizennationwide/mysql-naming-conventions-e3a6f6219efe)
+
+The symbol of "_" (underscore) is considered less typing friendly than using just latin characters.
+
+Therefore, converting the field name to PacalCase will align with the C# naming conventions and also increase the typing speed.
+
+**Getting a single row of "Player" object**
 
 Here's the code of getting a single row of "Player" object.
 ```
