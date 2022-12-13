@@ -88,26 +88,26 @@
             <tr>
                 <td>Output Type</td>
                 <td>
-                    <asp:DropDownList ID="cbOutputType" runat="server" ClientIDMode="Static">
-                        <asp:ListItem Value="0" Text="Generate Class Object"></asp:ListItem>
-                        <asp:ListItem Value="1" Text="Generate Dictionary Entries"></asp:ListItem>
-                        <asp:ListItem Value="2" Text="Generate Create Table SQL"></asp:ListItem>
-                        <asp:ListItem Value="3" Text="Create Update Column List"></asp:ListItem>
-                    </asp:DropDownList>
+                    <select id="cbOutputType">
+                        <option value="0">Generate Class Object</option>
+                        <option value="1">Generate Dictionary Entries</option>
+                        <option value="2">Generate Create Table SQL</option>
+                        <option value="3">Create Update Column List</option>
+                    </select>
                 </td>
                 <td>Field Type</td>
                 <td>
-                    <asp:DropDownList ID="cbFieldType" runat="server" ClientIDMode="Static">
-                        <asp:ListItem Value="0" Text="public properties"></asp:ListItem>
-                        <asp:ListItem Value="1" Text="public fields"></asp:ListItem>
-                        <asp:ListItem Value="2" Text="private fields + public properties"></asp:ListItem>
-                    </asp:DropDownList>
+                    <select id="cbFieldType">
+                        <option value="0">private fields + public properties</option>
+                        <option value="1">public properties</option>
+                        <option value="2">public fields</option>
+                    </select>
                 </td>
             </tr>
         </table>
         <a href="#" class="btn cur-p btn-primary" onclick="loadCustomObject(); return false;">Generate Customized Class Object</a>
         &nbsp;
-        <input id="txtSql" type="text" style="width: 600px;" placeholder="Enter Custom SQL (for example INNER JOIN statement)" value="select a.*,c.id 'team_id',c.name 'team_name',c.code 'team_code' from player a, player_team b, team c where a.id=b.player_id and b.team_id=c.id and 1=2;" spellcheck="false" class="divcode" />
+        <input id="txtSql" type="text" style="width: calc(100vw - 730px);" placeholder="Enter Custom SQL (for example INNER JOIN statement)" value="select a.*,c.id 'team_id',c.name 'team_name',c.code 'team_code' from player a, player_team b, team c where a.id=b.player_id and b.team_id=c.id and 1=2;" spellcheck="false" class="divcode" />
 
     </div>
 

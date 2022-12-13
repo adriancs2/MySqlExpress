@@ -44,9 +44,9 @@ namespace MySqlExpress_Helper
                     case 1:
                         return MySqlExpress.FieldsOutputType.PublicFields;
                     case 2:
-                        return MySqlExpress.FieldsOutputType.PrivateFielsPublicProperties;
-                    default:
                         return MySqlExpress.FieldsOutputType.PublicProperties;
+                    default:
+                        return MySqlExpress.FieldsOutputType.PrivateFielsPublicProperties;
                 }
             }
         }
@@ -273,7 +273,7 @@ namespace MySqlExpress_Helper
                             }
                         }
 
-                        richTextBox1.Text = data2;
+                        richTextBox1.Text = data2; 
                         break;
 
                     case outputType.Create_Update_Column_List:
@@ -329,6 +329,7 @@ namespace MySqlExpress_Helper
 
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
+            richTextBox1.Focus();
             richTextBox1.SelectAll();
         }
 

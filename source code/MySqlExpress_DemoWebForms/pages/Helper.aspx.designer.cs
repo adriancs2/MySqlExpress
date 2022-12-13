@@ -15,24 +15,6 @@ namespace System.pages
     {
 
         /// <summary>
-        /// cbOutputType control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList cbOutputType;
-
-        /// <summary>
-        /// cbFieldType control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList cbFieldType;
-
-        /// <summary>
         /// phTables control.
         /// </summary>
         /// <remarks>

@@ -359,6 +359,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\MySqlExpress\MySqlExpress.csproj">
       <Project>{28c7152a-5ac1-4204-8b1e-c0eb562ff92b}</Project>
       <Name>MySqlExpress</Name>

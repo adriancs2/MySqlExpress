@@ -7,13 +7,21 @@ namespace System
 {
     public class obPlayer
     {
-        public int id { get; set; }
-        public string code { get; set; }
-        public string name { get; set; }
-        public DateTime date_register { get; set; }
-        public string tel { get; set; }
-        public string email { get; set; }
-        public int status { get; set; }
+        int id = 0;
+        string code = "";
+        string name = "";
+        DateTime date_register = DateTime.MinValue;
+        string tel = "";
+        string email = "";
+        int status = 0;
+
+        public int Id { get { return id; } set { id = value; } }
+        public string Code { get { return code; } set { code = value; } }
+        public string Name { get { return name; } set { name = value; } }
+        public DateTime DateRegister { get { return date_register; } set { date_register = value; } }
+        public string Tel { get { return tel; } set { tel = value; } }
+        public string Email { get { return email; } set { email = value; } }
+        public int Status { get { return status; } set { status = value; } }
 
 
         public string DateRegisterStr { get { if (date_register != DateTime.MinValue) return date_register.ToString("dd-MM-yyyy"); return ""; } }

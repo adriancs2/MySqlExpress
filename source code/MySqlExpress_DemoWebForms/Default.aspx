@@ -28,7 +28,7 @@
         <br />
         <br />
         <asp:Button ID="btSaveConnStr" runat="server" Text="Save Connection String" CssClass="btn cur-p btn-primary" OnClick="btSaveConnStr_Click" OnClientClick="displayLoading('Testing Connection... Hold On....');" />
-        <asp:Button ID="btGenerateSampleData" runat="server" Text="Create/Regenerate Tables & Sample Data" CssClass="btn cur-p btn-primary" OnClick="btGenerateSampleData_Click" OnClientClick="displayLoading('Generating/Rebuilding Database...');" />
+        <asp:Button ID="btGenerateSampleData" runat="server" Text="Create/Reset Tables & Sample Data" CssClass="btn cur-p btn-primary" OnClick="btGenerateSampleData_Click" OnClientClick="displayLoading('Generating/Rebuilding Database...');" />
     </div>
 
     <div id="divLoading" style="display: none;">

@@ -7,7 +7,6 @@ using System.Web.UI.WebControls;
 using MySqlConnector;
 using System.Text;
 using System.IO;
-using System.engine;
 
 namespace System.pages
 {
@@ -68,17 +67,17 @@ Total Found: {lstTeam.Count}<br />
             {
                 sb.Append($@"
 <tr>
-<td>{t.id}</td>
+<td>{t.Id}</td>
 <td>
-<select name='input_{t.id}_status'>
+<select name='input_{t.Id}_status'>
 <option value='1' {t.HtmlSelectStatus(1)}>Active</option>
 <option value='0' {t.HtmlSelectStatus(0)}>Deleted</option>
 </select>
 </td>
-<td><input type='text' name='input_{t.id}_code' style='width: 150px;' value='{Server.HtmlEncode(t.code)}' /></td>
-<td><input type='text' name='input_{t.id}_name' style='width: 200px;' value='{Server.HtmlEncode(t.name)}' /></td>
+<td><input type='text' name='input_{t.Id}_code' style='width: 150px;' value='{Server.HtmlEncode(t.Code)}' /></td>
+<td><input type='text' name='input_{t.Id}_name' style='width: 200px;' value='{Server.HtmlEncode(t.Name)}' /></td>
 <td>{t.ImgLogo}</td>
-<td><input type='file' name='file_{t.id}' />
+<td><input type='file' name='file_{t.Id}' />
 </tr>
 ");
             }
@@ -112,13 +111,13 @@ Total Found: {lstTeam.Count}<br />
                     switch (ka[2])
                     {
                         case "status":
-                            dicTeam[teamid].status = Convert.ToInt32(Request.Form[key]);
+                            dicTeam[teamid].Status = Convert.ToInt32(Request.Form[key]);
                             break;
                         case "code":
-                            dicTeam[teamid].code = Request.Form[key];
+                            dicTeam[teamid].Code = Request.Form[key];
                             break;
                         case "name":
-                            dicTeam[teamid].name = Request.Form[key];
+                            dicTeam[teamid].Name = Request.Form[key];
                             break;
                     }
                 }
@@ -141,9 +140,9 @@ Total Found: {lstTeam.Count}<br />
                         var t = kv.Value;
 
                         Dictionary<string, object> dic = new Dictionary<string, object>();
-                        dic["status"] = t.status;
-                        dic["code"] = t.code;
-                        dic["name"] = t.name;
+                        dic["status"] = t.Status;
+                        dic["code"] = t.Code;
+                        dic["name"] = t.Name;
 
                         m.Update("team", dic, "id", id);
                     }

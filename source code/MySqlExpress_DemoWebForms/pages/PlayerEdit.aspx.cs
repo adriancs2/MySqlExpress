@@ -58,20 +58,20 @@ namespace System.pages
                     }
                 }
 
-                lbId.Text = p.id.ToString();
+                lbId.Text = p.Id.ToString();
                 lbStatus.Text = p.StatusStr;
-                txtCode.Text = p.code;
-                txtName.Text = p.name;
-                txtEmail.Text = p.email;
-                txtTel.Text = p.tel;
+                txtCode.Text = p.Code;
+                txtName.Text = p.Name;
+                txtEmail.Text = p.Email;
+                txtTel.Text = p.Tel;
                 txtDateRegister.Text = p.DateRegisterInput;
 
-                if (p.status == 1)
+                if (p.Status == 1)
                 {
                     btDelete.Visible = true;
                     btRecover.Visible = false;
                 }
-                else if (p.status == 0)
+                else if (p.Status == 0)
                 {
                     btDelete.Visible = false;
                     btRecover.Visible = true;

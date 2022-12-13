@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -233,8 +234,8 @@ namespace MySqlExpress_TestWebForms
                         int level = Convert.ToInt32(score / 1000m);
 
                         dic["year"] = year;
-                        dic["player_id"] = p.id;
-                        dic["team_id"] = lstTeam[rd.Next(0, lstTeam.Count)].id;
+                        dic["player_id"] = p.Id;
+                        dic["team_id"] = lstTeam[rd.Next(0, lstTeam.Count)].Id;
                         dic["score"] = score;
                         dic["level"] = level;
                         dic["status"] = 1;
@@ -245,6 +246,49 @@ namespace MySqlExpress_TestWebForms
                     m.Commit();
 
                     conn.Close();
+                }
+            }
+
+            string folderTeamLogo = Server.MapPath("~/teamlogo");
+
+            if (!Directory.Exists(folderTeamLogo))
+            {
+                Directory.CreateDirectory(folderTeamLogo);
+            }
+
+            string[] filesTeamLogo = Directory.GetFiles(folderTeamLogo);
+
+            foreach (var file in filesTeamLogo)
+            {
+                string filename = Path.GetFileName(file);
+
+                bool keep = false;
+
+                try
+                {
+                    string[] fa = filename.Split(new char[] { '-', '.' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    int f1 = Convert.ToInt32(fa[0]);
+                    int f2 = Convert.ToInt32(fa[1]);
+                    string f3 = fa[2].ToLower();
+
+                    if ((f1 > 0 && f1 < 16) && f2 == 1 && f3 == "png")
+                    {
+                        keep = true;
+                    }
+                }
+                catch
+                {
+                    keep = false;
+                }
+
+                if (!keep)
+                {
+                    try
+                    {
+                        File.Delete(file);
+                    }
+                    catch { }
                 }
             }
 

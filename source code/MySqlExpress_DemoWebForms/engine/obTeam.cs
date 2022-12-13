@@ -9,13 +9,22 @@ namespace System
 {
     public class obTeam
     {
-        public int id { get; set; }
-        public string code { get; set; }
-        public string name { get; set; }
-        public int logo_id { get; set; }
-        public int status { get; set; }
-        public int total_players { get; set; }
+        int id = 0;
+        string code = "";
+        string name = "";
+        int logo_id = 0;
+        int status = 0;
 
+        public int Id { get { return id; } set { id = value; } }
+        public string Code { get { return code; } set { code = value; } }
+        public string Name { get { return name; } set { name = value; } }
+        public int LogoId { get { return logo_id; } set { logo_id = value; } }
+        public int Status { get { return status; } set { status = value; } }
+
+
+        int total_players = 0;
+
+        public int TotalPlayers { get { return total_players; } set { total_players = value; } }
 
         public string StatusStr
         {

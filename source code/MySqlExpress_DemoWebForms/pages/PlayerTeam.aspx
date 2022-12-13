@@ -3,6 +3,23 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_head" runat="server">
     <asp:PlaceHolder ID="phHead" runat="server"></asp:PlaceHolder>
 
+    <style type="text/css">
+        .teaminfo {
+            width: 130px;
+            padding: 15px;
+            display: block;
+            border-radius: 25px;
+        }
+
+            .teaminfo:hover {
+                box-shadow: 1px 1px 12px #a9a9a9;
+                position: relative;
+                top: 2px;
+                bottom: 2px;
+                background: #e0f1ff;
+            }
+    </style>
+
     <script type="text/javascript">
 
         function selectAll(tablename, isselect) {
@@ -32,9 +49,11 @@
 
                 let td1 = tr.insertCell(-1);
                 let td2 = tr.insertCell(-1);
+                let td3 = tr.insertCell(-1);
 
-                td1.innerHTML = `<input type='checkbox' playerid='${p.id}' />`;
-                td2.innerHTML = `<a href='/PlayerEdit?id=${p.id}' target='_blank'>${p.name}</a>`;
+                td1.innerHTML = `<input type='checkbox' playerid='${p.Id}' />`;
+                td2.innerHTML = `<a href='/PlayerEdit?id=${p.Id}' target='_blank'>${p.Name}</a>`;
+                td3.innerText = p.Code;
             }
         }
 
@@ -73,10 +92,12 @@
                     let td1 = tr.insertCell(-1);
                     let td2 = tr.insertCell(-1);
                     let td3 = tr.insertCell(-1);
+                    let td4 = tr.insertCell(-1);
 
-                    td1.innerHTML = `<input type='checkbox' playerid='${p.id}' />`;
-                    td2.innerHTML = `<a href='/PlayerEdit?id={p.id}' target='_blank'>${p.name}</a>`;
-                    td3.innerHTML = p.teamname;
+                    td1.innerHTML = `<input type='checkbox' playerid='${p.Id}' />`;
+                    td2.innerHTML = `<a href='/PlayerEdit?id={p.id}' target='_blank'>${p.Name}</a>`;
+                    td3.innerText = p.Code;
+                    td4.innerText = p.Teamname;
                 }
             }
 
@@ -163,7 +184,8 @@
 
     <b>This page demonstrates the usage of javascript AJAX data loading and build HTML table dynamically.</b>
 
-    <br /><br />
+    <br />
+    <br />
 
     <input type="submit" style="display: none;" aria-hidden="true" />
 
@@ -195,6 +217,7 @@
                         <tr>
                             <th>Remove</th>
                             <th>Name</th>
+                            <th>Code</th>
                         </tr>
                     </thead>
                     <tbody id='tb1_tbody'>
@@ -212,7 +235,7 @@
 
                 <div class="tableform">
                     <a href="#" onclick="searchPlayers(); return false;" class="btn cur-p btn-primary">Search</a>
-                    <input type="text" id="txtSearch" onkeydown="return keydownSearchPlayer(event);" placeholder="Player's Name, Code, Email, Tel" />
+                    <input type="text" id="txtSearch" onkeydown="return keydownSearchPlayer(event);" style="width: 200px;" placeholder="Player's Name, Code, Email, Tel" />
                     <a href="#" onclick="addPlayers(); return false;" class="btn cur-p btn-primary">Add Selected Players</a>
                 </div>
 
@@ -226,6 +249,7 @@
                         <tr>
                             <th>Add</th>
                             <th>Name</th>
+                            <th>Code</th>
                             <th>Joined Team</th>
                         </tr>
                     </thead>

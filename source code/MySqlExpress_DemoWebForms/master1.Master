@@ -120,12 +120,12 @@
                     <div class="container-fluid">
                         <div class="footer">
                             <p>
-                                MySqlExpress - <a href="https://github.com/adriancs2/MySqlExpress" target="_blank">Project Site: Github</a><br />
+                                <a href="https://github.com/adriancs2/MySqlExpress" target="_blank">MySqlExpress - Github</a><br />
                                 Simplified The Usage of MySQL in C#/.NET
                             </p>
                             <hr />
                             <p>
-                                Web HTML Admin Template, Copyright © 2018 Designed by html.design. All rights reserved.<br />
+                                HTML Admin Web Template, Copyright © 2018 Designed by html.design. All rights reserved.<br />
                                 <a href="https://themewagon.com/themes/pluto-free-bootstrap-4-html5-admin-dashboard-template/" target="_blank">ThemeWagon - Pluto – Free Bootstrap 4 HTML5 Admin Dashboard Template</a>
                             </p>
                             <hr />

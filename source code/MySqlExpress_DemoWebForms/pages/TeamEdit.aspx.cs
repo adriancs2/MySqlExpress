@@ -2,7 +2,6 @@
 using MySqlExpress_TestWebForms;
 using System;
 using System.Collections.Generic;
-using System.engine;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -59,18 +58,18 @@ namespace System.pages
                     }
                 }
 
-                lbId.Text = p.id.ToString();
+                lbId.Text = p.Id.ToString();
                 lbStatus.Text = p.StatusStr;
-                txtCode.Text = p.code;
-                txtName.Text = p.name;
+                txtCode.Text = p.Code;
+                txtName.Text = p.Name;
                 imgLogo.ImageUrl = p.GetLogoSrc();
 
-                if (p.status == 1)
+                if (p.Status == 1)
                 {
                     btDelete.Visible = true;
                     btRecover.Visible = false;
                 }
-                else if (p.status == 0)
+                else if (p.Status == 0)
                 {
                     btDelete.Visible = false;
                     btRecover.Visible = true;

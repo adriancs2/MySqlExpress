@@ -82,7 +82,7 @@ namespace System.pages
 
                         foreach (var t in lst)
                         {
-                            dicParam["@teamid"] = t.id;
+                            dicParam["@teamid"] = t.Id;
 
                             t.lstPlayer = m.GetObjectList<obPlayer>($"select a.* from player a,player_team b where a.id=b.player_id and b.year=@year and b.team_id=@teamid order by a.name;", dicParam);
                         }
@@ -118,29 +118,26 @@ Total Found: {lst.Count}<br />
 ");
             foreach (var t in lst)
             {
-                string teamcode = Server.HtmlEncode(t.code);
-                string teamname = Server.HtmlEncode(t.name);
+                string teamcode = Server.HtmlEncode(t.Code);
+                string teamname = Server.HtmlEncode(t.Name);
 
                 string logo = t.ImgLogo;
 
-                if (logo.Length > 0)
-                    logo += "<br />";
-
                 sb.Append($@"
 <tr>
-<td>{t.id}</td>
+<td>{t.Id}</td>
 <td>{t.StatusStr}</td>
 <td>{teamcode}</td>
-<td><div style='width: 120px; text-align: center;'><a href='/TeamEdit?id={t.id}'>{logo}{teamname}</a></div></td>
+<td><div style='width: 120px; text-align: center;'><a href='/TeamEdit?id={t.Id}'>{logo}<br />{teamname}</a></div></td>
 <td>{t.lstPlayer.Count}</td>
-<td><a href='/PlayerTeam?year={year}&teamid={t.id}' class='btn cur-p btn-primary'>Edit Team Player</a></td>
+<td><a href='/PlayerTeam?year={year}&teamid={t.Id}' class='btn cur-p btn-primary'>Edit Team Player</a></td>
 <td>");
                 foreach (var p in t.lstPlayer)
                 {
-                    if (p.status == 1)
-                        sb.Append($"<a href='/PlayerEdit?id={p.id}'>{p.name}</a><br />");
+                    if (p.Status == 1)
+                        sb.Append($"<a href='/PlayerEdit?id={p.Id}'>{p.Name}</a><br />");
                     else
-                        sb.Append($"<span style='text-decoration: line-through; color: red;'>{p.name}</span><br />");
+                        sb.Append($"<span style='text-decoration: line-through; color: red;'>{p.Name}</span><br />");
                 }
 
                 sb.Append("</td></tr>");
@@ -163,37 +160,30 @@ Total Found: {lst.Count}<br />
 
             StringBuilder sb = new StringBuilder();
 
-            if (year == 0)
-            {
-                sb.Append("select a.* from team a where 1=1");
-            }
-            else
-            {
-                dicParam["@year"] = year;
-                sb.Append($"select count(*) 'total_players', a.* from team a, player_team b where a.id=b.team_id and b.year=@year");
-            }
+            dicParam["@year"] = year;
+            sb.Append("select count(player_id) 'total_players', c.id, c.code, c.name, c.logo_id, c.status from (select a.*,b.player_id from team a left join player_team b on a.id=b.team_id and b.year=2022) as c where 1=1");
 
             if (txtSearch.Text.Trim().Length > 0)
             {
                 dicParam["@namelike"] = m.GetLikeString(txtSearch.Text);
                 dicParam["@code"] = txtSearch.Text;
 
-                sb.Append($" and (a.name like @namelike or a.code=@code)");
+                sb.Append($" and (c.name like @namelike or c.code=@code)");
             }
 
             if (dropStatus.SelectedIndex > 0)
             {
                 dicParam["@stat"] = Convert.ToInt32(dropStatus.SelectedValue);
 
-                sb.Append($" and a.status=@stat");
+                sb.Append($" and c.status=@stat");
             }
 
             if (year > 0)
             {
-                sb.Append(" group by a.id");
+                sb.Append(" group by c.id");
             }
 
-            sb.Append(" order by a.name;");
+            sb.Append(" order by c.name;");
 
             List<obTeam> lstTeam = null;
 
@@ -221,23 +211,21 @@ Total Found: {lstTeam.Count}<br />
 <div style='clear: both;'></div>
 ");
 
-            foreach(var t in lstTeam)
+            foreach (var t in lstTeam)
             {
                 string imglogo = t.ImgLogo;
 
-                
-
                 sb.Append($@"
 <div class='divTeamBlock'>
-<a href='/TeamEdit?id={t.id}' class='divTeamBlock_a'>
+<a href='/TeamEdit?id={t.Id}' class='divTeamBlock_a'>
 {imglogo}<br />
-{t.name}<br />
+{t.Name}<br />
 <span class='divTeamBlock_Info'>
 {t.StatusStr}<br />
-Total Players: {t.total_players}
+Total Players: {t.TotalPlayers}
 </span>
 </a>
-<a href='/PlayerTeam?year={year}&teamid={t.id}' class='btn cur-p btn-primary'>Edit Team Player</a>
+<a href='/PlayerTeam?year={year}&teamid={t.Id}' class='btn cur-p btn-primary'>Edit Team Player</a>
 </div>
 ");
             }

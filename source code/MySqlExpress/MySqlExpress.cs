@@ -5,18 +5,19 @@ using System.Linq;
 using System.Text;
 using MySqlConnector;
 using System.Globalization;
+using System.Reflection;
 
 namespace System
 {
     public class MySqlExpress
     {
-        public const string Version = "1.4.1";
+        public const string Version = "1.5";
 
         public enum FieldsOutputType
         {
+            PrivateFielsPublicProperties,
             PublicProperties,
-            PublicFields,
-            PrivateFielsPublicProperties
+            PublicFields
         }
 
         public MySqlCommand cmd;
@@ -609,8 +610,8 @@ namespace System
 
         static List<T> BindList<T>(DataTable dt)
         {
-            var fields = typeof(T).GetFields();
-            var properties = typeof(T).GetProperties();
+            var fields = typeof(T).GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+            var properties = typeof(T).GetProperties(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance); 
 
             List<T> lst = new List<T>();
 
@@ -859,7 +860,7 @@ namespace System
                     string datatypestr = GetFieldTypeString(kv.Value);
 
                     sb.AppendLine();
-                    sb.Append($"public {datatypestr} {GetUpperCaseColName(kv.Key)} {{ get {{ return {kv.Key}; }} set {{ {kv.Key} = value; }}");
+                    sb.Append($"public {datatypestr} {GetUpperCaseColName(kv.Key)} {{ get {{ return {kv.Key}; }} set {{ {kv.Key} = value; }} }}");
                 }
             }
 

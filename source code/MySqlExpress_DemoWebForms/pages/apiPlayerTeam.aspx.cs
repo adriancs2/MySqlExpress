@@ -79,7 +79,7 @@ namespace System.pages
 
             StringBuilder sb = new StringBuilder();
 
-            sb.Append($"select a.*, c.id 'team_id', c.name 'teamname' from player a left join player_team b on a.id=b.player_id and b.`year`=@year left join team c on b.team_id=c.id where 1=1");
+            sb.Append($"select a.*, c.id 'teamid', c.name 'teamname' from player a left join player_team b on a.id=b.player_id and b.`year`=@year left join team c on b.team_id=c.id where 1=1");
 
             if (search.Trim().Length > 0)
             {
@@ -110,7 +110,7 @@ namespace System.pages
 
             for (int i = lstPlayer.Count - 1; i >= 0; i--)
             {
-                if (lstPlayer[i].team_id == teamid)
+                if (lstPlayer[i].Teamid == teamid)
                 {
                     lstPlayer.RemoveAt(i);
                 }

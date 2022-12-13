@@ -121,9 +121,9 @@
             this.cbFieldType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbFieldType.FormattingEnabled = true;
             this.cbFieldType.Items.AddRange(new object[] {
+            "private fields + public properties",
             "public properties",
-            "public fields",
-            "private fields + public properties"});
+            "public fields"});
             this.cbFieldType.Location = new System.Drawing.Point(465, 74);
             this.cbFieldType.Name = "cbFieldType";
             this.cbFieldType.Size = new System.Drawing.Size(322, 25);

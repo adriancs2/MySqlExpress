@@ -42,17 +42,14 @@ namespace System.pages
                     }
                 }
 
-                if (team.id == 0)
+                if (team.Id == 0)
                 {
                     Response.Redirect("~/TeamList", true);
                 }
 
                 string logo = team.ImgLogo;
 
-                if (logo.Length > 0)
-                    logo += "<br />";
-
-                lbTeamName.Text = $"{logo}{year} - Team: {team.name} ({team.code})";
+                lbTeamName.Text = $"<a href='/TeamEdit?id={team.Id}' class='teaminfo'>{logo}<br />{team.Name}</a>{year} (Team Code: {team.Code})";
 
                 string script = $@"
 <script type='text/javascript'>
