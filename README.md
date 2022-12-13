@@ -190,42 +190,7 @@ But, anyway, you can name the class anything according to your personal flavor, 
 
 Next, create the class object's fields or properties:
 
-**First Mode: Public Properties**
-
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/g01.png)
-
-Then, paste all the copied text into the class:
-```
-public class obPlayer
-{
-    public int id { get; set; }
-    public string code { get; set; }
-    public string name { get; set; }
-    public DateTime date_register { get; set; }
-    public string tel { get; set; }
-    public string email { get; set; }
-    public int status { get; set; }
-}
-```
-
-**Second Mode: Public Fields**
-
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/f02.png)
-
-```
-public class obPlayer
-{
-    public int id = 0;
-    public string code = "";
-    public string name = "";
-    public DateTime date_register = DateTime.MinValue;
-    public string tel = "";
-    public string email = "";
-    public int status = 0;
-}
-```
-
-**Third Mode: Private Fields + Public Properties**
+**First Mode: Private Fields + Public Properties**
 
 ![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/f03.png)
 
@@ -265,6 +230,41 @@ Read more about [MySQL Naming Conventions](https://medium.com/@centizennationwid
 The symbol of "_" (underscore) is considered less typing friendly than using just latin characters.
 
 Therefore, converting the field name to PacalCase will align with the C# naming conventions and also increase the typing speed.
+    
+**Second Mode: Public Properties**
+
+![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/g01.png)
+
+Then, paste all the copied text into the class:
+```
+public class obPlayer
+{
+    public int id { get; set; }
+    public string code { get; set; }
+    public string name { get; set; }
+    public DateTime date_register { get; set; }
+    public string tel { get; set; }
+    public string email { get; set; }
+    public int status { get; set; }
+}
+```
+
+**Third Mode: Public Fields**
+
+![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/f02.png)
+
+```
+public class obPlayer
+{
+    public int id = 0;
+    public string code = "";
+    public string name = "";
+    public DateTime date_register = DateTime.MinValue;
+    public string tel = "";
+    public string email = "";
+    public int status = 0;
+}
+```
 
 **Getting a single row of "Player" object**
 
