@@ -165,13 +165,7 @@ CREATE TABLE `player` (
 `status` int unsigned,
 PRIMARY KEY (`id`));
 ```
-Next, create the class object of "player".
-
-Run the Helper app.
-
-There are 3 modes, of creating the class object.
-
-Create a new class.
+First, creates a new class.
   
 ```
 public class obPlayer
@@ -190,10 +184,20 @@ But, anyway, you can name the class anything according to your personal flavor, 
 
 Next, create the class object's fields or properties:
 
-**First Mode: Private Fields + Public Properties**
+There are 3 modes of creating the fields or properties:
 
+1. Private Fields + Public Properties
+2. Public Properties
+3. Public Fields
+
+Run the **Helper** app.
+
+**First Mode: Private Fields + Public Properties**
+   
 ![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/f03.png)
 
+Paste the text into the class:
+    
 ```
 public class obPlayer
 {
