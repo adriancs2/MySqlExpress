@@ -262,6 +262,11 @@ namespace MySqlExpress_TestWebForms
             {
                 string filename = Path.GetFileName(file);
 
+                if (filename == "no-logo.png")
+                {
+                    continue;
+                }
+
                 bool keep = false;
 
                 try
