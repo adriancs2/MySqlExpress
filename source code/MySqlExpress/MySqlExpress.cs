@@ -11,7 +11,7 @@ namespace System
 {
     public class MySqlExpress
     {
-        public const string Version = "1.5";
+        public const string Version = "1.5.1";
 
         public enum FieldsOutputType
         {
@@ -193,6 +193,11 @@ namespace System
             }
 
             DataTable dt = SelectParam(sql, parameters);
+
+            if (dt.Rows.Count == 0)
+            {
+                return (T)GetValue(null, typeof(T));
+            }
 
             object ob = dt.Rows[0][0];
 
@@ -611,7 +616,7 @@ namespace System
         static List<T> BindList<T>(DataTable dt)
         {
             var fields = typeof(T).GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-            var properties = typeof(T).GetProperties(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance); 
+            var properties = typeof(T).GetProperties(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
 
             List<T> lst = new List<T>();
 
