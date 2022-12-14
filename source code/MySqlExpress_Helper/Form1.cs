@@ -24,7 +24,8 @@ namespace MySqlExpress_Helper
             Generate_Class_Object,
             Generate_Dictionary_Entries,
             Generate_Create_Table_SQL,
-            Create_Update_Column_List
+            Create_Update_Column_List,
+            Parameters_Dictionary
         }
 
         outputType EnumOutputType
@@ -225,7 +226,6 @@ namespace MySqlExpress_Helper
         }
 
         private void listBox1_MouseClick(object sender, MouseEventArgs e)
-
         {
             try
             {
@@ -273,7 +273,7 @@ namespace MySqlExpress_Helper
                             }
                         }
 
-                        richTextBox1.Text = data2; 
+                        richTextBox1.Text = data2;
                         break;
 
                     case outputType.Create_Update_Column_List:
@@ -319,12 +319,40 @@ namespace MySqlExpress_Helper
 
                         richTextBox1.Text = data4;
                         break;
+
+                    case outputType.Parameters_Dictionary:
+
+                        string data5 = "";
+
+                        using (MySqlConnection conn = new MySqlConnection(txtConnStr.Text))
+                        {
+                            using (MySqlCommand cmd = new MySqlCommand())
+                            {
+                                cmd.Connection = conn;
+                                conn.Open();
+
+                                MySqlExpress m = new MySqlExpress(cmd);
+
+                                data5 = m.GenerateParameterDictionaryTable(table);
+
+                                conn.Close();
+                            }
+                        }
+
+                        richTextBox1.Text = data5;
+                        break;
                 }
             }
             catch (Exception ex)
             {
                 WriteError(ex);
             }
+        }
+
+        private void listBox1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            richTextBox1.Focus();
+            richTextBox1.SelectAll();
         }
 
         private void richTextBox1_TextChanged(object sender, EventArgs e)

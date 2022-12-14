@@ -58,6 +58,9 @@ namespace System.pages
                         case 3:
                             output = m.GenerateUpdateColumnList(tablename);
                             break;
+                        case 4:
+                            output = m.GenerateParameterDictionaryTable(tablename);
+                            break;
                     }
 
                     conn.Close();

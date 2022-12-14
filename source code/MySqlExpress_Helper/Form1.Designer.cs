@@ -138,7 +138,8 @@
             "Generate Class Object",
             "Generate Dictionary Entries",
             "Generate Create Table SQL",
-            "Create Update Column List"});
+            "Create Update Column List",
+            "Parameters Dictionary"});
             this.cbOutputType.Location = new System.Drawing.Point(113, 74);
             this.cbOutputType.Name = "cbOutputType";
             this.cbOutputType.Size = new System.Drawing.Size(240, 25);
@@ -215,6 +216,7 @@
             this.listBox1.Size = new System.Drawing.Size(308, 453);
             this.listBox1.TabIndex = 13;
             this.listBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.listBox1_MouseClick);
+            this.listBox1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listBox1_MouseDoubleClick);
             // 
             // richTextBox1
             // 

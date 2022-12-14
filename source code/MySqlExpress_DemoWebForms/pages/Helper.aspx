@@ -93,6 +93,7 @@
                         <option value="1">Generate Dictionary Entries</option>
                         <option value="2">Generate Create Table SQL</option>
                         <option value="3">Create Update Column List</option>
+                        <option value="4">Parameters Dictionary</option>
                     </select>
                 </td>
                 <td>Field Type</td>
@@ -124,7 +125,7 @@
             <td style="width: 20px;"></td>
             <td style="vertical-align: top;">
                 Output:<br />
-                <textarea id="txtOutput" style="height: 100%; width: 100%; border: 1px solid #808080;" spellcheck="false" class="divcode"></textarea>
+                <textarea id="txtOutput" style="height: 100%; width: 100%; border: 1px solid #808080; white-space: nowrap;" spellcheck="false" class="divcode"></textarea>
             </td>
         </tr>
     </table>

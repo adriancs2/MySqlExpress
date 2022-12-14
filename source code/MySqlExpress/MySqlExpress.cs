@@ -11,7 +11,7 @@ namespace System
 {
     public class MySqlExpress
     {
-        public const string Version = "1.5.1";
+        public const string Version = "1.6";
 
         public enum FieldsOutputType
         {
@@ -1064,6 +1064,23 @@ namespace System
             {
                 sb.AppendLine();
                 sb.Append($"lstUpdateCol.Add(\"{l}\");");
+            }
+
+            return sb.ToString();
+        }
+
+        public string GenerateParameterDictionaryTable(string tablename)
+        {
+            string sql = $"select * from `{tablename}` where 1=0;";
+            DataTable dt = Select(sql);
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Dictionary<string, object> dicParam = new Dictionary<string, object>();");
+
+            foreach (DataColumn dc in dt.Columns)
+            {
+                sb.AppendLine();
+                sb.Append($"            dic[\"@{dc.ColumnName}\"] = ");
             }
 
             return sb.ToString();
