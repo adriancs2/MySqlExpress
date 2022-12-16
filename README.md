@@ -144,7 +144,7 @@ On a 7200 rpm HDD hard drive, the maximum I/O writes (numbers of SQL queries) th
 
 Read more about MySQL Disk I/O Capacity at: [https://dev.mysql.com/doc/refman/5.7/en/innodb-configuring-io-capacity.html](https://dev.mysql.com/doc/refman/5.7/en/innodb-configuring-io-capacity.html)
 
-If you perform 1000 queries (mainly refers to INSERT, UPDATE & DELETE), they will be executed one by one, which will take around 4~7 seconds on HDD hard drive to complete.
+If you perform 1000 queries, they will be executed one by one, which will take around 4~7 seconds on HDD hard drive to complete.
 
 By using TRANSACTION + COMMIT, all 1000 queries will all be executed at once. This saves a lots of disk operation time.
 
