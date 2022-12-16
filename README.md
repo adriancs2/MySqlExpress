@@ -140,7 +140,11 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 ```
 There are a few benefits of using TRANSACTION in MySQL.
 
-If you perform 1000 queries (mainly refers to INSERT, UPDATE & DELETE), they will be executed one by one, which takes a lots of time.
+On a 7200 rpm HDD hard drive, the maximum I/O writes (numbers of SQL queries) that MySQL can executes is around 100 to 120 times.
+
+Read more about MySQL Disk I/O Capacity at: [https://dev.mysql.com/doc/refman/5.7/en/innodb-configuring-io-capacity.html](https://dev.mysql.com/doc/refman/5.7/en/innodb-configuring-io-capacity.html)
+
+If you perform 1000 queries (mainly refers to INSERT, UPDATE & DELETE), they will be executed one by one, which will take around 4~7 seconds on HDD hard drive to complete.
 
 By using TRANSACTION + COMMIT, all 1000 queries will all be executed at once. This saves a lots of disk operation time.
 
