@@ -213,13 +213,13 @@ public class obPlayer
     string email = "";
     int status = 0;
 
-    public int Id { get { return id; } set { id = value; }
-    public string Code { get { return code; } set { code = value; }
-    public string Name { get { return name; } set { name = value; }
-    public DateTime DateRegister { get { return date_register; } set { date_register = value; }
-    public string Tel { get { return tel; } set { tel = value; }
-    public string Email { get { return email; } set { email = value; }
-    public int Status { get { return status; } set { status = value; }
+    public int Id { get { return id; } set { id = value; } }
+    public string Code { get { return code; } set { code = value; } }
+    public string Name { get { return name; } set { name = value; } }
+    public DateTime DateRegister { get { return date_register; } set { date_register = value; } }
+    public string Tel { get { return tel; } set { tel = value; } }
+    public string Email { get { return email; } set { email = value; } }
+    public int Status { get { return status; } set { status = value; } }
 }
 ```
 
