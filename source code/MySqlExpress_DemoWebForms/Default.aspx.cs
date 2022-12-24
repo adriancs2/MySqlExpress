@@ -33,18 +33,26 @@ namespace MySqlExpress_TestWebForms
 
             try
             {
+                bool requireBuildSampleData = false;
+
+                if (config.ConnString.Trim().Length == 0)
+                {
+                    requireBuildSampleData = true;
+                }
+
                 using (MySqlConnection conn = new MySqlConnection(txtConnStr.Text))
                 {
-                    using (MySqlCommand cmd = new MySqlCommand())
-                    {
-                        cmd.Connection = conn;
-                        conn.Open();
-
-                        conn.Close();
-                    }
+                    conn.Open();
+                    conn.Close();
                 }
 
                 config.ConnString = txtConnStr.Text;
+
+                if (requireBuildSampleData)
+                {
+                    BuildSampleData();
+                }
+
                 return true;
             }
             catch (Exception ex)
@@ -58,15 +66,7 @@ namespace MySqlExpress_TestWebForms
             }
         }
 
-        protected void btSaveConnStr_Click(object sender, EventArgs e)
-        {
-            if (TestConnection())
-            {
-                ((master1)this.Master).WriteGoodMessage("Connection String Saved");
-            }
-        }
-
-        protected void btGenerateSampleData_Click(object sender, EventArgs e)
+        void BuildSampleData()
         {
             if (!TestConnection())
             {
@@ -136,15 +136,16 @@ namespace MySqlExpress_TestWebForms
 
                         string email = "";
 
-                        int emailformat = rd.Next(1, 4);
-                        int emailExtension = rd.Next(1, 8);
+                        int emailformat = rd.Next(1, 6);
+                        int emailExtension = rd.Next(1, 10);
 
                         switch (emailformat)
                         {
-                            case 1: email = name.ToLower().Replace(" ", "_"); break;
-                            case 2: email = name.ToLower().Replace(" ", "."); break;
-                            case 3: email = firstname + rd.Next(1, 999); break;
-                            case 4: email = lastname + rd.Next(1, 999); break;
+                            case 1: email = name.Replace(" ", "_"); break;
+                            case 2: email = name.Replace(" ", "."); break;
+                            case 3: email = $"{lastname}_{firstname}"; break;
+                            case 4: email = firstname + rd.Next(1, 999); break;
+                            case 5: email = lastname + rd.Next(1, 999); break;
                         }
 
                         switch (emailExtension)
@@ -156,6 +157,8 @@ namespace MySqlExpress_TestWebForms
                             case 5: email = email + "@zoho.com"; break;
                             case 6: email = email + "@protonmail.com"; break;
                             case 7: email = email + "@aol.com"; break;
+                            case 8: email = email + $"@{lastname}.com"; break;
+                            case 9: email = email + $"@{firstname}.com"; break;
                         }
 
                         email = email.ToLower();
@@ -298,6 +301,19 @@ namespace MySqlExpress_TestWebForms
             }
 
             ((master1)this.Master).WriteGoodMessage("Sample Data Created/Regerated!");
+        }
+
+        protected void btSaveConnStr_Click(object sender, EventArgs e)
+        {
+            if (TestConnection())
+            {
+                ((master1)this.Master).WriteGoodMessage("Connection String Saved");
+            }
+        }
+
+        protected void btGenerateSampleData_Click(object sender, EventArgs e)
+        {
+            BuildSampleData();
         }
     }
 }

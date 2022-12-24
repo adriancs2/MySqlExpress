@@ -12,6 +12,7 @@ namespace System.pages
 {
     public partial class apiPlayerTeam : System.Web.UI.Page
     {
+        int action = 0;
         int year = 0;
         int teamid = 0;
         string search;
@@ -19,11 +20,18 @@ namespace System.pages
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            int action = Convert.ToInt32(Request.QueryString["action"]);
-            year = Convert.ToInt32(Request.QueryString["year"]);
-            teamid = Convert.ToInt32(Request.QueryString["teamid"]);
-            search = Server.UrlDecode(Request.QueryString["search"] + "").Trim();
-            pid = Server.UrlDecode(Request.QueryString["pid"] + "").Trim();
+            try
+            {
+                action = Convert.ToInt32(Request.QueryString["action"]);
+                year = Convert.ToInt32(Request.QueryString["year"]);
+                teamid = Convert.ToInt32(Request.QueryString["teamid"]);
+                search = Server.UrlDecode(Request.QueryString["search"] + "").Trim();
+                pid = Server.UrlDecode(Request.QueryString["pid"] + "").Trim();
+            }
+            catch
+            {
+                return;
+            }
 
             switch (action)
             {
@@ -39,8 +47,44 @@ namespace System.pages
                 case 4:
                     AddPlayers();
                     break;
+                case 5:
+                    GetTeamInfo();
+                    break;
             }
 
+        }
+
+        void GetTeamInfo()
+        {
+            int teamid = 0;
+
+            if (!int.TryParse(Request.QueryString["teamid"] + "", out teamid))
+            {
+                return;
+            }
+
+            Dictionary<string, object> dicParam = new Dictionary<string, object>();
+            dicParam["@teamid"] = teamid;
+
+            obTeam t = null;
+
+            using (MySqlConnection conn = new MySqlConnection(config.ConnString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.Connection = conn;
+                    conn.Open();
+
+                    MySqlExpress m = new MySqlExpress(cmd);
+
+                    t = m.GetObject<obTeam>($"select * from team where id=@teamid limit 0,1;", dicParam);
+
+                    conn.Close();
+                }
+            }
+
+            string jsonstr = JsonSerializer.Serialize(t);
+            Response.Write(jsonstr);
         }
 
         void LoadTeamPlayers()
@@ -124,7 +168,7 @@ namespace System.pages
         {
             List<int> lst = new List<int>();
             string[] sa = pid.Split(',');
-            foreach(var s in sa)
+            foreach (var s in sa)
             {
                 int id = 0;
                 int.TryParse(s, out id);
