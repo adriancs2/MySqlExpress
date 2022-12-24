@@ -34,11 +34,11 @@ MySqlExpress is built on top of MySqlConnector (MIT) library. If you wish to use
 ## Before Start
 
 As usual, to begin coding with MySQL, first add the following using statement to allow the usage of MySqlconnector (MIT) library.
-```
+```csharp
 using MySqlConnector;
 ```
 In this article, let's assume that we store the MySQL connection string as a static field. For example:
-```
+```csharp
 public class config
 {
     public static string ConnString = 
@@ -47,12 +47,12 @@ public class config
 ```
 Hence, we can obtain the connection string anywhere in the project as below:
 
-```
+```csharp
 config.ConnString
 ```
 
 Here is the standard MySQL connection code block:
-```
+```csharp
 using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 {
     using (MySqlCommand cmd = new MySqlCommand())
@@ -67,7 +67,7 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 }
 ```
 Declare a new MySqlExpress object to start using:
-```
+```csharp
 using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 {
     using (MySqlCommand cmd = new MySqlCommand())
@@ -108,7 +108,7 @@ Next time, whenever you need the code block, just drag it from the toolbox into 
 9. Execute a SQL statement
   
 ###  1. Start Transaction, Commit and Rollback
-```
+```csharp
 using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 {
     using (MySqlCommand cmd = new MySqlCommand())
@@ -140,7 +140,11 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 ```
 There are a few benefits of using TRANSACTION in MySQL.
 
-If you perform 1000 queries (mainly refers to INSERT, UPDATE & DELETE), they will be executed one by one, which takes a lots of time.
+On a 7200 rpm HDD hard drive, the maximum I/O writes (numbers of SQL queries) that MySQL can executes is around 100 to 120 times.
+
+Read more about MySQL Disk I/O Capacity at: [https://dev.mysql.com/doc/refman/5.7/en/innodb-configuring-io-capacity.html](https://dev.mysql.com/doc/refman/5.7/en/innodb-configuring-io-capacity.html)
+
+If you perform 1000 queries, they will be executed one by one, which will take around 4~7 seconds on HDD hard drive to complete.
 
 By using TRANSACTION + COMMIT, all 1000 queries will all be executed at once. This saves a lots of disk operation time.
 
@@ -154,7 +158,7 @@ Read more about transaction at [here](https://www.mysqltutorial.org/mysql-transa
 
 Assume that, we have a MySQL table like this:
 
-```
+```sql
 CREATE TABLE `player` (
 `id` int unsigned NOT NULL AUTO_INCREMENT,
 `code` varchar(10),
@@ -167,7 +171,7 @@ PRIMARY KEY (`id`));
 ```
 First, creates a new class.
   
-```
+```csharp
 public class obPlayer
 {
    
@@ -198,7 +202,7 @@ Run the **Helper** app.
 
 Paste the text into the class:
     
-```
+```csharp
 public class obPlayer
 {
     int id = 0;
@@ -209,13 +213,13 @@ public class obPlayer
     string email = "";
     int status = 0;
 
-    public int Id { get { return id; } set { id = value; }
-    public string Code { get { return code; } set { code = value; }
-    public string Name { get { return name; } set { name = value; }
-    public DateTime DateRegister { get { return date_register; } set { date_register = value; }
-    public string Tel { get { return tel; } set { tel = value; }
-    public string Email { get { return email; } set { email = value; }
-    public int Status { get { return status; } set { status = value; }
+    public int Id { get { return id; } set { id = value; } }
+    public string Code { get { return code; } set { code = value; } }
+    public string Name { get { return name; } set { name = value; } }
+    public DateTime DateRegister { get { return date_register; } set { date_register = value; } }
+    public string Tel { get { return tel; } set { tel = value; } }
+    public string Email { get { return email; } set { email = value; } }
+    public int Status { get { return status; } set { status = value; } }
 }
 ```
 
@@ -240,7 +244,7 @@ Therefore, converting the field name to PacalCase will align with the C# naming 
 ![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/g01.png)
 
 Then, paste all the copied text into the class:
-```
+```csharp
 public class obPlayer
 {
     public int id { get; set; }
@@ -257,7 +261,7 @@ public class obPlayer
 
 ![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/f02.png)
 
-```
+```csharp
 public class obPlayer
 {
     public int id = 0;
@@ -273,7 +277,7 @@ public class obPlayer
 **Getting a single row of "Player" object**
 
 Here's the code of getting a single row of "Player" object.
-```
+```csharp
 int id = 1;
 
 // declare the object
@@ -299,7 +303,7 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 }
   ```
 Getting a list of objects (get multiple rows from a MySQL table):
-```
+```csharp
 // declare the object list
 List<obPlayer> lst = null;
 
@@ -325,7 +329,7 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 
 ### 3. Getting a Customized Object Structure
 One of the typical example is multiple SQL JOIN statement. For example:
-```
+```sql
 select a.*, b.`year`, c.name 'teamname', c.code 'teamcode', c.id 'teamid'
 from player a
 inner join player_team b on a.id=b.player_id
@@ -340,7 +344,7 @@ To create a non-standardized table's object structure, open the Helper program. 
 
 Create the custom class object:
 
-```
+```csharp
 public class obPlayerTeam
 {
    
@@ -348,7 +352,7 @@ public class obPlayerTeam
 ```
 Then, paste the copied text into the new custom object:
 
-```
+```csharp
 public class obPlayerTeam
 {
     int id = 0;
@@ -378,7 +382,7 @@ public class obPlayerTeam
 ```
 
   Getting the customized table object:
-```
+```csharp
 // declare the object
 List<obPlayerTeam> lst = null;
 
@@ -407,7 +411,7 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 ```
   
 ### 4. Getting a single value (ExecuteScalar<T>)
-```
+```csharp
 MySqlExpress m = new MySqlExpress(cmd);
 
 // int
@@ -422,7 +426,7 @@ string name = m.ExecuteScalar<string>("select name from player where id=1;");
 
 Getting single value with parameters
   
-```
+```csharp
 MySqlExpress m = new MySqlExpress(cmd);
 
 // parameters
@@ -454,12 +458,12 @@ The field "id" is a primary key, auto-increment field. Therefore, we don't need 
 
 Delete the following line from the block:
     
-```
+```csharp
 dic["id"] =
 ```
   
 So, here is what is left:
-```
+```csharp
 using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 {
     using (MySqlCommand cmd = new MySqlCommand())
@@ -484,7 +488,7 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 ```
   
 Continue to fill in the data and perform the INSERT:
-```
+```csharp
 using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 {
     using (MySqlCommand cmd = new MySqlCommand())
@@ -512,13 +516,13 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
   
 Run the following code to obtain new inserted ID:
     
-```
+```csharp
 m.LastInsertId
 ```
     
 Obtain the LAST INSERT ID:
   
-```
+```csharp
 using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 {
     using (MySqlCommand cmd = new MySqlCommand())
@@ -552,20 +556,20 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 > **The dictionary values will be inserted as parameterized values**
 
 For updating table that has one primary key. The parameters:
-```
+```csharp
 m.Update(tablename, dictionary, primary key column name, id);
 ```
 Generate the dictionary entries from the Helper App.
     
 Remove the "id" dictionary entry:
     
-```
+```csharp
 dic["id"] =
 ```
     
 Paste it at the code block, fill the value and execute the Update command:
   
-```
+```csharp
 using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 {
     using (MySqlCommand cmd = new MySqlCommand())
@@ -592,11 +596,11 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 ```
   
 For updating table that has multiple primary keys or multiple reference column. The parameters:
-```
+```csharp
 m.Update(tablename, dictionary data, dictionary reference data);
 ```
 Example:
-```
+```csharp
 using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 {
     using (MySqlCommand cmd = new MySqlCommand())
@@ -643,7 +647,7 @@ First, generate the dictionary entries:
 ![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/g05.png)
 
 Paste the dictionary into the code block:
-```
+```csharp
 using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 {
     using (MySqlCommand cmd = new MySqlCommand())
@@ -673,7 +677,7 @@ Next, back to the helper app, generate the update column list:
 ![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/g06.png)
   
   Paste it at the code block and runs the Insert Update method:
-```
+```csharp
 List<string> lstUpdateCol = new List<string>();
 
 lstUpdateCol.Add("team_id");
@@ -709,7 +713,7 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
   
 ### 8. Generate Like String
 
-```
+```csharp
 MySqlExpress m = new MySqlExpress();
 
 string name = "James O'Brien";
@@ -738,7 +742,7 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
   
 ### 9. Execute a Single SQL statement
  
-```
+```csharp
 Dictionary<string, object> dicParam = new Dictionary<string, object>();
 dicParam["@vName"] = "James O'Brien";
 dicParam["@vCode"] = "AA001";
