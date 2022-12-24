@@ -344,7 +344,7 @@
     <br />
     <br />
 
-    <input type="submit" style="display: none;" aria-hidden="true" />
+    <input type="submit" disabled style="display: none;" aria-hidden="true" />
 
     <div class="heading1 margin_0 teaminfo_maincontainer">
         <h2 id="h2teamname"></h2>
