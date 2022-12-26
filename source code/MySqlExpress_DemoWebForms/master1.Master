@@ -37,6 +37,14 @@
       <![endif]-->
 
     <asp:ContentPlaceHolder ID="ContentPlaceHolder_head" runat="server"></asp:ContentPlaceHolder>
+
+    <style type="text/css">
+        #sidebar a:hover {
+            background: rgba(255,255,255, 0.2);
+            color: white !important;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body class="dashboard dashboard_1">

@@ -7,6 +7,7 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder_body" runat="server">
 
     <asp:Button ID="btSave" runat="server" Text="Save" CssClass="btn cur-p btn-primary" OnClick="btSave_Click" />
+    <asp:Button ID="btSave2" runat="server" Text="Save v2 (m.Save)" CssClass="btn cur-p btn-primary" OnClick="btSave2_Click" />
     <asp:Button ID="btSaveNew" runat="server" Text="Save & New" CssClass="btn cur-p btn-primary" OnClick="btSaveNew_Click" />
     <a href="/TeamEdit" class="btn cur-p btn-primary">New</a>
     <asp:Button ID="btDelete" runat="server" Text="Delete" CssClass="btn cur-p btn-primary" OnClick="btDelete_Click" OnClientClick="return confirm('Are you sure to delete?');" />

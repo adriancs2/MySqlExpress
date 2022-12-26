@@ -36,7 +36,6 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.cbFieldType = new System.Windows.Forms.ComboBox();
-            this.cbOutputType = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -47,6 +46,11 @@
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.rbClass = new System.Windows.Forms.RadioButton();
+            this.rbDictionary = new System.Windows.Forms.RadioButton();
+            this.rbCreateTableSql = new System.Windows.Forms.RadioButton();
+            this.rbUpdateCol = new System.Windows.Forms.RadioButton();
+            this.rbParamDictionary = new System.Windows.Forms.RadioButton();
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -84,10 +88,14 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.rbParamDictionary);
+            this.panel1.Controls.Add(this.rbUpdateCol);
+            this.panel1.Controls.Add(this.rbCreateTableSql);
+            this.panel1.Controls.Add(this.rbDictionary);
+            this.panel1.Controls.Add(this.rbClass);
             this.panel1.Controls.Add(this.label6);
             this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.cbFieldType);
-            this.panel1.Controls.Add(this.cbOutputType);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.panel3);
             this.panel1.Controls.Add(this.label5);
@@ -101,7 +109,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(363, 77);
+            this.label6.Location = new System.Drawing.Point(3, 108);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(96, 17);
             this.label6.TabIndex = 19;
@@ -110,40 +118,25 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 110);
+            this.label4.Location = new System.Drawing.Point(375, 145);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(456, 17);
+            this.label4.Size = new System.Drawing.Size(256, 17);
             this.label4.TabIndex = 15;
-            this.label4.Text = "Double click table\'s name to generate table class object";
+            this.label4.Text = "Click table\'s name to generate.";
             // 
             // cbFieldType
             // 
             this.cbFieldType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbFieldType.FormattingEnabled = true;
             this.cbFieldType.Items.AddRange(new object[] {
-            "private fields + public properties",
+            "fields + properties",
             "public properties",
             "public fields"});
-            this.cbFieldType.Location = new System.Drawing.Point(465, 74);
+            this.cbFieldType.Location = new System.Drawing.Point(105, 105);
             this.cbFieldType.Name = "cbFieldType";
-            this.cbFieldType.Size = new System.Drawing.Size(322, 25);
+            this.cbFieldType.Size = new System.Drawing.Size(248, 25);
             this.cbFieldType.TabIndex = 20;
             this.cbFieldType.SelectedIndexChanged += new System.EventHandler(this.cbFieldType_SelectedIndexChanged);
-            // 
-            // cbOutputType
-            // 
-            this.cbOutputType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbOutputType.FormattingEnabled = true;
-            this.cbOutputType.Items.AddRange(new object[] {
-            "Generate Class Object",
-            "Generate Dictionary Entries",
-            "Generate Create Table SQL",
-            "Create Update Column List",
-            "Parameters Dictionary"});
-            this.cbOutputType.Location = new System.Drawing.Point(113, 74);
-            this.cbOutputType.Name = "cbOutputType";
-            this.cbOutputType.Size = new System.Drawing.Size(240, 25);
-            this.cbOutputType.TabIndex = 18;
             // 
             // label2
             // 
@@ -181,7 +174,7 @@
             this.btGenerateCustomSqlObject.Name = "btGenerateCustomSqlObject";
             this.btGenerateCustomSqlObject.Size = new System.Drawing.Size(271, 28);
             this.btGenerateCustomSqlObject.TabIndex = 17;
-            this.btGenerateCustomSqlObject.Text = "Generate Customized SQL Object:";
+            this.btGenerateCustomSqlObject.Text = "Generate Class From Custom SQL";
             this.btGenerateCustomSqlObject.UseVisualStyleBackColor = true;
             this.btGenerateCustomSqlObject.Click += new System.EventHandler(this.btGenerateCustomSqlObject_Click);
             // 
@@ -198,9 +191,9 @@
             // 
             this.btLoadTableList.Location = new System.Drawing.Point(3, 139);
             this.btLoadTableList.Name = "btLoadTableList";
-            this.btLoadTableList.Size = new System.Drawing.Size(178, 28);
+            this.btLoadTableList.Size = new System.Drawing.Size(141, 28);
             this.btLoadTableList.TabIndex = 14;
-            this.btLoadTableList.Text = "Refresh Table List";
+            this.btLoadTableList.Text = "Refresh Tables";
             this.btLoadTableList.UseVisualStyleBackColor = true;
             this.btLoadTableList.Click += new System.EventHandler(this.btLoadTableList_Click);
             // 
@@ -250,6 +243,58 @@
             this.toolStripStatusLabel1.Text = "https://github.com/adriancs2/MySqlExpress";
             this.toolStripStatusLabel1.Click += new System.EventHandler(this.toolStripStatusLabel1_Click);
             // 
+            // rbClass
+            // 
+            this.rbClass.AutoSize = true;
+            this.rbClass.Checked = true;
+            this.rbClass.Location = new System.Drawing.Point(115, 75);
+            this.rbClass.Name = "rbClass";
+            this.rbClass.Size = new System.Drawing.Size(66, 21);
+            this.rbClass.TabIndex = 21;
+            this.rbClass.TabStop = true;
+            this.rbClass.Text = "Class";
+            this.rbClass.UseVisualStyleBackColor = true;
+            // 
+            // rbDictionary
+            // 
+            this.rbDictionary.AutoSize = true;
+            this.rbDictionary.Location = new System.Drawing.Point(187, 75);
+            this.rbDictionary.Name = "rbDictionary";
+            this.rbDictionary.Size = new System.Drawing.Size(106, 21);
+            this.rbDictionary.TabIndex = 22;
+            this.rbDictionary.Text = "Dictionary";
+            this.rbDictionary.UseVisualStyleBackColor = true;
+            // 
+            // rbCreateTableSql
+            // 
+            this.rbCreateTableSql.AutoSize = true;
+            this.rbCreateTableSql.Location = new System.Drawing.Point(299, 75);
+            this.rbCreateTableSql.Name = "rbCreateTableSql";
+            this.rbCreateTableSql.Size = new System.Drawing.Size(154, 21);
+            this.rbCreateTableSql.TabIndex = 23;
+            this.rbCreateTableSql.Text = "Create Table SQL";
+            this.rbCreateTableSql.UseVisualStyleBackColor = true;
+            // 
+            // rbUpdateCol
+            // 
+            this.rbUpdateCol.AutoSize = true;
+            this.rbUpdateCol.Location = new System.Drawing.Point(459, 75);
+            this.rbUpdateCol.Name = "rbUpdateCol";
+            this.rbUpdateCol.Size = new System.Drawing.Size(170, 21);
+            this.rbUpdateCol.TabIndex = 24;
+            this.rbUpdateCol.Text = "Update Column List";
+            this.rbUpdateCol.UseVisualStyleBackColor = true;
+            // 
+            // rbParamDictionary
+            // 
+            this.rbParamDictionary.AutoSize = true;
+            this.rbParamDictionary.Location = new System.Drawing.Point(635, 75);
+            this.rbParamDictionary.Name = "rbParamDictionary";
+            this.rbParamDictionary.Size = new System.Drawing.Size(194, 21);
+            this.rbParamDictionary.TabIndex = 25;
+            this.rbParamDictionary.Text = "Parameters Dictionary";
+            this.rbParamDictionary.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -298,10 +343,14 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
-        private System.Windows.Forms.ComboBox cbOutputType;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox cbFieldType;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.RadioButton rbParamDictionary;
+        private System.Windows.Forms.RadioButton rbUpdateCol;
+        private System.Windows.Forms.RadioButton rbCreateTableSql;
+        private System.Windows.Forms.RadioButton rbDictionary;
+        private System.Windows.Forms.RadioButton rbClass;
     }
 }
 

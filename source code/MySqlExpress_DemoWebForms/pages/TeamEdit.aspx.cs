@@ -116,6 +116,55 @@ namespace System.pages
             }
         }
 
+        protected void btSave2_Click(object sender, EventArgs e)
+        {
+            obTeam t = new obTeam();
+
+            using (MySqlConnection conn = new MySqlConnection(config.ConnString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.Connection = conn;
+                    conn.Open();
+
+                    MySqlExpress m = new MySqlExpress(cmd);
+
+                    if (id == 0)
+                    {
+                        t.Status = 1;
+                    }
+                    else
+                    {
+                        Dictionary<string, object> dicParam = new Dictionary<string, object>();
+                        dicParam["@id"] = id;
+
+                        t = m.GetObject<obTeam>("select * from team where id=@id limit 0,1;", dicParam);
+                    }
+
+                    t.Code = txtCode.Text;
+                    t.Name = txtName.Text;
+
+                    m.Save("team", t);
+
+                    if (id == 0)
+                    {
+                        id = m.LastInsertId;
+                    }
+
+                    if (fileLogo.HasFile)
+                    {
+                        engineTeam.SaveLogo(m, id, fileLogo.FileBytes);
+                    }
+
+                    conn.Close();
+                }
+            }
+
+            LoadData();
+
+            ((master1)this.Master).WriteGoodMessage("Data Saved");
+        }
+
         protected void btSave_Click(object sender, EventArgs e)
         {
             Save();
@@ -179,5 +228,6 @@ namespace System.pages
 
             LoadData();
         }
+
     }
 }

@@ -6,12 +6,13 @@ using System.Text;
 using MySqlConnector;
 using System.Globalization;
 using System.Reflection;
+using System.CodeDom;
 
 namespace System
 {
     public class MySqlExpress
     {
-        public const string Version = "1.6";
+        public const string Version = "1.7";
 
         public enum FieldsOutputType
         {
@@ -221,6 +222,78 @@ namespace System
                 }
             }
             return lst;
+        }
+
+        /// <summary>
+        /// Performs Insert Update of single Class Object
+        /// </summary>
+        /// <param name="table">Table's Name</param>
+        /// <param name="classObject">Any class object</param>
+        public void Save(string table, object classObject)
+        {
+            List<object> lst = new List<object>();
+            lst.Add(classObject);
+
+            SaveList(table, lst);
+        }
+
+        /// <summary>
+        /// Performs Insert Update of List of Class Objects
+        /// </summary>
+        /// <param name="table">Table name</param>
+        /// <param name="lst">List of same class object</param>
+        public void SaveList(string table, List<object> lst)
+        {
+            if (lst.Count == 0)
+                return;
+
+            table = Escape(table);
+
+            DataTable dt = Select($"show columns from `{table}`;");
+
+            List<string> lstCol = new List<string>();
+            List<string> lstUpdateCol = new List<string>();
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                lstCol.Add(dr[0] + "");
+
+                if ((dr["Key"] + "").ToUpper() != "PRI")
+                {
+                    lstUpdateCol.Add(dr[0] + "");
+                }
+            }
+
+            var fields = lst[0].GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+            var properties = lst[0].GetType().GetProperties(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (var s in lst)
+            {
+                Dictionary<string, object> dic = new Dictionary<string, object>();
+
+                foreach (var col in lstCol)
+                {
+                    foreach (var field in fields)
+                    {
+                        if (col == field.Name)
+                        {
+                            dic[col] = field.GetValue(s);
+                            break;
+                        }
+                    }
+
+                    foreach (var prop in properties)
+                    {
+                        if (col == prop.Name)
+                        {
+                            dic[col] = prop.GetValue(s);
+                            break;
+                        }
+                    }
+                }
+
+                InsertUpdate(table, dic, lstUpdateCol);
+            }
         }
 
         public void InsertUpdate(string table, Dictionary<string, object> dic, IEnumerable<string> lstUpdateCols, bool include)

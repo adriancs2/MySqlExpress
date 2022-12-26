@@ -118,6 +118,53 @@ namespace System.pages
             }
         }
 
+        protected void btSave2_Click(object sender, EventArgs e)
+        {
+            Dictionary<string, object> dicParam = new Dictionary<string, object>();
+            dicParam["@id"] = id;
+
+            obPlayer p = new obPlayer();
+
+            using (MySqlConnection conn = new MySqlConnection(config.ConnString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.Connection = conn;
+                    conn.Open();
+
+                    MySqlExpress m = new MySqlExpress(cmd);
+
+                    if (id > 0)
+                    {
+                        p = m.GetObject<obPlayer>("select * from player where id=@id limit 0,1;", dicParam);
+                    }
+
+                    p.Code = txtCode.Text;
+                    p.Name = txtName.Text;
+                    p.DateRegister = config.GetDateInput(txtDateRegister.Text);
+                    p.Tel = txtTel.Text;
+                    p.Email = txtEmail.Text;
+
+                    if (id == 0)
+                    {
+                        p.Status = 1;
+                    }
+
+                    m.Save("player", p);
+
+                    if (id == 0)
+                    {
+                        id = m.LastInsertId;
+                    }
+
+                    conn.Close();
+                }
+            }
+
+            LoadData();
+            ((master1)this.Master).WriteGoodMessage("Data Saved");
+        }
+
         protected void btSave_Click(object sender, EventArgs e)
         {
             Save();
@@ -181,5 +228,6 @@ namespace System.pages
 
             LoadData();
         }
+
     }
 }

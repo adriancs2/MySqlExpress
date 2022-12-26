@@ -32,7 +32,16 @@ namespace MySqlExpress_Helper
         {
             get
             {
-                return (outputType)cbOutputType.SelectedIndex;
+                if (rbDictionary.Checked)
+                    return outputType.Generate_Dictionary_Entries;
+                else if (rbCreateTableSql.Checked)
+                    return outputType.Generate_Create_Table_SQL;
+                else if(rbUpdateCol.Checked)
+                    return outputType.Create_Update_Column_List;
+                else if (rbParamDictionary.Checked)
+                    return outputType.Parameters_Dictionary;
+
+                return outputType.Generate_Class_Object;
             }
         }
 
@@ -99,11 +108,15 @@ namespace MySqlExpress_Helper
                 this.Size = appSettings.FormSize;
                 if (this.Size.Width == 0 || this.Size.Height == 0)
                 {
-                    this.Size = new Size(1280, 700);
+                    this.Size = new Size(950, 650);
                 }
             }
 
-            cbOutputType.SelectedIndex = 0;
+            if (this.Size.Height < 200 || this.Size.Width < 200)
+            {
+                this.Size = new Size(950, 650);
+            }
+
             cbFieldType.SelectedIndex = appSettings.FieldType;
             txtConnStr.Text = appSettings.ConnStr;
             txtSQL.Text = appSettings.CustomSql;

@@ -79,7 +79,7 @@
                         ${team.ImgLogo}<br />
                         ${team.Name}
                     </a> ${year}
-                    (Team Code: ${team.Code})`;
+                    (Team Code: ${team.Code})<br /><br />`;
             }
 
             // executes the calling of AJAX to the API (url) to download data
@@ -342,14 +342,18 @@
     <b>This page demonstrates the usage of <span class="highlight">Javascript AJAX</span> by calling api for data loading at client side web browser and build HTML table dynamically.</b>
 
     <br />
-    <br />
 
     <input type="submit" disabled style="display: none;" aria-hidden="true" />
 
+    <div style="clear: both;"></div>
+
     <div class="heading1 margin_0 teaminfo_maincontainer">
         <h2 id="h2teamname"></h2>
-        <hr />
     </div>
+
+    <div style="clear: both;"></div>
+
+    <hr />
 
     <table style="width: 100%;">
         <tr>
