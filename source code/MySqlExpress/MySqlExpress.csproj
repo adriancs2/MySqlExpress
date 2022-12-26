@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MySqlConnector" Version="2.2.2" />
+    <PackageReference Include="MySqlConnector" Version="2.2.4" />
   </ItemGroup>
 
 </Project>
