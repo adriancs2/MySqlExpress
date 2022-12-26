@@ -101,11 +101,12 @@ Next time, whenever you need the code block, just drag it from the toolbox into 
 2. Getting Rows of Objects from MySQL Table
 3. Getting a Customized Object Structure
 4. Getting a single value (ExecuteScalar<T>)
-5. Insert Row (Save Data)
-6. Update Row (Update Data)
-7. Insert Update
-8. Generate Like String
-9. Execute a SQL statement
+5. Save (v.17) - Saving Objects
+6. Insert Row (Save Data)
+7. Update Row (Update Data)
+8. Insert Update
+9. Generate Like String
+10. Execute a SQL statement
   
 ###  1. Start Transaction, Commit and Rollback
 ```csharp
@@ -412,8 +413,6 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
   
 ### 4. Getting a single value (ExecuteScalar<T>)
 ```csharp
-MySqlExpress m = new MySqlExpress(cmd);
-
 // int
 int count = m.ExecuteScalar<int>("select count(*) from player;");
 
@@ -427,8 +426,6 @@ string name = m.ExecuteScalar<string>("select name from player where id=1;");
 Getting single value with parameters
   
 ```csharp
-MySqlExpress m = new MySqlExpress(cmd);
-
 // parameters
 Dictionary<string, object> dicParam1 = new Dictionary<string, object>();
 dicParam1["@vname"] = "%adam%";
@@ -447,7 +444,28 @@ string name = m.ExecuteScalar<string>("select name from player where id=@vid;", 
 
 ```
   
-### 5. Insert Row (Save Data)
+### 5. Save (v1.7) - Saving Objects
+
+A combination of "INSERT" and "UPDATE".
+This method will first attempt to perform an INSERT. If the primary key of the data has already existed in MySQL table, then it will perform an UPDATE.
+
+```csharp
+// Syntax
+m.Save(tablename, class);
+m.SaveList(tablename, List<class>);
+
+// Example:
+
+// Saving single object
+m.Save("player", player);
+
+// Saving list of objects
+m.SaveList("player", lstPlayer);
+```
+  
+### 6. Insert Row (Save Data)
+
+Performs INSERT by using dictionary.
 
 > **Note:**
 > **The dictionary values will be inserted as parameterized values**
@@ -461,57 +479,19 @@ Delete the following line from the block:
 ```csharp
 dic["id"] =
 ```
-  
-So, here is what is left:
+
+Fill in data into the dictionary:
 ```csharp
-using (MySqlConnection conn = new MySqlConnection(config.ConnString))
-{
-    using (MySqlCommand cmd = new MySqlCommand())
-    {
-        cmd.Connection = conn;
-        conn.Open();
+Dictionary<string, object> dic = new Dictionary<string, object>();
 
-        MySqlExpress m = new MySqlExpress(cmd);
+dic["code"] = "AA001";
+dic["name"] = "John Smith";
+dic["date_register"] = DateTime.Now;
+dic["tel"] = "1298343223";
+dic["email"] = "john_smith@mail.com";
+dic["status"] = 1;
 
-        Dictionary<string, object> dic = new Dictionary<string, object>();
-
-        dic["code"] =
-        dic["name"] =
-        dic["date_register"] =
-        dic["tel"] =
-        dic["email"] =
-        dic["status"] =
-
-        conn.Close();
-    }
-}
-```
-  
-Continue to fill in the data and perform the INSERT:
-```csharp
-using (MySqlConnection conn = new MySqlConnection(config.ConnString))
-{
-    using (MySqlCommand cmd = new MySqlCommand())
-    {
-        cmd.Connection = conn;
-        conn.Open();
-
-        MySqlExpress m = new MySqlExpress(cmd);
-
-        Dictionary<string, object> dic = new Dictionary<string, object>();
-
-        dic["code"] = "AA001";
-        dic["name"] = "John Smith";
-        dic["date_register"] = DateTime.Now;
-        dic["tel"] = "1298343223";
-        dic["email"] = "john_smith@mail.com";
-        dic["status"] = 1;
-
-        m.Insert("player", dic);
-
-        conn.Close();
-    }
-}
+m.Insert("player", dic);
 ```
   
 Run the following code to obtain new inserted ID:
@@ -523,34 +503,23 @@ m.LastInsertId
 Obtain the LAST INSERT ID:
   
 ```csharp
-using (MySqlConnection conn = new MySqlConnection(config.ConnString))
-{
-    using (MySqlCommand cmd = new MySqlCommand())
-    {
-        cmd.Connection = conn;
-        conn.Open();
+Dictionary<string, object> dic = new Dictionary<string, object>();
 
-        MySqlExpress m = new MySqlExpress(cmd);
+dic["code"] = "AA001";
+dic["name"] = "John Smith";
+dic["date_register"] = DateTime.Now;
+dic["tel"] = "1298343223";
+dic["email"] = "john_smith@mail.com";
+dic["status"] = 1;
 
-        Dictionary<string, object> dic = new Dictionary<string, object>();
+m.Insert("player", dic);
 
-        dic["code"] = "AA001";
-        dic["name"] = "John Smith";
-        dic["date_register"] = DateTime.Now;
-        dic["tel"] = "1298343223";
-        dic["email"] = "john_smith@mail.com";
-        dic["status"] = 1;
-
-        m.Insert("player", dic);
-
-        int newid = m.LastInsertId;
-
-        conn.Close();
-    }
-}
+int newid = m.LastInsertId;
 ```
 
-### 6. Update Row (Update Data)
+### 7 Update Row (Update Data)
+
+Performs UPDATE by using dictionary.
   
 > **Note:**
 > **The dictionary values will be inserted as parameterized values**
@@ -570,29 +539,16 @@ dic["id"] =
 Paste it at the code block, fill the value and execute the Update command:
   
 ```csharp
-using (MySqlConnection conn = new MySqlConnection(config.ConnString))
-{
-    using (MySqlCommand cmd = new MySqlCommand())
-    {
-        cmd.Connection = conn;
-        conn.Open();
+Dictionary<string, object> dic = new Dictionary<string, object>();
 
-        MySqlExpress m = new MySqlExpress(cmd);
+dic["code"] = "AA001";
+dic["name"] = "John Smith";
+dic["date_register"] = DateTime.Now;
+dic["tel"] = "1298343223";
+dic["email"] = "john_smith@mail.com";
+dic["status"] = 1;
 
-        Dictionary<string, object> dic = new Dictionary<string, object>();
-
-        dic["code"] = "AA001";
-        dic["name"] = "John Smith";
-        dic["date_register"] = DateTime.Now;
-        dic["tel"] = "1298343223";
-        dic["email"] = "john_smith@mail.com";
-        dic["status"] = 1;
-
-        m.Update("player", dic, "id", 1);
-
-        conn.Close();
-    }
-}
+m.Update("player", dic, "id", 1);
 ```
   
 For updating table that has multiple primary keys or multiple reference column. The parameters:
@@ -601,37 +557,26 @@ m.Update(tablename, dictionary data, dictionary reference data);
 ```
 Example:
 ```csharp
-using (MySqlConnection conn = new MySqlConnection(config.ConnString))
-{
-    using (MySqlCommand cmd = new MySqlCommand())
-    {
-        cmd.Connection = conn;
-        conn.Open();
+// data
+Dictionary<string, object> dic = new Dictionary<string, object>();
+dic["code"] = "AA001";
+dic["name"] = "John Smith";
+dic["date_register"] = DateTime.Now;
+dic["tel"] = "1298343223";
+dic["email"] = "john_smith@mail.com";
+dic["status"] = 1;
 
-        MySqlExpress m = new MySqlExpress(cmd);
+// update condition / referrence column data
+Dictionary<string, object> dicCond = new Dictionary<string, object>();
+dicCond["year"] = 2022;
+dicCond["team_id"] = 1;
 
-        // data
-        Dictionary<string, object> dic = new Dictionary<string, object>();
-        dic["code"] = "AA001";
-        dic["name"] = "John Smith";
-        dic["date_register"] = DateTime.Now;
-        dic["tel"] = "1298343223";
-        dic["email"] = "john_smith@mail.com";
-        dic["status"] = 1;
-
-        // update condition / referrence column data
-        Dictionary<string, object> dicCond = new Dictionary<string, object>();
-        dicCond["year"] = 2022;
-        dicCond["team_id"] = 1;
-
-        m.Update("player_team", dic, dicCond);
-
-        conn.Close();
-    }
-}
+m.Update("player_team", dic, dicCond);
 ```
   
-### 7. Insert Update
+### 8. Insert Update
+
+Performs INSERT & UPDATE by using dictionary.
   
 > **Note:**
 > **The dictionary values will be inserted as parameterized values**
@@ -646,33 +591,7 @@ First, generate the dictionary entries:
 
 ![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/g05.png)
 
-Paste the dictionary into the code block:
-```csharp
-using (MySqlConnection conn = new MySqlConnection(config.ConnString))
-{
-    using (MySqlCommand cmd = new MySqlCommand())
-    {
-        cmd.Connection = conn;
-        conn.Open();
-
-        MySqlExpress m = new MySqlExpress(cmd);
-
-        // data
-        Dictionary<string, object> dic = new Dictionary<string, object>();
-
-        dic["year"] = 2022;
-        dic["player_id"] = 1;
-        dic["team_id"] = 1;
-        dic["score"] = 10m;
-        dic["level"] = 1;
-        dic["status"] = 1;
-
-        conn.Close();
-    }
-}
-```
-  
-Next, back to the helper app, generate the update column list:
+Next, generate the update column list:
 
 ![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/g06.png)
   
@@ -711,56 +630,25 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 }
 ```
   
-### 8. Generate Like String
+### 9. Generate Like String
 
 ```csharp
-MySqlExpress m = new MySqlExpress();
-
 string name = "James O'Brien";
 
 // parameters
 Dictionary<string, object> dicParam = new Dictionary<string, object>();
 dicParam["@vname"] = m.GetLikeString(name);
 
-List<obPlayer> lst = null;
-
-using (MySqlConnection conn = new MySqlConnection(config.ConnString))
-{
-    using (MySqlCommand cmd = new MySqlCommand())
-    {
-        cmd.Connection = conn;
-        conn.Open();
-
-        m.cmd = cmd;
-
-        lst = m.GetObjectList<obPlayer>("select * from player where name like @vname;", dicParam);
-
-        conn.Close();
-    }
-}
+List<obPlayer> lst = m.GetObjectList<obPlayer>("select * from player where name like @vname;", dicParam);
 ```
   
-### 9. Execute a Single SQL statement
+### 10. Execute a Single SQL statement
  
 ```csharp
 Dictionary<string, object> dicParam = new Dictionary<string, object>();
 dicParam["@vName"] = "James O'Brien";
 dicParam["@vCode"] = "AA001";
-
-using (MySqlConnection conn = new MySqlConnection(config.ConnString))
-{
-    using (MySqlCommand cmd = new MySqlCommand())
-    {
-        cmd.Connection = conn;
-        conn.Open();
-
-        MySqlExpress m = new MySqlExpress(cmd);
-
-        m.Execute("delete from player where name=@vName or code=@vCode;", dicParam);
-
-        conn.Close();
-    }
-}
+m.Execute("delete from player where name=@vName or code=@vCode;", dicParam);
 ```
   
 Happy coding.
