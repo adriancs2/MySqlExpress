@@ -28,11 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.label1 = new System.Windows.Forms.Label();
             this.txtConnStr = new System.Windows.Forms.TextBox();
             this.txtSQL = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.rbParamDictionary = new System.Windows.Forms.RadioButton();
+            this.rbUpdateCol = new System.Windows.Forms.RadioButton();
+            this.rbCreateTableSql = new System.Windows.Forms.RadioButton();
+            this.rbDictionary = new System.Windows.Forms.RadioButton();
+            this.rbClass = new System.Windows.Forms.RadioButton();
             this.label6 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.cbFieldType = new System.Windows.Forms.ComboBox();
@@ -46,11 +52,7 @@
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.rbClass = new System.Windows.Forms.RadioButton();
-            this.rbDictionary = new System.Windows.Forms.RadioButton();
-            this.rbCreateTableSql = new System.Windows.Forms.RadioButton();
-            this.rbUpdateCol = new System.Windows.Forms.RadioButton();
-            this.rbParamDictionary = new System.Windows.Forms.RadioButton();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -105,6 +107,63 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1254, 176);
             this.panel1.TabIndex = 12;
+            // 
+            // rbParamDictionary
+            // 
+            this.rbParamDictionary.AutoSize = true;
+            this.rbParamDictionary.Location = new System.Drawing.Point(635, 75);
+            this.rbParamDictionary.Name = "rbParamDictionary";
+            this.rbParamDictionary.Size = new System.Drawing.Size(194, 21);
+            this.rbParamDictionary.TabIndex = 25;
+            this.rbParamDictionary.Text = "Parameters Dictionary";
+            this.rbParamDictionary.UseVisualStyleBackColor = true;
+            this.rbParamDictionary.CheckedChanged += new System.EventHandler(this.rbParamDictionary_CheckedChanged);
+            // 
+            // rbUpdateCol
+            // 
+            this.rbUpdateCol.AutoSize = true;
+            this.rbUpdateCol.Location = new System.Drawing.Point(459, 75);
+            this.rbUpdateCol.Name = "rbUpdateCol";
+            this.rbUpdateCol.Size = new System.Drawing.Size(170, 21);
+            this.rbUpdateCol.TabIndex = 24;
+            this.rbUpdateCol.Text = "Update Column List";
+            this.rbUpdateCol.UseVisualStyleBackColor = true;
+            this.rbUpdateCol.CheckedChanged += new System.EventHandler(this.rbUpdateCol_CheckedChanged);
+            // 
+            // rbCreateTableSql
+            // 
+            this.rbCreateTableSql.AutoSize = true;
+            this.rbCreateTableSql.Location = new System.Drawing.Point(299, 75);
+            this.rbCreateTableSql.Name = "rbCreateTableSql";
+            this.rbCreateTableSql.Size = new System.Drawing.Size(154, 21);
+            this.rbCreateTableSql.TabIndex = 23;
+            this.rbCreateTableSql.Text = "Create Table SQL";
+            this.rbCreateTableSql.UseVisualStyleBackColor = true;
+            this.rbCreateTableSql.CheckedChanged += new System.EventHandler(this.rbCreateTableSql_CheckedChanged);
+            // 
+            // rbDictionary
+            // 
+            this.rbDictionary.AutoSize = true;
+            this.rbDictionary.Location = new System.Drawing.Point(187, 75);
+            this.rbDictionary.Name = "rbDictionary";
+            this.rbDictionary.Size = new System.Drawing.Size(106, 21);
+            this.rbDictionary.TabIndex = 22;
+            this.rbDictionary.Text = "Dictionary";
+            this.rbDictionary.UseVisualStyleBackColor = true;
+            this.rbDictionary.CheckedChanged += new System.EventHandler(this.rbDictionary_CheckedChanged);
+            // 
+            // rbClass
+            // 
+            this.rbClass.AutoSize = true;
+            this.rbClass.Checked = true;
+            this.rbClass.Location = new System.Drawing.Point(115, 75);
+            this.rbClass.Name = "rbClass";
+            this.rbClass.Size = new System.Drawing.Size(66, 21);
+            this.rbClass.TabIndex = 21;
+            this.rbClass.TabStop = true;
+            this.rbClass.Text = "Class";
+            this.rbClass.UseVisualStyleBackColor = true;
+            this.rbClass.CheckedChanged += new System.EventHandler(this.rbClass_CheckedChanged);
             // 
             // label6
             // 
@@ -243,57 +302,11 @@
             this.toolStripStatusLabel1.Text = "https://github.com/adriancs2/MySqlExpress";
             this.toolStripStatusLabel1.Click += new System.EventHandler(this.toolStripStatusLabel1_Click);
             // 
-            // rbClass
+            // toolTip1
             // 
-            this.rbClass.AutoSize = true;
-            this.rbClass.Checked = true;
-            this.rbClass.Location = new System.Drawing.Point(115, 75);
-            this.rbClass.Name = "rbClass";
-            this.rbClass.Size = new System.Drawing.Size(66, 21);
-            this.rbClass.TabIndex = 21;
-            this.rbClass.TabStop = true;
-            this.rbClass.Text = "Class";
-            this.rbClass.UseVisualStyleBackColor = true;
-            // 
-            // rbDictionary
-            // 
-            this.rbDictionary.AutoSize = true;
-            this.rbDictionary.Location = new System.Drawing.Point(187, 75);
-            this.rbDictionary.Name = "rbDictionary";
-            this.rbDictionary.Size = new System.Drawing.Size(106, 21);
-            this.rbDictionary.TabIndex = 22;
-            this.rbDictionary.Text = "Dictionary";
-            this.rbDictionary.UseVisualStyleBackColor = true;
-            // 
-            // rbCreateTableSql
-            // 
-            this.rbCreateTableSql.AutoSize = true;
-            this.rbCreateTableSql.Location = new System.Drawing.Point(299, 75);
-            this.rbCreateTableSql.Name = "rbCreateTableSql";
-            this.rbCreateTableSql.Size = new System.Drawing.Size(154, 21);
-            this.rbCreateTableSql.TabIndex = 23;
-            this.rbCreateTableSql.Text = "Create Table SQL";
-            this.rbCreateTableSql.UseVisualStyleBackColor = true;
-            // 
-            // rbUpdateCol
-            // 
-            this.rbUpdateCol.AutoSize = true;
-            this.rbUpdateCol.Location = new System.Drawing.Point(459, 75);
-            this.rbUpdateCol.Name = "rbUpdateCol";
-            this.rbUpdateCol.Size = new System.Drawing.Size(170, 21);
-            this.rbUpdateCol.TabIndex = 24;
-            this.rbUpdateCol.Text = "Update Column List";
-            this.rbUpdateCol.UseVisualStyleBackColor = true;
-            // 
-            // rbParamDictionary
-            // 
-            this.rbParamDictionary.AutoSize = true;
-            this.rbParamDictionary.Location = new System.Drawing.Point(635, 75);
-            this.rbParamDictionary.Name = "rbParamDictionary";
-            this.rbParamDictionary.Size = new System.Drawing.Size(194, 21);
-            this.rbParamDictionary.TabIndex = 25;
-            this.rbParamDictionary.Text = "Parameters Dictionary";
-            this.rbParamDictionary.UseVisualStyleBackColor = true;
+            this.toolTip1.BackColor = System.Drawing.Color.LightGreen;
+            this.toolTip1.IsBalloon = true;
+            this.toolTip1.ToolTipTitle = "Text Auto Copied";
             // 
             // Form1
             // 
@@ -351,6 +364,7 @@
         private System.Windows.Forms.RadioButton rbCreateTableSql;
         private System.Windows.Forms.RadioButton rbDictionary;
         private System.Windows.Forms.RadioButton rbClass;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
 

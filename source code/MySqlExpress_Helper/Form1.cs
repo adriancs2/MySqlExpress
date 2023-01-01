@@ -240,6 +240,9 @@ namespace MySqlExpress_Helper
 
         private void listBox1_MouseClick(object sender, MouseEventArgs e)
         {
+            if (listBox1.SelectedIndex < 0)
+                return;
+
             try
             {
                 string table = listBox1.SelectedItem.ToString();
@@ -372,6 +375,8 @@ namespace MySqlExpress_Helper
         {
             richTextBox1.Focus();
             richTextBox1.SelectAll();
+            richTextBox1.Copy();
+            toolTip1.Show("Generated text copied to clipboard", this, 400, 240, 1000);
         }
 
         private void btGenerateCustomSqlObject_Click(object sender, EventArgs e)
@@ -420,5 +425,29 @@ namespace MySqlExpress_Helper
             richTextBox1.Text = "Error:\r\n\r\n" + ex.ToString();
         }
 
+        private void rbClass_CheckedChanged(object sender, EventArgs e)
+        {
+            listBox1_MouseClick(null, null);
+        }
+
+        private void rbDictionary_CheckedChanged(object sender, EventArgs e)
+        {
+            listBox1_MouseClick(null, null);
+        }
+
+        private void rbCreateTableSql_CheckedChanged(object sender, EventArgs e)
+        {
+            listBox1_MouseClick(null, null);
+        }
+
+        private void rbUpdateCol_CheckedChanged(object sender, EventArgs e)
+        {
+            listBox1_MouseClick(null, null);
+        }
+
+        private void rbParamDictionary_CheckedChanged(object sender, EventArgs e)
+        {
+            listBox1_MouseClick(null, null);
+        }
     }
 }
