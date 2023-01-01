@@ -5,9 +5,13 @@ This class library aims to encourage rapid application development with MySQL.
 
 Github: [https://github.com/adriancs2/MySqlExpress](https://github.com/adriancs2/MySqlExpress)
 
-Nuget: [https://www.nuget.org/packages/MySqlExpress](https://www.nuget.org/packages/MySqlExpress)
+[Nuget for MySqlConnector (MIT) - https://www.nuget.org/packages/MySqlExpress](https://www.nuget.org/packages/MySqlExpress)
 
 PM> NuGet\Install-Package MySqlExpress
+
+[Nuget for MySql.Data (Oracle) - https://www.nuget.org/packages/MySqlExpress.MySql.Data](https://www.nuget.org/packages/MySqlExpress.MySql.Data)
+
+PM> NuGet\Install-Package MySqlExpress.MySql.Data
 
 Download **MySqlExpress Helper**: [https://github.com/adriancs2/MySqlExpress/releases](https://github.com/adriancs2/MySqlExpress/releases)
 
