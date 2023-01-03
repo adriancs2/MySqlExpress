@@ -12,7 +12,7 @@ namespace System
 {
     public class MySqlExpress
     {
-        public const string Version = "1.7";
+        public const string Version = "1.7.1";
 
         public enum FieldsOutputType
         {
