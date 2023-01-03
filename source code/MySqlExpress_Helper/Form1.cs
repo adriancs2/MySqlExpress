@@ -19,6 +19,8 @@ namespace MySqlExpress_Helper
 
         string fileSettings;
 
+        bool displayTooltip = true;
+
         enum outputType
         {
             Generate_Class_Object,
@@ -376,7 +378,12 @@ namespace MySqlExpress_Helper
             richTextBox1.Focus();
             richTextBox1.SelectAll();
             richTextBox1.Copy();
-            toolTip1.Show("Generated text copied to clipboard", this, 400, 240, 1000);
+
+            if (displayTooltip)
+            {
+                toolTip1.Show("Generated text copied to clipboard", this, 400, 240, 1000);
+                displayTooltip = false;
+            }
         }
 
         private void btGenerateCustomSqlObject_Click(object sender, EventArgs e)
