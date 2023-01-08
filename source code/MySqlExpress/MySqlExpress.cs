@@ -12,7 +12,7 @@ namespace System
 {
     public class MySqlExpress
     {
-        public const string Version = "1.7.1";
+        public const string Version = "1.7.2";
 
         public enum FieldsOutputType
         {
@@ -242,9 +242,9 @@ namespace System
         /// </summary>
         /// <param name="table">Table name</param>
         /// <param name="lst">List of same class object</param>
-        public void SaveList(string table, List<object> lst)
+        public void SaveList<T>(string table, IEnumerable<T> lst)
         {
-            if (lst.Count == 0)
+            if (lst.Count() == 0)
                 return;
 
             table = Escape(table);
@@ -264,8 +264,8 @@ namespace System
                 }
             }
 
-            var fields = lst[0].GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-            var properties = lst[0].GetType().GetProperties(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+            var fields = lst.ElementAt(0).GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+            var properties = lst.ElementAt(0).GetType().GetProperties(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
 
             foreach (var s in lst)
             {
