@@ -11,14 +11,14 @@
     <Company>adriancs</Company>
     <Product>MySqlExpress</Product>
     <Copyright>adriancs</Copyright>
-    <Description>MySqlExpress aims to encourage rapid application development and simplified the implementation of MySQL in C#.</Description>
+    <Description>MySqlExpress gets the rows from MySQL and transforms them into class object automatically. For insert and update, MySqlExpress can save (insert/update) with a class object or by using dictionary.</Description>
     <PackageProjectUrl>https://github.com/adriancs2/MySqlExpress</PackageProjectUrl>
     <RepositoryUrl>https://github.com/adriancs2/MySqlExpress.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>mysql;c#</PackageTags>
-    <PackageReleaseNotes>MySqlExpress aims to encourage rapid application development and simplified the implementation of MySQL in C#.</PackageReleaseNotes>
+    <PackageReleaseNotes>Fix a bug when getting a single value from MySQL might return null value, and the null value is not captured.</PackageReleaseNotes>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>1.7</Version>
+    <Version>1.7.1</Version>
     <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
   </PropertyGroup>
 
