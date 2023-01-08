@@ -91,15 +91,15 @@ using (MySqlConnection conn = new MySqlConnection(config.ConnString))
 ```
 The standard MySQL connection code block shown above can be saved into Visual Studio toolbox bar. So, next time, whenever you need this code block, you can drag and drop from the toolbox bar.
 
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/02.png)
+![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/02.png)
 
 Now the code block is saved at the toolbox.
 
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/03.png)
+![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/03.png)
 
 Next time, whenever you need the code block, just drag it from the toolbox into the text editor.
 
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/05.png)
+![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/05.png)
 
 ## Let's Start - Using MySqlExpress
 
@@ -205,7 +205,7 @@ Run the **Helper** app.
 
 **First Mode: Private Fields + Public Properties**
    
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/f03.png)
+![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/f03.png)
 
 Paste the text into the class:
     
@@ -248,7 +248,7 @@ Therefore, converting the field name to PacalCase will align with the C# naming 
     
 **Second Mode: Public Properties**
 
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/g01.png)
+![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/g01.png)
 
 Then, paste all the copied text into the class:
 ```csharp
@@ -266,7 +266,7 @@ public class obPlayer
 
 **Third Mode: Public Fields**
 
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/f02.png)
+![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/f02.png)
 
 ```csharp
 public class obPlayer
@@ -347,7 +347,7 @@ The output table structure is customized.
 
 To create a non-standardized table's object structure, open the Helper program. Key in the customized SQL JOIN statement.
 
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/g03.png)
+![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/g03.png)
 
 Create the custom class object:
 
@@ -476,7 +476,7 @@ Performs INSERT by using dictionary.
 > **Note:**
 > **The dictionary values will be inserted as parameterized values**
     
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/g04.png)
+![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/g04.png)
   
 The field "id" is a primary key, auto-increment field. Therefore, we don't need to insert data for this field.
 
@@ -595,11 +595,11 @@ Update it > if the primary keys existed.
 
 First, generate the dictionary entries:
 
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/g05.png)
+![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/g05.png)
 
 Next, generate the update column list:
 
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/g06.png)
+![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/g06.png)
   
   Paste it at the code block and runs the Insert Update method:
 ```csharp
