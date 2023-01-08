@@ -388,50 +388,106 @@ namespace System
 
         public void Insert(string tableName, Dictionary<string, object> dic)
         {
-            StringBuilder sbCol = new System.Text.StringBuilder();
-            StringBuilder sbVal = new System.Text.StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
-            foreach (KeyValuePair<string, object> kv in dic)
+            sb.Append("insert into `");
+            sb.Append(tableName);
+            sb.Append("` (");
+
+            bool isFirst = true;
+
+            foreach(var kv in dic)
             {
-                if (sbCol.Length == 0)
+                if (isFirst)
                 {
-                    sbCol.Append("insert into `");
-                    sbCol.Append(tableName);
-                    sbCol.Append("`(");
+                    isFirst = false;
                 }
                 else
                 {
-                    sbCol.Append(",");
+                    sb.Append(",");
                 }
 
-                sbCol.Append("`");
-                sbCol.Append(kv.Key);
-                sbCol.Append("`");
-
-                if (sbVal.Length == 0)
-                {
-                    sbVal.Append(" values(");
-                }
-                else
-                {
-                    sbVal.Append(", ");
-                }
-
-                sbVal.Append("@v");
-                sbVal.Append(kv.Key);
+                sb.Append("`");
+                sb.Append(kv.Key);
+                sb.Append("`");
             }
 
-            sbCol.Append(") ");
-            sbVal.Append(");");
+            sb.Append(") values(");
 
-            cmd.CommandText = sbCol.ToString() + sbVal.ToString();
+            isFirst = true;
+
+            foreach (var kv in dic)
+            {
+                if (isFirst)
+                {
+                    isFirst = false;
+                }
+                else
+                {
+                    sb.Append(",");
+                }
+
+                sb.Append("@");
+                sb.Append(kv.Key);
+            }
+
+            sb.Append(");");
+
+            cmd.CommandText = sb.ToString();
 
             cmd.Parameters.Clear();
 
-            foreach (KeyValuePair<string, object> kv in dic)
-                cmd.Parameters.AddWithValue("@v" + kv.Key, kv.Value);
+            foreach (var kv in dic)
+            {
+                cmd.Parameters.AddWithValue($"@{kv.Key}", kv.Value);
+            }
 
             cmd.ExecuteNonQuery();
+
+            //StringBuilder sbCol = new System.Text.StringBuilder();
+            //StringBuilder sbVal = new System.Text.StringBuilder();
+
+            //foreach (KeyValuePair<string, object> kv in dic)
+            //{
+            //    if (sbCol.Length == 0)
+            //    {
+            //        sbCol.Append("insert into `");
+            //        sbCol.Append(tableName);
+            //        sbCol.Append("`(");
+            //    }
+            //    else
+            //    {
+            //        sbCol.Append(",");
+            //    }
+
+            //    sbCol.Append("`");
+            //    sbCol.Append(kv.Key);
+            //    sbCol.Append("`");
+
+            //    if (sbVal.Length == 0)
+            //    {
+            //        sbVal.Append(" values(");
+            //    }
+            //    else
+            //    {
+            //        sbVal.Append(", ");
+            //    }
+
+            //    sbVal.Append("@v");
+            //    sbVal.Append(kv.Key);
+            //}
+
+            //sbCol.Append(") ");
+            //sbVal.Append(");");
+
+            //cmd.CommandText = sbCol.ToString() + sbVal.ToString();
+
+            //cmd.Parameters.Clear();
+
+            //foreach (KeyValuePair<string, object> kv in dic)
+            //    cmd.Parameters.AddWithValue("@v" + kv.Key, kv.Value);
+
+            //cmd.ExecuteNonQuery();
         }
 
         /// <summary>
