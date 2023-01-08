@@ -17,7 +17,7 @@ Download **MySqlExpress Helper**: [https://github.com/adriancs2/MySqlExpress/rel
 
 _The Demo of MySqlExpress (Available in source code):_
 
-![MySqlExpress Demo](https://raw.githubusercontent.com/adriancs2/MySqlExpress/main/wiki/screenshot05.png)
+![MySqlExpress Demo](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/screenshot05.png)
 
 ## Introduction
 
