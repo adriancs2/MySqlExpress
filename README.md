@@ -1,5 +1,5 @@
 # MySqlExpress
-MySqlExpress simplifies the implementation of MySQL in C#.
+MySqlExpress get rows from MySQL table and convert it into Class Objects in C#. For saving data, Class Objects and be passed for executing INSERT or UPDATE. It can also performs INSERT/UPDATE by using Dictionary. It simplifies the usage of MySQL in C#.
 
 This class library aims to encourage rapid application development with MySQL.
 
