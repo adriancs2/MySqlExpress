@@ -53,6 +53,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.btConvertPrivateFieldsToPublicProperties = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -90,6 +91,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.btConvertPrivateFieldsToPublicProperties);
             this.panel1.Controls.Add(this.rbParamDictionary);
             this.panel1.Controls.Add(this.rbUpdateCol);
             this.panel1.Controls.Add(this.rbCreateTableSql);
@@ -308,6 +310,16 @@
             this.toolTip1.IsBalloon = true;
             this.toolTip1.ToolTipTitle = "Text Auto Copied";
             // 
+            // btConvertPrivateFieldsToPublicProperties
+            // 
+            this.btConvertPrivateFieldsToPublicProperties.Location = new System.Drawing.Point(637, 139);
+            this.btConvertPrivateFieldsToPublicProperties.Name = "btConvertPrivateFieldsToPublicProperties";
+            this.btConvertPrivateFieldsToPublicProperties.Size = new System.Drawing.Size(372, 28);
+            this.btConvertPrivateFieldsToPublicProperties.TabIndex = 26;
+            this.btConvertPrivateFieldsToPublicProperties.Text = "Convert Private Fields to Public Properties";
+            this.btConvertPrivateFieldsToPublicProperties.UseVisualStyleBackColor = true;
+            this.btConvertPrivateFieldsToPublicProperties.Click += new System.EventHandler(this.btConvertPrivateFieldsToPublicProperties_Click);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -365,6 +377,7 @@
         private System.Windows.Forms.RadioButton rbDictionary;
         private System.Windows.Forms.RadioButton rbClass;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Button btConvertPrivateFieldsToPublicProperties;
     }
 }
 

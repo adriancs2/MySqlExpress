@@ -9,6 +9,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Windows.Forms;
 using MySqlConnector;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace MySqlExpress_Helper
 {
@@ -455,6 +456,70 @@ namespace MySqlExpress_Helper
         private void rbParamDictionary_CheckedChanged(object sender, EventArgs e)
         {
             listBox1_MouseClick(null, null);
+        }
+
+        private void btConvertPrivateFieldsToPublicProperties_Click(object sender, EventArgs e)
+        {
+            string[] lines = richTextBox1.Lines;
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string a = lines[i].Replace(";", string.Empty);
+
+                a = a.Trim();
+
+                while (a.Contains("  "))
+                {
+                    a = a.Replace("  ", " ");
+                }
+
+                if (a.StartsWith("private "))
+                {
+                    a = "private " + a;
+                }
+
+                if (a.StartsWith("private "))
+                {
+                    a = a.Substring("private ".Length);
+                }
+
+                string[] sa = a.Split(new string[] { " = " }, StringSplitOptions.None);
+
+                if (sa.Length != 2)
+                    continue;
+
+                string[] sab = sa[0].Trim().Split(' ');
+
+                string b = sab[1];
+
+                StringBuilder sb = new StringBuilder();
+                bool convertToUpper = true;
+                foreach (char c in b)
+                {
+                    if (c == '_')
+                    {
+                        convertToUpper = true;
+                        continue;
+                    }
+
+                    if (convertToUpper)
+                    {
+                        sb.Append(char.ToUpper(c));
+                        convertToUpper = false;
+                    }
+                    else
+                    {
+                        sb.Append(c);
+                    }
+
+                }
+
+                b = string.Format("public {0} {1} {3} get {3} return {2}; {4} set {3} {2} = value; {4} {4}", sab[0], sb.ToString(), b, "{", "}");
+
+                lines[i] = b;
+            }
+
+            richTextBox1.Lines = lines;
         }
     }
 }
