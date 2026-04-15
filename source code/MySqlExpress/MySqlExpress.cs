@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -6,13 +6,13 @@ using System.Text;
 using MySqlConnector;
 using System.Globalization;
 using System.Reflection;
-using System.CodeDom;
+                     
 
 namespace System
 {
     public class MySqlExpress
     {
-        public const string Version = "1.7.2";
+        public const string Version = "1.7.3";
 
         public enum FieldsOutputType
         {
@@ -396,7 +396,7 @@ namespace System
 
             bool isFirst = true;
 
-            foreach(var kv in dic)
+            foreach (var kv in dic)
             {
                 if (isFirst)
                 {
@@ -658,6 +658,24 @@ namespace System
             return Bind<T>(dt);
         }
 
+        public void GetObject<T>(string sql, T ob)
+        {
+            DataTable dt = Select(sql);
+            Bind<T>(dt, ob);
+        }
+
+        public void GetObject<T>(string sql, T ob, IDictionary<string, object> dicParameters)
+        {
+            DataTable dt = Select(sql, dicParameters);
+            Bind<T>(dt, ob);
+        }
+
+        public void GetObject<T>(string sql, T ob, IEnumerable<MySqlParameter> parameters)
+        {
+            DataTable dt = Select(sql, parameters);
+            Bind<T>(dt, ob);
+        }
+
         public List<T> GetObjectList<T>(string sql)
         {
             DataTable dt = Select(sql);
@@ -740,6 +758,44 @@ namespace System
                 return Activator.CreateInstance<T>();
             }
             return lst[0];
+        }
+
+        static void Bind<T>(DataTable dt, T ob)
+        {
+            if (dt.Rows.Count == 0)
+                return;
+
+            DataRow dr = dt.Rows[0];
+
+            var fields = typeof(T).GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+            var properties = typeof(T).GetProperties(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (var fieldInfo in fields)
+            {
+                foreach (DataColumn dc in dt.Columns)
+                {
+                    if (fieldInfo.Name == dc.ColumnName)
+                    {
+                        fieldInfo.SetValue(ob, GetValue(dr[dc.ColumnName], fieldInfo.FieldType));
+                        break;
+                    }
+                }
+            }
+
+            foreach (var propertyInfo in properties)
+            {
+                if (!propertyInfo.CanWrite)
+                    continue;
+
+                foreach (DataColumn dc in dt.Columns)
+                {
+                    if (propertyInfo.Name == dc.ColumnName)
+                    {
+                        propertyInfo.SetValue(ob, GetValue(dr[dc.ColumnName], propertyInfo.PropertyType));
+                        break;
+                    }
+                }
+            }
         }
 
         static List<T> BindList<T>(DataTable dt)
