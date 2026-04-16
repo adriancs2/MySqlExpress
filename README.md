@@ -1,214 +1,482 @@
 # MySqlExpress
-MySqlExpress get rows from MySQL table and convert it into Class Objects in C#. For saving data, Class Objects and be passed for executing INSERT or UPDATE. It can also performs INSERT/UPDATE by using Dictionary. It simplifies the usage of MySQL in C#.
 
-This class library aims to encourage rapid application development with MySQL.
+[![C#](https://img.shields.io/badge/C%23-7.3%2B-239120?logo=csharp&logoColor=white)](https://learn.microsoft.com/en-us/dotnet/csharp/)
+[![.NET Framework](https://img.shields.io/badge/.NET%20Framework-4.6%2B-512BD4?logo=.net&logoColor=white)](https://dotnet.microsoft.com/download/dotnet-framework)
+[![.NET Standard](https://img.shields.io/badge/.NET%20Standard-2.0%2B-512BD4?logo=.net&logoColor=white)](https://learn.microsoft.com/en-us/dotnet/standard/net-standard)
+[![.NET](https://img.shields.io/badge/.NET-6%20%7C%208%20%7C%209%2B-512BD4?logo=.net&logoColor=white)](https://dotnet.microsoft.com/)
+[![MySQL](https://img.shields.io/badge/MySQL-5.7%2B%20%7C%208.0%2B-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![NuGet](https://img.shields.io/nuget/v/MySqlExpress?logo=nuget)](https://www.nuget.org/packages/MySqlExpress)
+[![Single-File](https://img.shields.io/badge/deploy-single--file-brightgreen)](#install)
+[![License](https://img.shields.io/badge/license-Public%20Domain-lightgrey)](#license)
 
-Github: [https://github.com/adriancs2/MySqlExpress](https://github.com/adriancs2/MySqlExpress)
+A lightweight C# class library for MySQL — designed for developers who want to stay close to SQL while removing the tedium around it.
 
-[Nuget for MySqlConnector (MIT) - https://www.nuget.org/packages/MySqlExpress](https://www.nuget.org/packages/MySqlExpress)
+MySqlExpress has a sibling library for SQLite, [SQLiteExpress](https://github.com/adriancs2/SQLiteExpress), which mirrors this API — giving you a consistent database interface across both MySQL and SQLite projects.
 
-PM> NuGet\Install-Package MySqlExpress
+---
 
-[Nuget for MySql.Data (Oracle) - https://www.nuget.org/packages/MySqlExpress.MySql.Data](https://www.nuget.org/packages/MySqlExpress.MySql.Data)
+## Contents
 
-PM> NuGet\Install-Package MySqlExpress.MySql.Data
+**Part 1 — The Library**
 
-Download **MySqlExpress Helper**: [https://github.com/adriancs2/MySqlExpress/releases](https://github.com/adriancs2/MySqlExpress/releases)
+Getting Started
 
-_The Demo of MySqlExpress (Available in source code):_
+- [The Design](#the-design)
+- [Install](#install)
+- [Quick Start](#quick-start)
+- [A note on Dictionary syntax](#a-note-on-dictionary-syntax)
 
-![MySqlExpress Demo](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/screenshot05.png)
+MySqlExpress Highlights
 
-## Introduction
+- [Insert](#insert)
+- [GetObject / GetObjectList](#getobject--getobjectlist)
+- [InsertUpdate (Upsert)](#insertupdate-upsert)
+- [Update](#update)
+- [Save / SaveList](#save--savelist)
 
-MySqlExpress consists of 2 parts.
+More API
 
-The **first part** is the C# class library of MySqlExpress. It introduces some "shortcuts" as to simplify the execution of tasks related to MySQL.
+- [Transactions (Start / Commit / Rollback)](#transactions-start--commit--rollback)
+- [Select](#select)
+- [ExecuteScalar](#executescalar)
+- [Execute (any SQL)](#execute-any-sql)
+- [Select (any SQL)](#select-any-sql)
 
-To begin with, download the source code and add the class file "MySqlExpress.cs" into your project,
+Reference
 
-or add the referrence of the project of MySqlExpress into your project,
+- [Class Field Binding Modes](#class-field-binding-modes)
+- [String Helpers](#string-helpers)
+- [DB Info](#db-info)
+- [Supported Data Types](#supported-data-types)
 
-or install the Nuget package of MySqlExpress into your project.
+**Part 2 — MySqlExpress Helper App**
 
-The **second part** is a software called **"MySqlExpress Helper.exe"**. The main function of this software is to generate C# class objects, which will be explained in details below. I'll refer this small program as the **"Helper App"** for the rest of this article.
+- [What the Helper does](#what-the-helper-does)
+- [Download](#download-the-helper)
+- [Generating class fields](#generating-class-fields)
+- [Generating dictionary entries](#generating-dictionary-entries)
+- [Generating the update column list](#generating-the-update-column-list)
 
-Download **MySqlExpress Helper**: [https://github.com/adriancs2/MySqlExpress/releases](https://github.com/adriancs2/MySqlExpress/releases)
+**Part 3 — Extras**
 
-MySqlExpress is built on top of MySqlConnector (MIT) library. If you wish to use another connector or provider, you can download the source code and compile it with your favorite connector.
+- [Visual Studio toolbox tip](#visual-studio-toolbox-tip)
 
-## Before Start
+**About**
 
-As usual, to begin coding with MySQL, first add the following using statement to allow the usage of MySqlconnector (MIT) library.
+- [Relationship with SQLiteExpress](#relationship-with-sqliteexpress)
+- [License](#license)
+
+---
+
+# Part 1 — The Library
+
+## The Design
+
+No ORM. No migrations. No DbContext. No LINQ-to-SQL translation layer.
+
+You write SQL. MySqlExpress handles the plumbing: parameterization, object binding, type conversion, CRUD generation. So you don't have to repeat yourself.
+
+The idea is simple: wrap a raw `MySqlCommand` and give it superpowers.
+
 ```csharp
 using MySqlConnector;
-```
-In this article, let's assume that we store the MySQL connection string as a static field. For example:
-```csharp
-public class config
-{
-    public static string ConnString = 
-        "server=localhost;user=root;pwd=1234;database=test;";
-}
-```
-Hence, we can obtain the connection string anywhere in the project as below:
 
-```csharp
-config.ConnString
-```
-
-Here is the standard MySQL connection code block:
-```csharp
-using (MySqlConnection conn = new MySqlConnection(config.ConnString))
+using (MySqlConnection conn = new MySqlConnection(connString))
 {
+    conn.Open();
     using (MySqlCommand cmd = new MySqlCommand())
     {
         cmd.Connection = conn;
-        conn.Open();
-
-        // execute queries
-
-        conn.Close();
-    }
-}
-```
-Declare a new MySqlExpress object to start using:
-```csharp
-using (MySqlConnection conn = new MySqlConnection(config.ConnString))
-{
-    using (MySqlCommand cmd = new MySqlCommand())
-    {
-        cmd.Connection = conn;
-        conn.Open();
 
         MySqlExpress m = new MySqlExpress(cmd);
 
-        // perform queries
-
-        conn.Close();
+        // You're ready. That's it.
     }
 }
 ```
-The standard MySQL connection code block shown above can be saved into Visual Studio toolbox bar. So, next time, whenever you need this code block, you can drag and drop from the toolbox bar.
 
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/02.png)
+> Throughout this README, `m` is the `MySqlExpress` instance.
 
-Now the code block is saved at the toolbox.
+---
 
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/03.png)
+## Install
 
-Next time, whenever you need the code block, just drag it from the toolbox into the text editor.
+MySqlExpress ships as a single `.cs` file, distributed through NuGet. There are two packages — pick the MySQL connector you prefer:
 
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/05.png)
+| Connector                   | NuGet Package                                                                                    | License |
+| --------------------------- | ------------------------------------------------------------------------------------------------ | ------- |
+| **MySqlConnector** (default) | [MySqlExpress](https://www.nuget.org/packages/MySqlExpress)                                      | MIT     |
+| **MySql.Data** (Oracle)      | [MySqlExpress.MySql.Data](https://www.nuget.org/packages/MySqlExpress.MySql.Data)                | GPL / Oracle |
 
-## Let's Start - Using MySqlExpress
+```
+PM> NuGet\Install-Package MySqlExpress
+```
 
-1. Start Transaction, Commit, Rollback
-2. Getting Rows of Objects from MySQL Table
-3. Getting a Customized Object Structure
-4. Getting a single value (ExecuteScalar<T>)
-5. Save (v.17) - Saving Objects
-6. Insert Row (Save Data)
-7. Update Row (Update Data)
-8. Insert Update
-9. Generate Like String
-10. Execute a SQL statement
-  
-###  1. Start Transaction, Commit and Rollback
+or for the Oracle connector:
+
+```
+PM> NuGet\Install-Package MySqlExpress.MySql.Data
+```
+
+Prefer to drop the source in directly? Grab `MySqlExpress.cs` from the repo — it lives in the `System` namespace, so any file that already has `using System;` picks it up automatically.
+
+---
+
+## Quick Start
+
 ```csharp
-using (MySqlConnection conn = new MySqlConnection(config.ConnString))
+using System;
+using System.Collections.Generic;
+using MySqlConnector;
+
+string connStr = "server=localhost;user=root;pwd=1234;database=test;";
+
+using (MySqlConnection conn = new MySqlConnection(connStr))
 {
+    conn.Open();
     using (MySqlCommand cmd = new MySqlCommand())
     {
         cmd.Connection = conn;
-        conn.Open();
 
         MySqlExpress m = new MySqlExpress(cmd);
 
-        try
+        // Insert a row.
+        m.Insert("player", new Dictionary<string, object>
         {
-            m.StartTransaction();
+            ["name"]  = "John Smith",
+            ["score"] = 99.5m,
+        });
 
-            // perform lots of queries
-            // action success
+        int newId = m.LastInsertId;
 
-            m.Commit();
-        }
-        catch
-        {
-            // Error occur
-
-            m.Rollback();
-        }
-
-        conn.Close();
+        // Read it back.
+        int count = m.ExecuteScalar<int>("select count(*) from player;");
+        Console.WriteLine($"Rows: {count}, last id: {newId}");
     }
 }
 ```
-There are a few benefits of using TRANSACTION in MySQL.
 
-On a 7200 rpm HDD hard drive, the maximum I/O writes (numbers of SQL queries) that MySQL can executes is around 100 to 120 times.
+---
 
-Read more about MySQL Disk I/O Capacity at: [https://dev.mysql.com/doc/refman/5.7/en/innodb-configuring-io-capacity.html](https://dev.mysql.com/doc/refman/5.7/en/innodb-configuring-io-capacity.html)
+## A note on Dictionary syntax
 
-If you perform 1000 queries, they will be executed one by one, which will take around 4~7 seconds on HDD hard drive to complete.
+Throughout this README, most examples build dictionaries with the indexer-initializer form (`["key"] = value`). C# gives you a few equivalent ways to write the same thing — use whichever your fingers prefer:
 
-By using TRANSACTION + COMMIT, all 1000 queries will all be executed at once. This saves a lots of disk operation time.
-
-Sometimes, there are chains of operations which involves multiple tables and rows. Without transaction, if there is any bad thing or error occurs in the middle of the process, the whole operation will be terminated half way, resulting partial or incomplete data saving. Which would be a problematic to fix the data. Hence, TRANSACTION can prevent such thing happens. With transaction, the whole chain of operation will be cancelled.
-
-ROLLBACK, means cancel. Discard all queries that sent during the TRANSACTION period.
-
-Read more about transaction at [here](https://www.mysqltutorial.org/mysql-transaction.aspx)
-
-### 2. Getting Rows of Objects from MySQL Table
-
-Assume that, we have a MySQL table like this:
-
-```sql
-CREATE TABLE `player` (
-`id` int unsigned NOT NULL AUTO_INCREMENT,
-`code` varchar(10),
-`name` varchar(300),
-`date_register` datetime,
-`tel` varchar(100),
-`email` varchar(100),
-`status` int unsigned,
-PRIMARY KEY (`id`));
-```
-First, creates a new class.
-  
 ```csharp
-public class obPlayer
+// Style 1 — indexer initializer (used in this README)
+var dic = new Dictionary<string, object>
 {
-   
+    ["id"]    = 1,
+    ["name"]  = "John",
+    ["score"] = 100,
+};
+
+// Style 2 — collection initializer
+var dic = new Dictionary<string, object>
+{
+    { "id", 1 },
+    { "name", "John" },
+    { "score", 100 },
+};
+
+// Style 3 — plain assignment
+var dic = new Dictionary<string, object>();
+dic["id"]    = 1;
+dic["name"]  = "John";
+dic["score"] = 100;
+```
+
+All three produce the same `Dictionary<string, object>`. MySqlExpress doesn't care which you pick.
+
+---
+
+## Insert
+
+Dictionary-based. Pass a table name and a `Dictionary<string, object>` of column → value. MySqlExpress builds the parameterized `INSERT`, handles type conversion, and you're done.
+
+```csharp
+Dictionary<string, object> dic = new Dictionary<string, object>
+{
+    ["code"]          = "P001",
+    ["name"]          = "John Smith",
+    ["date_register"] = DateTime.Now,
+    ["tel"]           = "0123456789",
+    ["email"]         = "john@mail.com",
+    ["status"]        = 1,
+};
+
+m.Insert("player", dic);
+
+int newId  = m.LastInsertId;      // int
+long newIdLong = m.LastInsertIdLong; // long, for BIGINT primary keys
+```
+
+---
+
+## GetObject / GetObjectList
+
+Bind a single row to an object, or a result set straight into a `List<T>`. Column names are matched against both fields and properties — no attributes, no ceremony.
+
+```csharp
+// Single row
+obPlayer p = m.GetObject<obPlayer>("select * from player where id = 1;");
+
+// With parameters
+obPlayer p2 = m.GetObject<obPlayer>(
+    "select * from player where id = @vid;",
+    new Dictionary<string, object> { ["@vid"] = 1 });
+
+// Into an existing instance
+obPlayer p3 = new obPlayer();
+m.GetObject("select * from player where id = 1;", p3);
+
+// List
+List<obPlayer> lst = m.GetObjectList<obPlayer>("select * from player;");
+
+// List with LIKE filter
+List<obPlayer> matches = m.GetObjectList<obPlayer>(
+    "select * from player where name like @vname;",
+    new Dictionary<string, object> { ["@vname"] = "%adam%" });
+```
+
+It also works cleanly with multi-table joins — project any SELECT shape into a custom POCO:
+
+```csharp
+public class obPlayerTeam
+{
+    public int id { get; set; }
+    public string name { get; set; }
+    public int year { get; set; }
+    public string teamname { get; set; }
+    public string teamcode { get; set; }
+    public int teamid { get; set; }
+}
+
+List<obPlayerTeam> lst = m.GetObjectList<obPlayerTeam>(@"
+    select a.id, a.name, b.year,
+           c.name as teamname, c.code as teamcode, c.id as teamid
+    from player a
+    inner join player_team b on a.id = b.player_id
+    inner join team c on b.team_id = c.id
+    where a.name like @vname;",
+    new Dictionary<string, object> { ["@vname"] = "%adam%" });
+```
+
+See [Class Field Binding Modes](#class-field-binding-modes) for the supported POCO styles.
+
+---
+
+## InsertUpdate (Upsert)
+
+Insert a row — and if the primary key already exists, update **only specific columns**. Uses MySQL's `INSERT ... ON DUPLICATE KEY UPDATE`.
+
+```csharp
+List<string> lstUpdateCol = new List<string> { "score", "level", "status" };
+
+Dictionary<string, object> dic = new Dictionary<string, object>
+{
+    ["year"]      = 2024,
+    ["player_id"] = 1,
+    ["score"]     = 99.5m,
+    ["level"]     = 5,
+    ["status"]    = 1,
+};
+
+m.InsertUpdate("player_team", dic, lstUpdateCol);
+```
+
+Include / exclude mode:
+
+```csharp
+List<string> lstCols = new List<string> { "score", "level" };
+
+// include = true: update ONLY score and level on conflict
+m.InsertUpdate("player_team", dic, lstCols, include: true);
+
+// include = false: update everything EXCEPT score and level
+m.InsertUpdate("player_team", dic, lstCols, include: false);
+```
+
+Especially useful for tables with composite primary keys and no auto-increment — the typical "upsert this year's row for this player" pattern.
+
+---
+
+## Update
+
+The default `Update` overloads append `LIMIT 1` for safety — the most common bug in hand-written SQL is an `UPDATE` without a proper `WHERE`, and this catches it. Pass `updateSingleRow: false` when you genuinely want to update multiple rows.
+
+```csharp
+// 1) Single-column condition (updates one matching row)
+Dictionary<string, object> data = new Dictionary<string, object>
+{
+    ["name"] = "John Smith Updated",
+    ["tel"]  = "0999888777",
+};
+m.Update("player", data, "id", 1);
+
+// 2) Same, but update every matching row
+m.Update("player", data, "status", 1, updateSingleRow: false);
+
+// 3) Multi-column condition
+Dictionary<string, object> cond = new Dictionary<string, object>
+{
+    ["status"] = 1,
+    ["tel"]    = "0123456789",
+};
+m.Update("player", data, cond);
+
+// 4) Multi-column condition, no LIMIT 1
+m.Update("player", data, cond, updateSingleRow: false);
+```
+
+---
+
+## Save / SaveList
+
+Reflection-based wrappers that map a class object to a `Dictionary<string, object>` and call `InsertUpdate` with all non-primary-key columns. Field and property names must match the column names.
+
+```csharp
+obPlayer player = new obPlayer();
+player.code = "P001";
+player.name = "John Smith";
+
+m.Save("player", player);
+
+// Bulk
+List<obPlayer> lst = new List<obPlayer> { player1, player2, player3 };
+m.SaveList("player", lst);
+```
+
+> `Save` / `SaveList` use `INSERT ... ON DUPLICATE KEY UPDATE` semantics — insert if the PK is new, update all non-PK columns if it already exists. For fine-grained control over which columns update, use [`InsertUpdate`](#insertupdate-upsert) directly.
+
+---
+
+## Transactions (Start / Commit / Rollback)
+
+If you're doing more than one write, wrap it in a transaction. Two big reasons:
+
+**1. Data safety.** Either everything succeeds, or nothing does. If the second insert throws, the first one won't be left stranded in the database. Your tables stay in a consistent state.
+
+**2. Speed.** MySQL commits to disk at the end of every statement by default. On a 7200 rpm HDD, that caps you at roughly 100–120 write operations per second. Inside a transaction, MySQL batches the commits into a single disk flush at the end. Bulk inserts commonly run **10×–100× faster** inside a transaction.
+
+```csharp
+try
+{
+    m.StartTransaction();
+
+    m.Insert("player", dic1);
+    m.Insert("player", dic2);
+    m.Update("player", data, "id", 1);
+
+    m.Commit();
+}
+catch
+{
+    m.Rollback();
+    throw;
 }
 ```
 
-The name of class. If the MySQL table's name is "player", you can name the class as "obPlayer".
+**Without a transaction:** each `Insert` / `Update` / `Execute` is its own auto-committed unit. A crash halfway through leaves partial data. Bulk operations are slow.
 
-"ob" means "object".
+**With a transaction:** the whole block behaves as one atomic operation. `Commit` makes all changes permanent; `Rollback` discards them. Always pair `StartTransaction` with a `try / catch` that calls `Rollback` on failure.
 
-"obPlayer", an object of "Player".
+> Rule of thumb: any time you write more than one row — or any time a write depends on a previous write — use a transaction.
 
-But, anyway, you can name the class anything according to your personal flavor, of course.
+---
 
-Next, create the class object's fields or properties:
+## Select
 
-There are 3 modes of creating the fields or properties:
+`Select` returns a `DataTable`.
 
-1. Private Fields + Public Properties
-2. Public Properties
-3. Public Fields
+```csharp
+// All rows
+DataTable dt = m.Select("select * from player;");
 
-Run the **Helper** app.
+// With a dictionary of parameters
+DataTable dt2 = m.Select(
+    "select * from player where id = @vid;",
+    new Dictionary<string, object> { ["@vid"] = 1 });
 
-**First Mode: Private Fields + Public Properties**
-   
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/f03.png)
+// With an explicit list of MySqlParameter
+List<MySqlParameter> plist = new List<MySqlParameter>
+{
+    new MySqlParameter("@name", "John"),
+};
+DataTable dt3 = m.Select("select * from player where name = @name;", plist);
+```
 
-Paste the text into the class:
-    
+---
+
+## ExecuteScalar
+
+Returns a single value. The generic form converts for you.
+
+```csharp
+int count       = m.ExecuteScalar<int>("select count(*) from player;");
+string name     = m.ExecuteScalar<string>("select name from player where id = 1;");
+decimal total   = m.ExecuteScalar<decimal>("select sum(score) from player;");
+DateTime when   = m.ExecuteScalar<DateTime>("select date_register from player where id = 1;");
+
+// Non-generic returns object
+object raw = m.ExecuteScalar("select count(*) from player;");
+
+// With parameters
+long age = m.ExecuteScalar<long>(
+    "select age from player where name = @n;",
+    new Dictionary<string, object> { ["@n"] = "alice" });
+```
+
+---
+
+## Execute (any SQL)
+
+`Execute` runs any non-query statement — DDL, hand-written `INSERT/UPDATE/DELETE`, set statements, anything that doesn't return rows.
+
+```csharp
+m.Execute("create index idx_player_name on player(name);");
+
+m.Execute(
+    "delete from player where id = @vid;",
+    new Dictionary<string, object> { ["@vid"] = 5 });
+
+m.Execute(
+    "delete from player where name = @vname or code = @vcode;",
+    new Dictionary<string, object>
+    {
+        ["@vname"] = "James O'Brien",
+        ["@vcode"] = "P001",
+    });
+```
+
+---
+
+## Select (any SQL)
+
+`Select` is the escape hatch for anything — joins, CTEs, subqueries, window functions, anything that returns rows. You write the SQL, MySqlExpress parameterizes it and hands you a `DataTable`.
+
+```csharp
+DataTable dt = m.Select(@"
+    select a.id, a.name, b.year, b.score
+    from player a
+    inner join player_team b on a.id = b.player_id
+    where b.year = @year
+    order by b.score desc;",
+    new Dictionary<string, object> { ["@year"] = 2024 });
+```
+
+Pair it with [`GetObjectList<T>`](#getobject--getobjectlist) when you'd rather have strongly-typed objects than a `DataTable`.
+
+---
+
+## Class Field Binding Modes
+
+MySqlExpress supports three mapping styles for POCOs. Pick whichever suits your codebase.
+
+**Mode 1 — Private fields + public properties** *(recommended)*
+
+Private field names match column names exactly (MySQL's `snake_case`). Public properties follow C# conventions (`PascalCase`). MySqlExpress binds to the private fields; your application code uses the clean property names.
+
 ```csharp
 public class obPlayer
 {
@@ -230,27 +498,12 @@ public class obPlayer
 }
 ```
 
-The purpose using this combination (private fields + public properties):
+This gives you the best of both worlds: the private fields bridge MySQL's `snake_case` naming to .NET, while the public API stays idiomatic C#.
 
-Private fields are used to match the columns' name of MySQL table and map the data.
+**Mode 2 — Public properties only**
 
-Public properties are used to convert the naming of the fields into C# Coding Naming Convertions, which is PascalCase:
+Property names must match column names exactly.
 
-Read more about [C# Coding Naming Conventions](https://github.com/ktaranov/naming-convention/blob/master/C%23%20Coding%20Standards%20and%20Naming%20Conventions.md)
-
-The MySQL column's naming conventions uses lower case and underscore to separate words.
-
-Read more about [MySQL Naming Conventions](https://medium.com/@centizennationwide/mysql-naming-conventions-e3a6f6219efe)
-
-The symbol of "_" (underscore) is considered less typing friendly than using just latin characters.
-
-Therefore, converting the field name to PacalCase will align with the C# naming conventions and also increase the convenient and speed of coding.
-    
-**Second Mode: Public Properties**
-
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/g01.png)
-
-Then, paste all the copied text into the class:
 ```csharp
 public class obPlayer
 {
@@ -264,9 +517,9 @@ public class obPlayer
 }
 ```
 
-**Third Mode: Public Fields**
+**Mode 3 — Public fields only**
 
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/f02.png)
+Field names must match column names exactly.
 
 ```csharp
 public class obPlayer
@@ -281,83 +534,136 @@ public class obPlayer
 }
 ```
 
-**Getting a single row of "Player" object**
+> A note on the `ob` prefix: naming classes `obPlayer`, `obPlayerTeam`, etc. is a personal convention — `ob` for "object of". Use whatever prefix (or no prefix) you prefer; MySqlExpress doesn't care about class names, only field/property names.
 
-Here's the code of getting a single row of "Player" object.
+---
+
+## String Helpers
+
+### Escape
+
+Escapes single quotes and backslashes so a string is safe to inline into SQL.
+
 ```csharp
-int id = 1;
+string safe = m.Escape("Jane O'Brien"); // "Jane O''Brien"
+```
 
-// declare the object
-obPlayer p = null;
+### GetLikeString
 
-using (MySqlConnection conn = new MySqlConnection(config.ConnString))
-{
-    using (MySqlCommand cmd = new MySqlCommand())
-    {
-        cmd.Connection = conn;
-        conn.Open();
+Wraps each whitespace-separated token with `%`.
 
-        MySqlExpress m = new MySqlExpress(cmd);
-
-        // parameterize the values
-        Dictionary<string, object> dicParam = new Dictionary<string, object>();
-        dicParam["@vid"] = id;
-
-        p = m.GetObject<obPlayer>($"select * from player where id=@vid;", dicParam);
-
-        conn.Close();
-    }
-}
-  ```
-Getting a list of objects (get multiple rows from a MySQL table):
 ```csharp
-// declare the object list
-List<obPlayer> lst = null;
+string like    = m.GetLikeString("John Smith");           // "%John%Smith%"
+string likeEsc = m.GetLikeString("Jane O'Brien", true);   // "%Jane%O''Brien%"
 
-using (MySqlConnection conn = new MySqlConnection(config.ConnString))
+// Typical use
+List<obPlayer> lst = m.GetObjectList<obPlayer>(
+    "select * from player where name like @vname;",
+    new Dictionary<string, object> { ["@vname"] = m.GetLikeString("James O'Brien") });
+```
+
+### GenerateContainsString
+
+Builds a parameterized multi-word `LIKE` condition and appends it to a `StringBuilder`.
+
+```csharp
+StringBuilder sb = new StringBuilder();
+sb.Append("select * from player where 1=1");
+
+Dictionary<string, object> dicParam = new Dictionary<string, object>();
+m.GenerateContainsString("name", "john smith", sb, dicParam);
+
+// sb:
+//   select * from player where 1=1 and (`name` like @csname0 and `name` like @csname1)
+// dicParam:
+//   { "@csname0": "%john%", "@csname1": "%smith%" }
+
+List<obPlayer> results = m.GetObjectList<obPlayer>(sb.ToString(), dicParam);
+```
+
+---
+
+## DB Info
+
+```csharp
+List<string> tables = m.GetTableList();                 // show tables;
+string createSql    = m.GetCreateTableSql("player");    // show create table `player`;
+```
+
+---
+
+## Supported Data Types
+
+MySqlExpress handles automatic conversion for:
+
+`string`, `bool`, `byte`, `sbyte`, `short`, `ushort`, `int`, `uint`, `long`, `ulong`, `float`, `double`, `decimal`, `char`, `DateTime`, `byte[]`, `Guid`, `TimeSpan`
+
+`null` and `DBNull` values convert to the type's default (`""`, `0`, `false`, `DateTime.MinValue`, etc.), so you never get a `NullReferenceException` reading a nullable column into a non-nullable field.
+
+---
+
+# Part 2 — MySqlExpress Helper App
+
+## What the Helper does
+
+MySqlExpress Helper is a small Windows desktop app that connects to your MySQL database and generates C# boilerplate you'd otherwise type by hand: class field definitions, dictionary entries for `Insert` and `Update`, and update column lists for `InsertUpdate`.
+
+It's **entirely optional** — everything the Helper generates, you can write yourself. The library doesn't depend on it. But for bootstrapping a new table into your codebase, copy-pasting from the Helper is faster than typing out 20 properties.
+
+Demo:
+
+![MySqlExpress Demo](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/screenshot05.png)
+
+## Download the Helper
+
+Get the latest release from the GitHub releases page:
+
+**[https://github.com/adriancs2/MySqlExpress/releases](https://github.com/adriancs2/MySqlExpress/releases)**
+
+## Generating class fields
+
+Three output modes, matching the three [Class Field Binding Modes](#class-field-binding-modes).
+
+**Mode 1 — Private fields + public properties** *(recommended)*
+
+![Private fields + public properties](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/f03.png)
+
+Paste the generated text into your class:
+
+```csharp
+public class obPlayer
 {
-    using (MySqlCommand cmd = new MySqlCommand())
-    {
-        cmd.Connection = conn;
-        conn.Open();
+    int id = 0;
+    string code = "";
+    string name = "";
+    DateTime date_register = DateTime.MinValue;
+    string tel = "";
+    string email = "";
+    int status = 0;
 
-        MySqlExpress m = new MySqlExpress(cmd);
-
-        // parameterize the values
-        Dictionary<string, object> dicParam = new Dictionary<string, object>();
-        dicParam["@vname"] = "%adam%";
-
-        lst = m.GetObjectList<obPlayer>($"select * from player where name like @vname;", dicParam);
-
-        conn.Close();
-    }
+    public int Id { get { return id; } set { id = value; } }
+    public string Code { get { return code; } set { code = value; } }
+    public string Name { get { return name; } set { name = value; } }
+    public DateTime DateRegister { get { return date_register; } set { date_register = value; } }
+    public string Tel { get { return tel; } set { tel = value; } }
+    public string Email { get { return email; } set { email = value; } }
+    public int Status { get { return status; } set { status = value; } }
 }
 ```
 
-### 3. Getting a Customized Object Structure
-One of the typical example is multiple SQL JOIN statement. For example:
-```sql
-select a.*, b.`year`, c.name 'teamname', c.code 'teamcode', c.id 'teamid'
-from player a
-inner join player_team b on a.id=b.player_id
-inner join team c on b.team_id=c.id;
-```
-  
-The output table structure is customized.
+**Mode 2 — Public properties**
 
-To create a non-standardized table's object structure, open the Helper program. Key in the customized SQL JOIN statement.
+![Public properties](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/g01.png)
 
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/g03.png)
+**Mode 3 — Public fields**
 
-Create the custom class object:
+![Public fields](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/f02.png)
 
-```csharp
-public class obPlayerTeam
-{
-   
-}
-```
-Then, paste the copied text into the new custom object:
+**Custom SELECT (joins, aliases, projections)**
+
+Paste any custom SELECT — including joins — and the Helper generates a POCO matching the result shape.
+
+![Custom SELECT class generation](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/g03.png)
 
 ```csharp
 public class obPlayerTeam
@@ -388,220 +694,49 @@ public class obPlayerTeam
 }
 ```
 
-  Getting the customized table object:
-```csharp
-// declare the object
-List<obPlayerTeam> lst = null;
+## Generating dictionary entries
 
-// parameterized the value
-Dictionary<string, object> dicParam = new Dictionary<string, object>();
-dicParam["@vname"] = "%adam%";
+For `Insert` and `Update`, the Helper generates an empty dictionary populated with all column keys, ready for you to fill in the values.
 
-using (MySqlConnection conn = new MySqlConnection(config.ConnString))
-{
-    using (MySqlCommand cmd = new MySqlCommand())
-    {
-        cmd.Connection = conn;
-        conn.Open();
+![Dictionary entry generator](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/g04.png)
 
-        MySqlExpress m = new MySqlExpress(cmd);
-
-        lst = m.GetObjectList<obPlayerTeam>(@"
-            select a.*, b.`year`, c.name 'teamname', c.code 'teamcode', c.id 'teamid'
-            from player a inner join player_team b on a.id=b.player_id
-            inner join team c on b.team_id=c.id
-            where a.name like @vname;", dicParam);
-
-        conn.Close();
-    }
-}
-```
-  
-### 4. Getting a single value (ExecuteScalar<T>)
-```csharp
-// int
-int count = m.ExecuteScalar<int>("select count(*) from player;");
-
-// datetime
-DateTime d = m.ExecuteScalar<DateTime>("select date_register from player where id=2;");
-
-// string
-string name = m.ExecuteScalar<string>("select name from player where id=1;");
-```
-
-Getting single value with parameters
-  
-```csharp
-// parameters
-Dictionary<string, object> dicParam1 = new Dictionary<string, object>();
-dicParam1["@vname"] = "%adam%";
-
-Dictionary<string, object> dicParam2 = new Dictionary<string, object>();
-dicParam2["@vid"] = 1;
-
-// int
-int count = m.ExecuteScalar<int>("select count(*) from player where name like @vname;", dicParam1);
-
-// datetime
-DateTime d = m.ExecuteScalar<DateTime>("select date_register from player where id=@vid;", dicParam2);
-
-// string
-string name = m.ExecuteScalar<string>("select name from player where id=@vid;", dicParam2);
-
-```
-  
-### 5. Save (v1.7) - Saving Objects
-
-A combination of "INSERT" and "UPDATE".
-This method will first attempt to perform an INSERT. If the primary key of the data has already existed in MySQL table, then it will perform an UPDATE.
-
-```csharp
-// Syntax
-m.Save(tablename, class);
-m.SaveList(tablename, List<class>);
-
-// Example:
-
-// Saving single object
-m.Save("player", player);
-
-// Saving list of objects
-m.SaveList("player", lstPlayer);
-```
-  
-### 6. Insert Row (Save Data)
-
-Performs INSERT by using dictionary.
-
-> **Note:**
-> **The dictionary values will be inserted as parameterized values**
-    
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/g04.png)
-  
-The field "id" is a primary key, auto-increment field. Therefore, we don't need to insert data for this field.
-
-Delete the following line from the block:
-    
-```csharp
-dic["id"] =
-```
-
-Fill in data into the dictionary:
 ```csharp
 Dictionary<string, object> dic = new Dictionary<string, object>();
 
-dic["code"] = "AA001";
-dic["name"] = "John Smith";
+dic["id"]            =
+dic["code"]          =
+dic["name"]          =
+dic["date_register"] =
+dic["tel"]           =
+dic["email"]         =
+dic["status"]        =
+```
+
+Delete the auto-increment primary key line (`dic["id"] =`), fill in the rest, and you have a working `Insert`:
+
+```csharp
+Dictionary<string, object> dic = new Dictionary<string, object>();
+
+dic["code"]          = "P001";
+dic["name"]          = "John Smith";
 dic["date_register"] = DateTime.Now;
-dic["tel"] = "1298343223";
-dic["email"] = "john_smith@mail.com";
-dic["status"] = 1;
+dic["tel"]           = "0123456789";
+dic["email"]         = "john@mail.com";
+dic["status"]        = 1;
 
 m.Insert("player", dic);
 ```
-  
-Run the following code to obtain new inserted ID:
-    
-```csharp
-m.LastInsertId
-```
-    
-Obtain the LAST INSERT ID:
-  
-```csharp
-Dictionary<string, object> dic = new Dictionary<string, object>();
 
-dic["code"] = "AA001";
-dic["name"] = "John Smith";
-dic["date_register"] = DateTime.Now;
-dic["tel"] = "1298343223";
-dic["email"] = "john_smith@mail.com";
-dic["status"] = 1;
+There's also a sibling generator for parameter dictionaries (`@paramName` keys), used for `Select` and `ExecuteScalar` calls.
 
-m.Insert("player", dic);
+## Generating the update column list
 
-int newid = m.LastInsertId;
-```
+For `InsertUpdate`, the Helper generates a `List<string>` of all non-primary-key columns — the columns that should get updated on conflict.
 
-### 7 Update Row (Update Data)
+![Update column list generator](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/g05.png)
 
-Performs UPDATE by using dictionary.
-  
-> **Note:**
-> **The dictionary values will be inserted as parameterized values**
+![Update column list generator](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/g06.png)
 
-For updating table that has one primary key. The parameters:
-```csharp
-m.Update(tablename, dictionary, primary key column name, id);
-```
-Generate the dictionary entries from the Helper App.
-    
-Remove the "id" dictionary entry:
-    
-```csharp
-dic["id"] =
-```
-    
-Paste it at the code block, fill the value and execute the Update command:
-  
-```csharp
-Dictionary<string, object> dic = new Dictionary<string, object>();
-
-dic["code"] = "AA001";
-dic["name"] = "John Smith";
-dic["date_register"] = DateTime.Now;
-dic["tel"] = "1298343223";
-dic["email"] = "john_smith@mail.com";
-dic["status"] = 1;
-
-m.Update("player", dic, "id", 1);
-```
-  
-For updating table that has multiple primary keys or multiple reference column. The parameters:
-```csharp
-m.Update(tablename, dictionary data, dictionary reference data);
-```
-Example:
-```csharp
-// data
-Dictionary<string, object> dic = new Dictionary<string, object>();
-dic["code"] = "AA001";
-dic["name"] = "John Smith";
-dic["date_register"] = DateTime.Now;
-dic["tel"] = "1298343223";
-dic["email"] = "john_smith@mail.com";
-dic["status"] = 1;
-
-// update condition / referrence column data
-Dictionary<string, object> dicCond = new Dictionary<string, object>();
-dicCond["year"] = 2022;
-dicCond["team_id"] = 1;
-
-m.Update("player_team", dic, dicCond);
-```
-  
-### 8. Insert Update
-
-Performs INSERT & UPDATE by using dictionary.
-  
-> **Note:**
-> **The dictionary values will be inserted as parameterized values**
-
-This is especially useful when the table has multiple primary keys and no auto-increment field.
-
-Insert > if the primary keys are not existed
-
-Update it > if the primary keys existed.
-
-First, generate the dictionary entries:
-
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/g05.png)
-
-Next, generate the update column list:
-
-![](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/g06.png)
-  
-  Paste it at the code block and runs the Insert Update method:
 ```csharp
 List<string> lstUpdateCol = new List<string>();
 
@@ -610,51 +745,66 @@ lstUpdateCol.Add("score");
 lstUpdateCol.Add("level");
 lstUpdateCol.Add("status");
 
-using (MySqlConnection conn = new MySqlConnection(config.ConnString))
-{
-    using (MySqlCommand cmd = new MySqlCommand())
-    {
-        cmd.Connection = conn;
-        conn.Open();
+Dictionary<string, object> dic = new Dictionary<string, object>();
+dic["year"]      = 2024;
+dic["player_id"] = 1;
+dic["team_id"]   = 1;
+dic["score"]     = 10m;
+dic["level"]     = 1;
+dic["status"]    = 1;
 
-        MySqlExpress m = new MySqlExpress(cmd);
-
-        // data
-        Dictionary<string, object> dic = new Dictionary<string, object>();
-
-        dic["year"] = 2022;
-        dic["player_id"] = 1;
-        dic["team_id"] = 1;
-        dic["score"] = 10m;
-        dic["level"] = 1;
-        dic["status"] = 1;
-
-        m.InsertUpdate("player_team", dic, lstUpdateCol);
-
-        conn.Close();
-    }
-}
+m.InsertUpdate("player_team", dic, lstUpdateCol);
 ```
-  
-### 9. Generate Like String
 
-```csharp
-string name = "James O'Brien";
+> The Helper is a convenience. Everything it generates can also be produced programmatically at runtime through MySqlExpress itself: `GenerateTableClassFields`, `GenerateCustomClassField`, `GenerateTableDictionaryEntries`, `GenerateParameterDictionaryTable`, and `GenerateUpdateColumnList`. Use whichever workflow fits your project.
 
-// parameters
-Dictionary<string, object> dicParam = new Dictionary<string, object>();
-dicParam["@vname"] = m.GetLikeString(name);
+---
 
-List<obPlayer> lst = m.GetObjectList<obPlayer>("select * from player where name like @vname;", dicParam);
-```
-  
-### 10. Execute a Single SQL statement
- 
-```csharp
-Dictionary<string, object> dicParam = new Dictionary<string, object>();
-dicParam["@vName"] = "James O'Brien";
-dicParam["@vCode"] = "AA001";
-m.Execute("delete from player where name=@vName or code=@vCode;", dicParam);
-```
-  
-Happy coding.
+# Part 3 — Extras
+
+## Visual Studio toolbox tip
+
+The standard MySQL connection block is boilerplate you'll type hundreds of times. Visual Studio's **Toolbox** can hold it as a drag-and-drop snippet.
+
+Select the code block, drag it onto the Toolbox:
+
+![Drag code into toolbox](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/02.png)
+
+Once saved, it lives in the Toolbox:
+
+![Saved in toolbox](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/03.png)
+
+Next time, drag it from the Toolbox into the editor:
+
+![Drag back into editor](https://raw.githubusercontent.com/adriancs2/MySqlExpress/master/wiki/05.png)
+
+Small thing, but it adds up over a career.
+
+---
+
+## Relationship with SQLiteExpress
+
+[SQLiteExpress](https://github.com/adriancs2/SQLiteExpress) mirrors this library's API for SQLite. If you work across both databases, you can keep the same mental model — `Insert`, `GetObject<T>`, `InsertUpdate`, `Update`, and the rest behave identically, with only the connection/command types swapping out.
+
+| Feature                                      | MySqlExpress | SQLiteExpress |
+| -------------------------------------------- | :----------: | :-----------: |
+| Select / Execute / ExecuteScalar             | ✓            | ✓             |
+| GetObject\<T\> / GetObjectList\<T\>          | ✓            | ✓             |
+| GetObject into existing instance             | ✓            | ✓             |
+| Insert (Dictionary)                          | ✓            | ✓             |
+| Update (single / multi condition, LIMIT 1)   | ✓            | ✓             |
+| InsertUpdate (Upsert)                        | ✓ (`ON DUPLICATE KEY UPDATE`) | ✓ (`ON CONFLICT DO UPDATE`) |
+| InsertOrReplace                              | —            | ✓             |
+| Save / SaveList (object)                     | ✓            | ✓             |
+| String helpers (Escape, GetLikeString, …)    | ✓            | ✓             |
+| Code generation                              | ✓            | ✓             |
+| Table DDL (CreateTable, etc.)                | —            | ✓             |
+| Attach / Detach database                     | —            | ✓             |
+
+The differences reflect the underlying databases: MySQL has robust `ALTER TABLE`, so SQLiteExpress's DDL helpers aren't needed here; SQLite doesn't have `INSERT ... ON DUPLICATE KEY UPDATE`, so the upsert syntax differs under the hood.
+
+---
+
+## License
+
+Public Domain. No attribution required. Use it, fork it, rebrand it, ship it.
