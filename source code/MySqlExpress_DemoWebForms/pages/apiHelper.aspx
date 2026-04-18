@@ -1,1 +1,0 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="apiHelper.aspx.cs" Inherits="System.pages.apiHelper" %>

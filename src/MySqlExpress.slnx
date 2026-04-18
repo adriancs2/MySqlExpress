@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Demo_ASPNET_Pageless/Demo_ASPNET_Pageless.csproj" Id="400f9807-766f-4a7e-a428-463aa90a68d8" />
+  <Project Path="Demo_ASPNET_Pageless_Scoped/Demo_ASPNET_Pageless_Scoped.csproj" Id="ca6a7a57-2cad-4490-b85e-bcd57d7cfb14" />
+  <Project Path="MySqlExpressHelper/MySqlExpressHelper.csproj" Id="2ecd89b3-5332-4e46-b274-93d884b58452" />
+</Solution>

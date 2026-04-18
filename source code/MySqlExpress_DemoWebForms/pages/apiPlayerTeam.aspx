@@ -1,1 +1,0 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="apiPlayerTeam.aspx.cs" Inherits="System.pages.apiPlayerTeam" %>
