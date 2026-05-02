@@ -225,9 +225,10 @@ Bind a single row to an object, or a result set straight into a `List<T>`. Colum
 obPlayer p = m.GetObject<obPlayer>("select * from player where id = 1;");
 
 // With parameters
-obPlayer p2 = m.GetObject<obPlayer>(
-    "select * from player where id = @vid;",
-    new Dictionary<string, object> { ["@vid"] = 1 });
+Dictionary<string, object> paramsP2 = new Dictionary<string, object>();
+paramsP2["@vid"] = 1;
+
+obPlayer p2 = m.GetObject<obPlayer>("select * from player where id = @vid;", paramsP2);
 
 // Into an existing instance
 obPlayer p3 = new obPlayer();
@@ -237,9 +238,10 @@ m.GetObject("select * from player where id = 1;", p3);
 List<obPlayer> lst = m.GetObjectList<obPlayer>("select * from player;");
 
 // List with LIKE filter
-List<obPlayer> matches = m.GetObjectList<obPlayer>(
-    "select * from player where name like @vname;",
-    new Dictionary<string, object> { ["@vname"] = "%adam%" });
+Dictionary<string, object> paramsList = new Dictionary<string, object>();
+paramsList["@vname"] = "%adam%";
+
+List<obPlayer> matches = m.GetObjectList<obPlayer>("select * from player where name like @vname;", paramsList);
 ```
 
 It also works cleanly with multi-table joins — project any SELECT shape into a custom POCO:
@@ -276,14 +278,12 @@ Insert a row — and if the primary key already exists, update **only specific c
 ```csharp
 List<string> lstUpdateCol = new List<string> { "score", "level", "status" };
 
-Dictionary<string, object> dic = new Dictionary<string, object>
-{
-    ["year"]      = 2024,
-    ["player_id"] = 1,
-    ["score"]     = 99.5m,
-    ["level"]     = 5,
-    ["status"]    = 1,
-};
+Dictionary<string, object> dic = new Dictionary<string, object>();
+dic["year"]      = 2024;
+dic["player_id"] = 1;
+dic["score"]     = 99.5m;
+dic["level"]     = 5;
+dic["status"]    = 1;
 
 m.InsertUpdate("player_team", dic, lstUpdateCol);
 ```
@@ -439,17 +439,18 @@ long age = m.ExecuteScalar<long>(
 ```csharp
 m.Execute("create index idx_player_name on player(name);");
 
-m.Execute(
-    "delete from player where id = @vid;",
-    new Dictionary<string, object> { ["@vid"] = 5 });
+// First execution
+Dictionary<string, object> dic1 = new Dictionary<string, object>();
+dic1["@vid"] = 5;
 
-m.Execute(
-    "delete from player where name = @vname or code = @vcode;",
-    new Dictionary<string, object>
-    {
-        ["@vname"] = "James O'Brien",
-        ["@vcode"] = "P001",
-    });
+m.Execute("delete from player where id = @vid;", dic1);
+
+// Second execution
+Dictionary<string, object> dic2 = new Dictionary<string, object>();
+dic2["@vname"] = "James O'Brien";
+dic2["@vcode"] = "P001";
+
+m.Execute("delete from player where name = @vname or code = @vcode;", dic2);
 ```
 
 ---
