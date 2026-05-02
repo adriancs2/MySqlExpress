@@ -163,7 +163,7 @@ Throughout this README, most examples build dictionaries with the indexer-initia
 
 ```csharp
 // Style 1 — indexer initializer (used in this README)
-var dic = new Dictionary<string, object>
+Dictionary<string, object> dic = new Dictionary<string, object>
 {
     ["id"]    = 1,
     ["name"]  = "John",
@@ -179,7 +179,7 @@ var dic = new Dictionary<string, object>
 };
 
 // Style 3 — plain assignment
-var dic = new Dictionary<string, object>();
+Dictionary<string, object> dic = new Dictionary<string, object>();
 dic["id"]    = 1;
 dic["name"]  = "John";
 dic["score"] = 100;
