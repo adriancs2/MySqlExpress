@@ -1,0 +1,179 @@
+﻿<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{29069B63-6025-419D-9D7E-39CB75A8CBCF}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Demo_Console_WebServerApp</RootNamespace>
+    <AssemblyName>Demo_Console_WebServerApp</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <LangVersion>7.3</LangVersion>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.8.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=8.0.0.2, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.8.0.2\lib\net462\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=8.0.0.2, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.8.0.2\lib\net462\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="MySqlConnector, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d33d3e53aa5f8c92, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySqlConnector.2.5.0\lib\net48\MySqlConnector.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=8.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.8.0.1\lib\net462\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- ============================================================ -->
+    <!-- Engine: cshttp parser (vendored in /engine/cshttp)            -->
+    <!-- ============================================================ -->
+    <Compile Include="engine\cshttp\ContentParserOptions.cs" />
+    <Compile Include="engine\cshttp\CookieParser.cs" />
+    <Compile Include="engine\cshttp\FormParser.cs" />
+    <Compile Include="engine\cshttp\HttpContentCollection.cs" />
+    <Compile Include="engine\cshttp\HttpHeaderCollection.cs" />
+    <Compile Include="engine\cshttp\HttpMessage.cs" />
+    <Compile Include="engine\cshttp\HttpParser.cs" />
+    <Compile Include="engine\cshttp\HttpPostedFile.cs" />
+    <Compile Include="engine\cshttp\HttpPostedFileCollection.cs" />
+    <Compile Include="engine\cshttp\HttpResponse.cs" />
+    <Compile Include="engine\cshttp\MultipartParser.cs" />
+    <Compile Include="engine\cshttp\ParseError.cs" />
+    <Compile Include="engine\cshttp\ParseResult.cs" />
+    <Compile Include="engine\cshttp\ParserOptions.cs" />
+    <Compile Include="engine\cshttp\ParseWarning.cs" />
+    <Compile Include="engine\cshttp\PercentDecoder.cs" />
+    <Compile Include="engine\cshttp\QueryStringParser.cs" />
+    <Compile Include="engine\cshttp\SetCookie.cs" />
+    <Compile Include="engine\cshttp\SetCookieParser.cs" />
+
+    <!-- ============================================================ -->
+    <!-- Engine: shared infrastructure                                  -->
+    <!-- ============================================================ -->
+    <Compile Include="engine\Ctx.cs" />
+    <Compile Include="engine\ApiHelper.cs" />
+    <Compile Include="engine\Config.cs" />
+    <Compile Include="engine\Render.cs" />
+    <Compile Include="engine\Schema.cs" />
+    <Compile Include="engine\SiteTemplate.cs" />
+    <Compile Include="engine\StaticFiles.cs" />
+    <Compile Include="engine\MySqlExpress.cs" />
+
+    <!-- ============================================================ -->
+    <!-- Models (POCOs that map to MySQL rows / join projections)      -->
+    <!-- ============================================================ -->
+    <Compile Include="engine\models\obPlayer.cs" />
+    <Compile Include="engine\models\obRosterRow.cs" />
+    <Compile Include="engine\models\obTeam.cs" />
+
+    <!-- ============================================================ -->
+    <!-- Handlers (one per route group)                                 -->
+    <!-- ============================================================ -->
+    <Compile Include="engine\handlers\CodeGen.cs" />
+    <Compile Include="engine\handlers\CodeGenApi.cs" />
+    <Compile Include="engine\handlers\Home.cs" />
+    <Compile Include="engine\handlers\PlayerEdit.cs" />
+    <Compile Include="engine\handlers\PlayerEditApi.cs" />
+    <Compile Include="engine\handlers\PlayerList.cs" />
+    <Compile Include="engine\handlers\RawSql.cs" />
+    <Compile Include="engine\handlers\RawSqlApi.cs" />
+    <Compile Include="engine\handlers\Roster.cs" />
+    <Compile Include="engine\handlers\RosterApi.cs" />
+    <Compile Include="engine\handlers\SetupApi.cs" />
+    <Compile Include="engine\handlers\TeamEdit.cs" />
+    <Compile Include="engine\handlers\TeamEditApi.cs" />
+    <Compile Include="engine\handlers\TeamList.cs" />
+
+    <!-- ============================================================ -->
+    <!-- Entry point                                                    -->
+    <!-- ============================================================ -->
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Static assets — copied next to the EXE so the file server can
+         stream them directly. -->
+    <Content Include="css\style.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="js\site.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fonts\fontawesome\css\all.min.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fonts\fontawesome\README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fonts\fontawesome\webfonts\fa-brands-400.woff2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fonts\fontawesome\webfonts\fa-regular-400.woff2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fonts\fontawesome\webfonts\fa-solid-900.woff2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fonts\fontawesome\webfonts\fa-v4compatibility.woff2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="packages.config" />
+    <None Include="App.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
