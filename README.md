@@ -140,11 +140,15 @@ using (MySqlConnection conn = new MySqlConnection(connStr))
         MySqlExpress m = new MySqlExpress(cmd);
 
         // Insert a row.
-        m.Insert("player", new Dictionary<string, object>
-        {
-            ["name"]  = "John Smith",
-            ["score"] = 99.5m,
-        });
+        Dictionary<string, object> dic = new Dictionary<string, object>();
+        dic["code"] = "P001";
+        dic["name"] = "John Smith";
+        dic["date_register"] = DateTime.Now;
+        dic["tel"] = "0123456789";
+        dic["email"] = "john@mail.com";
+        dic["status"] = 1;
+
+        m.Insert("player", dic);
 
         int newId = m.LastInsertId;
 
