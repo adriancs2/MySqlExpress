@@ -1,19 +1,16 @@
-﻿using MySqlConnector;
+using MySqlConnector;
 using System;
 using System.Collections.Generic;
 using System.Data;
-
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using System.Text;
-
 
 namespace System
 {
     public class MySqlExpress
     {
-        public const string Version = "1.7.5";
+        public const string Version = "1.7.6";
 
         public enum FieldsOutputType
         {
@@ -213,6 +210,20 @@ namespace System
             return (T)Convert.ChangeType(ob, typeof(T));
         }
 
+        private static bool ContainsString(IEnumerable<string> lst, string value)
+        {
+            if (lst == null)
+                return false;
+
+            foreach (string s in lst)
+            {
+                if (string.Equals(s, value, StringComparison.Ordinal))
+                    return true;
+            }
+
+            return false;
+        }
+
         private List<MySqlParameter> GetParametersList(IDictionary<string, object> dicParameters)
         {
             List<MySqlParameter> lst = new List<MySqlParameter>();
@@ -246,7 +257,18 @@ namespace System
         /// <param name="lst">List of same class object</param>
         public void SaveList<T>(string table, IEnumerable<T> lst)
         {
-            if (lst.Count() == 0)
+            if (lst == null)
+                return;
+
+            object firstItem = null;
+
+            foreach (T item in lst)
+            {
+                firstItem = item;
+                break;
+            }
+
+            if (firstItem == null)
                 return;
 
             table = Escape(table);
@@ -266,8 +288,10 @@ namespace System
                 }
             }
 
-            var fields = lst.ElementAt(0).GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-            var properties = lst.ElementAt(0).GetType().GetProperties(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+            Type itemType = firstItem.GetType();
+
+            FieldInfo[] fields = itemType.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+            PropertyInfo[] properties = itemType.GetProperties(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
 
             foreach (var s in lst)
             {
@@ -310,7 +334,7 @@ namespace System
 
                 foreach (var kv in dic)
                 {
-                    if (!lstUpdateCols.Contains(kv.Key))
+                    if (!ContainsString(lstUpdateCols, kv.Key))
                     {
                         lstup.Add(kv.Key);
                     }
